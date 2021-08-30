@@ -1,20 +1,21 @@
 import React, {useState} from 'react';
-import {Alert, Platform} from 'react-native';
 import ScrollView from 'components/UI/ScrollView';
 import Input from 'components/UI/Input';
 import required from 'validators/required';
 import phoneValidator from 'validators/phone';
 import phoneMask from 'masks/phoneMask';
 import Btn from 'components/UI/Btn';
-import api from 'services/api';
 import Text from 'components/UI/Text';
-import {useDispatch} from 'react-redux';
-import * as Actions from 'store/actions';
 import theme from 'theme/theme';
 import {Container} from './styles';
 
+// import {Alert} from 'react-native';
+// import api from 'services/api';
+// import {useDispatch} from 'react-redux';
+// import * as Actions from 'store/actions';
+
 const Page1 = ({navigation}) => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const [phone, setPhone] = useState({
     isValid: false,
@@ -31,7 +32,7 @@ const Page1 = ({navigation}) => {
   };
 
   const onPress = async () => {
-    navigation.navigate('Page2')
+    navigation.navigate('Page2');
     // dispatch(Actions.enableLoader());
     // const params = {}
     // try {

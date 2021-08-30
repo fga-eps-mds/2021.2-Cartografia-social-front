@@ -41,10 +41,7 @@ const Routes = () => {
                 component={Page1}
                 // options={{header: () => <Header />}}
               />
-              <Stack.Screen
-                name="Page2"
-                component={Page2}
-              />
+              <Stack.Screen name="Page2" component={Page2} />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaView>
