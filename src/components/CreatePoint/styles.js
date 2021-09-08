@@ -3,15 +3,13 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import theme from 'theme/theme';
 
 export const Icon = styled(FontAwesomeIcon).attrs({
-  color: theme.colors.white,
+  color: theme.colors.black,
 })``;
 
 export const Container = styled.View`
   position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  margin: 20px;
+  top: 50%;
+  left: 47%;
   align-items: center;
   justify-content: center;
 `;

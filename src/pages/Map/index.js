@@ -2,8 +2,8 @@ import React, {useState} from 'react';
 import {View} from 'components/UI';
 import useLocation from 'services/useLocation';
 import Fabs from 'components/Fabs';
-import {MapView} from './styles';
 import CreatePoint from 'components/CreatePoint';
+import {MapView} from './styles';
 
 const Map = () => {
   const {location} = useLocation();
@@ -38,7 +38,11 @@ const Map = () => {
           }}
         />
         <Fabs actions={actions} alwaysOpenActions={alwaysOpenActions} />
-        <CreatePoint locationSelected={location} show={showPointCreation} />
+        <CreatePoint
+          locationSelected={location}
+          show={showPointCreation}
+          onClose={() => setShowPointCreation(false)}
+        />
       </View>
     );
   }
