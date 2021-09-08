@@ -1,11 +1,13 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View} from 'components/UI';
 import useLocation from 'services/useLocation';
 import Fabs from 'components/Fabs';
 import {MapView} from './styles';
+import CreatePoint from 'components/CreatePoint';
 
 const Map = () => {
   const {location} = useLocation();
+  const [showPointCreation, setShowPointCreation] = useState(false);
   const actions = [
     {
       icon: 'draw-polygon',
@@ -13,7 +15,7 @@ const Map = () => {
     },
     {
       icon: 'map-marker-alt',
-      onPress: () => {},
+      onPress: () => setShowPointCreation(true),
     },
   ];
 
@@ -36,6 +38,7 @@ const Map = () => {
           }}
         />
         <Fabs actions={actions} alwaysOpenActions={alwaysOpenActions} />
+        <CreatePoint locationSelected={location} show={showPointCreation} />
       </View>
     );
   }
