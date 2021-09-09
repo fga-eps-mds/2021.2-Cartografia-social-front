@@ -3,10 +3,13 @@ import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import PropTypes from 'prop-types';
 import {Btn, Input, View} from 'components/UI';
 import required from 'validators/required';
-
+import {useDispatch} from 'react-redux';
+import * as Actions from 'store/actions';
 import {Container, Icon} from './styles';
 
 const CreatePoint = ({locationSelected, show, onClose}) => {
+  const dispatch = useDispatch();
+
   const snapPoints = useMemo(() => [110, '50%', '95%'], []);
   const sheetRef = useRef(null);
 
@@ -20,6 +23,14 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
   const [description, setDescription] = useState(DEFAULT_STATE);
 
   const onSave = () => {
+    dispatch(
+      Actions.createMarker({
+        latitude: locationSelected.latitude,
+        longitude: locationSelected.longitude,
+        title: title.value,
+        description: description.value,
+      }),
+    );
     sheetRef.current.close();
 
     setTimeout(() => {
@@ -51,7 +62,7 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
     return (
       <>
         <Container>
-          <Icon size={40} title="map-marker-alt" />
+          <Icon size={40} name="map-marker-alt" />
         </Container>
         <BottomSheet ref={sheetRef} index={0} snapPoints={snapPoints}>
           <BottomSheetScrollView keyboardShouldPersistTaps="handled">

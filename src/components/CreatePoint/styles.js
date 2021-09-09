@@ -9,7 +9,9 @@ export const Icon = styled(FontAwesomeIcon).attrs({
 export const Container = styled.View`
   position: absolute;
   top: 50%;
-  left: 47%;
+  left: 50%;
+  margin-left: -15px;
+  margin-top: -28px;
   align-items: center;
   justify-content: center;
 `;
