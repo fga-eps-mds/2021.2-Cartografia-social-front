@@ -141,6 +141,7 @@ Input.propTypes = {
   errorMessage: PropTypes.bool,
   onFocus: PropTypes.func,
   height: PropTypes.number,
+  characterRestriction: PropTypes.number,
 };
 
 Input.defaultProps = {
@@ -166,6 +167,7 @@ Input.defaultProps = {
   autoCorrect: false,
   onFocus: () => {},
   height: 45,
+  characterRestriction: null,
 };
 
 export default Input;

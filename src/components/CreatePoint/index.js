@@ -13,7 +13,7 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
   const DEFAULT_STATE = {
     isValid: false,
     value: '',
-  }
+  };
 
   const [title, setTitle] = useState(DEFAULT_STATE);
 
@@ -89,11 +89,13 @@ CreatePoint.propTypes = {
     longitude: PropTypes.number,
   }),
   show: PropTypes.bool,
+  onClose: PropTypes.func,
 };
 
 CreatePoint.defaultProps = {
   locationSelected: {},
   show: false,
+  onClose: () => {},
 };
 
 export default CreatePoint;
