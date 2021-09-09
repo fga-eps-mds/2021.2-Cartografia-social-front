@@ -29,7 +29,8 @@ const Input = ({
   multiline,
   autoCorrect,
   onFocus,
-  style,
+  height,
+  characterRestriction,
 }) => {
   const inputEl = useRef(null);
 
@@ -108,7 +109,8 @@ const Input = ({
       renderRightAccessory={rightAccessory}
       multiline={multiline}
       autoCorrect={autoCorrect}
-      style={style}
+      height={height}
+      characterRestriction={characterRestriction}
     />
   );
 };

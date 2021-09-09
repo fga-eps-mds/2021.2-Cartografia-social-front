@@ -8,33 +8,35 @@ import required from 'validators/required';
 import {Container, Icon} from './styles';
 
 const CreatePoint = ({locationSelected, show, onClose}) => {
-  const snapPoints = useMemo(() => ['12%', '50%', '95%'], []);
+  const snapPoints = useMemo(() => [110, '50%', '95%'], []);
   const sheetRef = useRef(null);
 
-  const [name, setName] = useState({
+  const DEFAULT_STATE = {
     isValid: false,
     value: '',
-  });
+  }
 
-  const [description, setDescription] = useState({
-    isValid: false,
-    value: '',
-  });
+  const [title, setTitle] = useState(DEFAULT_STATE);
+
+  const [description, setDescription] = useState(DEFAULT_STATE);
 
   const onSave = () => {
     sheetRef.current.close();
+
     setTimeout(() => {
       onClose();
+      setTitle(DEFAULT_STATE);
+      setDescription(DEFAULT_STATE);
     }, 1000);
     return locationSelected;
   };
 
   const pointName = () => (
-    <View p={3}>
+    <View mt={2}>
       <Input
-        label="Digite aqui o nome do novo ponto"
-        onChange={(value) => setName(value)}
-        value={name.value}
+        label="Digite aqui o título do novo ponto"
+        onChange={(value) => setTitle(value)}
+        value={title.value}
         autoCapitalize="words"
         onFocus={() => sheetRef.current.snapToIndex(2)}
         rules={[required]}
@@ -42,28 +44,36 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
     </View>
   );
 
+  const formIsValid = () => {
+    return title.isValid;
+  };
+
   if (show) {
     return (
       <>
         <Container>
-          <Icon size={40} name="map-marker-alt" />
+          <Icon size={40} title="map-marker-alt" />
         </Container>
-        <BottomSheet
-          ref={sheetRef}
-          index={0}
-          snapPoints={snapPoints}
-          handleComponent={pointName}>
-          <BottomSheetScrollView>
+        <BottomSheet ref={sheetRef} index={0} snapPoints={snapPoints}>
+          <BottomSheetScrollView keyboardShouldPersistTaps="handled">
             <View px={3}>
+              {pointName()}
               <View py={3}>
                 <Input
+                  height={150}
+                  characterRestriction={5000}
+                  maxLength={5000}
                   label="Digite aqui a descrição do novo ponto"
                   onChange={(value) => setDescription(value)}
                   value={description.value}
                   multiline
                 />
               </View>
-              <Btn onPress={onSave} title="Salvar ponto" />
+              <Btn
+                onPress={onSave}
+                disabled={!formIsValid()}
+                title="Salvar ponto"
+              />
             </View>
           </BottomSheetScrollView>
         </BottomSheet>
@@ -76,8 +86,8 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
 
 CreatePoint.propTypes = {
   locationSelected: PropTypes.shape({
-    latitude: PropTypes.string,
-    longitude: PropTypes.func,
+    latitude: PropTypes.number,
+    longitude: PropTypes.number,
   }),
   show: PropTypes.bool,
 };
