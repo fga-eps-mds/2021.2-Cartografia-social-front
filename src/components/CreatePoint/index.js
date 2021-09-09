@@ -1,8 +1,7 @@
 import React, {useRef, useMemo, useState} from 'react';
 import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import PropTypes from 'prop-types';
-import {Text, Btn, Input, View} from 'components/UI';
-import theme from 'theme/theme';
+import {Btn, Input, View} from 'components/UI';
 import required from 'validators/required';
 
 import {Container, Icon} from './styles';
@@ -60,7 +59,7 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
               {pointName()}
               <View py={3}>
                 <Input
-                  height={150}
+                  height={100}
                   characterRestriction={5000}
                   maxLength={5000}
                   label="Digite aqui a descrição do novo ponto"
