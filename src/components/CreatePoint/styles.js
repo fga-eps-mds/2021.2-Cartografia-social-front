@@ -1,4 +1,5 @@
 import styled from 'styled-components/native';
+import {Platform} from 'react-native';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import theme from 'theme/theme';
 
@@ -11,7 +12,7 @@ export const Container = styled.View`
   top: 50%;
   left: 50%;
   margin-left: -15px;
-  margin-top: -28px;
+  margin-top: ${Platform.OS === 'ios' ? '-28px' : '-43px'};
   align-items: center;
   justify-content: center;
 `;

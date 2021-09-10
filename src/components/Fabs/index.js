@@ -1,26 +1,27 @@
 import React, {useEffect, useState} from 'react';
-import {LayoutAnimation} from 'react-native';
+import {LayoutAnimation, Platform, UIManager} from 'react-native';
 import PropTypes from 'prop-types';
 import {Container, Icon, Option} from './styles';
 
 const Fabs = ({actions, alwaysOpenActions}) => {
   const [showOptions, setShowOptions] = useState(false);
 
-  useEffect(() => {
+  const onPressOpenOptions = () => {
+    setShowOptions(!showOptions)
     if (showOptions) {
       LayoutAnimation.easeInEaseOut();
     } else {
       LayoutAnimation.spring();
     }
-  }, [showOptions]);
+  }
 
   const onPressItem = (item) => {
     setShowOptions(false);
     item.onPress();
   };
 
-  const renderItem = (item) => (
-    <Option size={40} onPress={() => onPressItem(item)}>
+  const renderItem = (item, index) => (
+    <Option key={index} size={40} onPress={() => onPressItem(item)}>
       <Icon size={25} name={item.icon} />
     </Option>
   );
@@ -33,7 +34,7 @@ const Fabs = ({actions, alwaysOpenActions}) => {
     <Container>
       <Options items={alwaysOpenActions} />
       {showOptions ? <Options items={actions} /> : null}
-      <Option size={50} onPress={() => setShowOptions(!showOptions)}>
+      <Option size={50} onPress={onPressOpenOptions}>
         <Icon size={25} name={showOptions ? 'times' : 'plus'} />
       </Option>
     </Container>

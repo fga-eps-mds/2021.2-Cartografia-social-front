@@ -7064,10 +7064,10 @@ react-native-android-location-enabler@^1.2.2:
   resolved "https://registry.yarnpkg.com/react-native-android-location-enabler/-/react-native-android-location-enabler-1.2.2.tgz#84b8dbbda0d5198d99cf264e6be4edaa7f256ba1"
   integrity sha512-CC5ghRoK3jkGNK8jdIiYIc3l0XZuQuMt2KEfldDpnMCkNz2aAfUWyLCoOniFLqtdD9poA3az+kCmUzTvLAyTiA==
 
-react-native-camera@^3.43.0:
-  version "3.44.3"
-  resolved "https://registry.yarnpkg.com/react-native-camera/-/react-native-camera-3.44.3.tgz#f8f35f2484e508b0694dee54a8801a1e0833d851"
-  integrity sha512-Efb5aKhFsE7qnqvTnbSEwFAom79L5BT4jMn+B2wYVUnZeRgWh45gNSG7Ou3MQ6zU2DpUHBPlBFKGVS5yOSfSZQ==
+react-native-camera@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-camera/-/react-native-camera-4.1.1.tgz#294a7c9818b571a06d304c7736fc57ec8876ed1a"
+  integrity sha512-ENlQ3NXxhyL/zNJNB3RYrxsES3TYF+ouOMxlp0E4aUVwwc9KY7cK7FT3ZjAwl7NGJ13etaGqZc4vaKWqrgn8Eg==
   dependencies:
     prop-types "^15.6.2"
 
