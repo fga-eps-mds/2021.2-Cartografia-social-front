@@ -12,6 +12,7 @@ import theme from 'theme/theme';
 import Page1 from 'pages/Page1';
 
 import Map from 'pages/Map';
+import InitialPage from 'pages/InitialPage';
 
 const Routes = () => {
   // const user = useSelector(auth);
@@ -26,10 +27,15 @@ const Routes = () => {
           backgroundColor={theme.colors.white}
         />
         <NavigationContainer theme={{colors: {background: theme.colors.white}}}>
-          <Stack.Navigator initialRouteName="Map">
+          <Stack.Navigator initialRouteName="InitialPage">
             <Stack.Screen
               name="Map"
               component={Map}
+              options={{header: () => null}}
+            />
+            <Stack.Screen
+              name="InitialPage"
+              component={InitialPage}
               options={{header: () => null}}
             />
             <Stack.Screen name="Page1" component={Page1} />
