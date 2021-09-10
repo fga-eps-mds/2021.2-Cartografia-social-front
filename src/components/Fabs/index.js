@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {LayoutAnimation, Platform, UIManager} from 'react-native';
+import React, {useState} from 'react';
+import {LayoutAnimation} from 'react-native';
 import PropTypes from 'prop-types';
 import {Container, Icon, Option} from './styles';
 
@@ -7,13 +7,13 @@ const Fabs = ({actions, alwaysOpenActions}) => {
   const [showOptions, setShowOptions] = useState(false);
 
   const onPressOpenOptions = () => {
-    setShowOptions(!showOptions)
+    setShowOptions(!showOptions);
     if (showOptions) {
       LayoutAnimation.easeInEaseOut();
     } else {
       LayoutAnimation.spring();
     }
-  }
+  };
 
   const onPressItem = (item) => {
     setShowOptions(false);
