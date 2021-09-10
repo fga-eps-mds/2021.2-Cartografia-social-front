@@ -8,6 +8,7 @@
     "start": "react-native start --reset-cache",
     "android-release": "npx jetify && cd android && ./gradlew assembleRelease --daemon",
     "test": "jest",
+    "test:cov": "jest --coverage",
     "lint": "eslint ./src",
     "postinstall": "patch-package"
   },
@@ -78,7 +79,21 @@
     "react-test-renderer": "16.13.1"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native",
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "./src/**/*.(t|j)s"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/dist/",
+      "/test/",
+      "/android/",
+      "/ios/",
+      ".*\\.module\\.ts$",
+      ".eslintrc.js"
+    ],
+    "coverageDirectory": "./coverage",
+    "testEnvironment": "node"
   },
   "husky": {
     "hooks": {
