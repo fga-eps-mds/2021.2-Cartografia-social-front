@@ -12,6 +12,7 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
+    "@gorhom/bottom-sheet": "^4",
     "@react-native-community/async-storage": "^1.12.1",
     "@react-native-community/clipboard": "^1.5.1",
     "@react-native-masked-view/masked-view": "^0.2.2",
@@ -27,7 +28,7 @@
     "react": "16.13.1",
     "react-native": "0.63.4",
     "react-native-android-location-enabler": "^1.2.2",
-    "react-native-camera": "^3.43.0",
+    "react-native-camera": "^4.1.1",
     "react-native-config": "^1.4.4",
     "react-native-connectivity-status": "^1.5.2",
     "react-native-geolocation-service": "^5.2.0",
