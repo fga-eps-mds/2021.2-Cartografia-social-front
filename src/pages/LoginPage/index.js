@@ -51,8 +51,8 @@ const Page1 = ({ navigation }) => {
         Text alignSelf = "center"
         fontSize = { theme.font.sizes.L }
         my = { 3 } >
-        Texto exemplo { ' ' } <
-        /Text>{' '} <
+        Texto exemplo <
+        /Text> <
         Input label = "Seu nome"
         onChange = {
             (value) => setName(value) }
@@ -60,7 +60,7 @@ const Page1 = ({ navigation }) => {
         autoCapitalize = "words"
         rules = {
             [required] }
-        />{' '} <
+        /> <
         Input label = "Número de telefone"
         onChange = {
             (value) => setPhone(value) }
@@ -69,14 +69,14 @@ const Page1 = ({ navigation }) => {
         keyboardType = "numeric"
         rules = {
             [required, phoneValidator] }
-        />{' '} <
+        /> <
         Btn disabled = {!formIsValid() }
         style = {
             { marginVertical: 50 } }
         title = "Próximo"
         onPress = { onPress }
-        />{' '} <
-        /Container>{' '} <
+        /> <
+        /Container> <
         /ScrollView>
     );
 };

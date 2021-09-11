@@ -36,18 +36,30 @@ const Routes = () => {
         component = { Map }
         options = {
             { header: () => null } }
-        /> <
+        />
+
+        <
         Stack.Screen name = "InitialPage"
         component = { InitialPage }
         options = {
             { header: () => null } }
-        /> <
+        />
+
+        <
         Stack.Screen name = "Page1"
         component = { Page1 }
-        /> <
-        /Stack.Navigator> <
-        /NavigationContainer> <
-        /ThemeProvider> <
+        />
+
+        <
+        /Stack.Navigator>
+
+        <
+        /NavigationContainer>
+
+        <
+        /ThemeProvider>
+
+        <
         />
     );
 };
