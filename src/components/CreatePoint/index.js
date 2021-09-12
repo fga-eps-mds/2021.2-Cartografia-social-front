@@ -5,14 +5,14 @@ import PropTypes from 'prop-types';
 import {Btn, Input, View} from 'components/UI';
 import required from 'validators/required';
 import {useDispatch, useSelector} from 'react-redux';
-import {auth} from 'store/selectors';
+import {authSelector} from 'store/selectors';
 import * as Actions from 'store/actions';
 import api from 'services/api';
 import {Container, Icon} from './styles';
 
 const CreatePoint = ({locationSelected, show, onClose}) => {
   const dispatch = useDispatch();
-  const user = useSelector(auth);
+  const user = useSelector(authSelector);
   const snapPoints = useMemo(() => [110, '50%', '95%'], []);
   const sheetRef = useRef(null);
 
