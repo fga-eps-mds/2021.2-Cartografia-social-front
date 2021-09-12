@@ -9,7 +9,7 @@ import {ThemeProvider} from 'styled-components/native';
 
 import theme from 'theme/theme';
 
-import Page1 from 'pages/LoginPage';
+import LoginPage from 'pages/LoginPage';
 
 import Map from 'pages/Map';
 import InitialPage from 'pages/InitialPage';
@@ -38,7 +38,7 @@ const Routes = () => {
               component={InitialPage}
               options={{header: () => null}}
             />
-            <Stack.Screen name="Page1" component={Page1} />
+            <Stack.Screen name="LoginPage" component={LoginPage} />
           </Stack.Navigator>
         </NavigationContainer>
       </ThemeProvider>
