@@ -1,11 +1,9 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import ScrollView from 'components/UI/ScrollView';
 import Input from 'components/UI/Input';
 import required from 'validators/required';
 import Btn from 'components/UI/Btn';
 import auth from '@react-native-firebase/auth';
-import {useDispatch} from 'react-redux';
-import * as Actions from 'store/actions';
 import {Container, Header, HeadeText} from './styles';
 
 // import {Alert} from 'react-native';
@@ -14,8 +12,7 @@ import {Container, Header, HeadeText} from './styles';
 // import * as Actions from 'store/actions';
 
 const LoginPage = ({navigation}) => {
-  const dispatch = useDispatch();
-  const [initializing, setInitializing] = useState(true);
+  // const dispatch = useDispatch();
 
   const [password, setPassword] = useState({
     isValid: false,
@@ -27,25 +24,6 @@ const LoginPage = ({navigation}) => {
     value: '',
   });
 
-  // eslint-disable-next-line no-shadow
-  function onAuthStateChanged(user) {
-    if (user != null) {
-      const loginUser = {
-        email: user.email,
-        id: user.uid,
-        token: '',
-      };
-      dispatch(Actions.login(loginUser));
-      navigation.navigate('Map');
-    }
-    if (initializing) setInitializing(false);
-  }
-
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber;
-  }, []);
-
   const formIsValid = () => {
     return password.isValid && email.isValid;
   };
@@ -53,13 +31,14 @@ const LoginPage = ({navigation}) => {
   const onPress = async () => {
     auth()
       .signInWithEmailAndPassword(email.value, password.value)
+      .then(() => {
+        navigation.navigate('Map');
+      })
       .catch((error) => {
         // eslint-disable-next-line no-console
         console.error(error);
       });
   };
-
-  if (initializing) return null;
 
   return (
     <>
