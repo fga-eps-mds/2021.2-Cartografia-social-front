@@ -38,7 +38,18 @@ const Routes = () => {
               component={InitialPage}
               options={{header: () => null}}
             />
-            <Stack.Screen name="LoginPage" component={LoginPage} />
+            <Stack.Screen 
+              name="LoginPage" 
+              component={LoginPage}
+              options={{
+                title: '',
+                headerStyle: {
+                  backgroundColor: `${theme.colors.primary}`,
+                  elevation: 0,
+                },
+                headerTintColor: '#fff',
+              }}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </ThemeProvider>
