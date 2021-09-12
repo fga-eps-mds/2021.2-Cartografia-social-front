@@ -38,8 +38,8 @@ const Routes = () => {
               component={InitialPage}
               options={{header: () => null}}
             />
-            <Stack.Screen 
-              name="LoginPage" 
+            <Stack.Screen
+              name="LoginPage"
               component={LoginPage}
               options={{
                 title: '',
