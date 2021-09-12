@@ -4,7 +4,7 @@ import Input from 'components/UI/Input';
 import required from 'validators/required';
 import Btn from 'components/UI/Btn';
 import auth from '@react-native-firebase/auth';
-import {Container, Header, HeadeText} from './styles';
+import {Container, Header, HeaderText, InputText, TextBtn} from './styles';
 
 // import {Alert} from 'react-native';
 // import api from 'services/api';
@@ -43,10 +43,11 @@ const LoginPage = ({navigation}) => {
   return (
     <>
       <Header>
-        <HeadeText my={3}>Fazer Login</HeadeText>
+        <HeaderText my={3}>Fazer Login</HeaderText>
       </Header>
       <ScrollView>
         <Container>
+          <InputText>Email</InputText>
           <Input
             label="Digite o email"
             onChange={(value) => setEmail(value)}
@@ -54,6 +55,7 @@ const LoginPage = ({navigation}) => {
             autoCapitalize="words"
             rules={[required]}
           />
+          <InputText>Senha</InputText>
           <Input
             label="Digite a senha"
             onChange={(value) => setPassword(value)}
@@ -61,6 +63,7 @@ const LoginPage = ({navigation}) => {
             value={password.value}
             rules={[required]}
           />
+          <TextBtn onPress={() => null}>Esqueci a senha</TextBtn>
           <Btn
             disabled={!formIsValid()}
             style={{marginVertical: 50}}
