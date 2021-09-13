@@ -14,7 +14,7 @@ import {MapView} from './styles';
 const Map = () => {
   const {location} = useLocation();
   const [showPointCreation, setShowPointCreation] = useState(false);
-  const [region, setRegion] = useState({});
+  const [region, setRegion] = useState(null);
   const [selectedMarker, setSelectedMarker] = useState({});
   const detailsRef = useRef(null);
 
@@ -52,9 +52,15 @@ const Map = () => {
   const onPressMarker = (marker) => {
     setSelectedMarker(marker);
     detailsRef.current.snapToIndex(0);
+    setRegion({
+      latitude: marker.latitude - 0.008,
+      longitude: marker.longitude,
+      latitudeDelta: 0.0122,
+      longitudeDelta: 0.02,
+    });
   };
 
-  if (location) {
+  if (region) {
     return (
       <View flex={1}>
         <MapView

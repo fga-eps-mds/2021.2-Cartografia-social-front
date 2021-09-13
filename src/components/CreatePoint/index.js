@@ -48,11 +48,11 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
 
   const actions = [
     {
-      icon: 'draw-polygon',
+      icon: 'camera',
       onPress: () => launchCamera(cameraOptions, onSelectImage),
     },
     {
-      icon: 'map-marker-alt',
+      icon: 'paperclip',
       onPress: () => launchImageLibrary(cameraOptions, onSelectImage),
     },
   ];
@@ -119,7 +119,9 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
               {pointName()}
               {images.length ? (
                 <View>
-                  <Text fontWeight="bold" fontSize={theme.font.sizes.SM} mb={2}>Multimídia</Text>
+                  <Text fontWeight="bold" fontSize={theme.font.sizes.SM} mb={2}>
+                    Multimídia
+                  </Text>
                   <FlatList
                     data={images}
                     horizontal

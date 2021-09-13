@@ -9,7 +9,7 @@ import theme from 'theme/theme';
 import {Image} from './styles';
 
 const MarkerDetails = ({marker, sheetRef}) => {
-  const snapPoints = [400, '90%'];
+  const snapPoints = [400, '95%'];
   const renderItem = ({item}) => <Image source={{uri: item.uri}} />;
   const windowWidth = Dimensions.get('window').width;
   return (
