@@ -10,8 +10,8 @@ import {auth} from 'store/selectors';
 import * as Actions from 'store/actions';
 import api from 'services/api';
 import Fabs from 'components/Fabs';
-
 import theme from 'theme/theme';
+
 import {Container, Icon, Image} from './styles';
 
 const CreatePoint = ({locationSelected, show, onClose}) => {
@@ -41,7 +41,6 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
   };
 
   const onSelectImage = (response) => {
-    console.tron.log(response, response.assets);
     if (response.assets && response.assets.length) {
       setImages([...images, ...response.assets]);
     }
@@ -120,9 +119,7 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
               {pointName()}
               {images.length ? (
                 <View>
-                  <Text fontWeight="bold" fontSize={theme.font.sizes.SM} mb={2}>
-                    Multimídia
-                  </Text>
+                  <Text fontWeight="bold" fontSize={theme.font.sizes.SM} mb={2}>Multimídia</Text>
                   <FlatList
                     data={images}
                     horizontal

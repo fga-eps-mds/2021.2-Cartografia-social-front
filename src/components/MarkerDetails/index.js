@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Dimensions } from 'react-native';
+import {Dimensions} from 'react-native';
 import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {View, Text, Divisor} from 'components/UI';
 import Carousel from 'react-native-snap-carousel';
 import theme from 'theme/theme';
-import {onChange} from 'react-native-reanimated';
+
 import {Image} from './styles';
 
 const MarkerDetails = ({marker, sheetRef}) => {
