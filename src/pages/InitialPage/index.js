@@ -32,7 +32,7 @@ const InitialPage = ({navigation}) => {
       <Btn
         style={{marginVertical: 10}}
         title="Login"
-        onPress={() => navigateToScreen('')}
+        onPress={() => navigateToScreen('LoginPage')}
       />
       <Btn
         style={{marginVertical: 10}}
