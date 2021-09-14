@@ -7076,11 +7076,6 @@ react-native-config@^1.4.4:
   resolved "https://registry.yarnpkg.com/react-native-config/-/react-native-config-1.4.4.tgz#e0e10802d1e61ef051040c84dfd19f85a5984620"
   integrity sha512-bu47sJHn/HrB7COAWBI8DieAhrbFLINHFE2HBCcVkDu0Y5ScrMs6vL+jhIm+pMSgxouseLhXG8h7xYYpxE38PA==
 
-react-native-connectivity-status@^1.5.2:
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/react-native-connectivity-status/-/react-native-connectivity-status-1.5.2.tgz#cdb0a1e34c8e068e6a021cbb2d918ab7aa98c23d"
-  integrity sha512-w1zmJETgn1XvmZ20q69k5yuvA4dUWFbDfR0MOfQWKB9I3xKnNhFABIOoqVc6pvll3zjnSurIhbzkMgUVONrXqw==
-
 react-native-flipper@^0.34.0:
   version "0.34.0"
   resolved "https://registry.yarnpkg.com/react-native-flipper/-/react-native-flipper-0.34.0.tgz#7df1f38ba5d97a9321125fe0fccbe47d99e6fa1d"
