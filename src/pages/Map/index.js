@@ -1,18 +1,23 @@
 /* eslint-disable react/no-array-index-key */
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {View} from 'components/UI';
 import useLocation from 'services/useLocation';
 import Fabs from 'components/Fabs';
 import CreatePoint from 'components/CreatePoint';
 import {useSelector} from 'react-redux';
 import * as selectors from 'store/selectors';
-import {Marker} from 'react-native-maps';
+import Marker from 'components/Marker';
+import MarkerDetails from 'components/MarkerDetails';
+
 import {MapView} from './styles';
 
 const Map = () => {
   const {location} = useLocation();
   const [showPointCreation, setShowPointCreation] = useState(false);
-  const [region, setRegion] = useState({});
+  const [region, setRegion] = useState(null);
+  const [selectedMarker, setSelectedMarker] = useState({});
+  const detailsRef = useRef(null);
+
   const markers = useSelector(selectors.markers);
 
   const actions = [
@@ -44,19 +49,25 @@ const Map = () => {
     },
   ];
 
-  if (location) {
+  const onPressMarker = (marker) => {
+    setSelectedMarker(marker);
+    detailsRef.current.snapToIndex(0);
+    setRegion({
+      latitude: marker.latitude - 0.008,
+      longitude: marker.longitude,
+      latitudeDelta: 0.0122,
+      longitudeDelta: 0.02,
+    });
+  };
+
+  if (region) {
     return (
       <View flex={1}>
         <MapView
           region={region}
           onRegionChangeComplete={(value) => setRegion(value)}>
           {markers.map((marker, index) => (
-            <Marker
-              key={index}
-              coordinate={marker}
-              title={marker.title}
-              description={marker.description}
-            />
+            <Marker key={index} marker={marker} onPress={onPressMarker} />
           ))}
         </MapView>
         <Fabs actions={actions} alwaysOpenActions={alwaysOpenActions} />
@@ -65,6 +76,7 @@ const Map = () => {
           show={showPointCreation}
           onClose={() => setShowPointCreation(false)}
         />
+        <MarkerDetails marker={selectedMarker} sheetRef={detailsRef} />
       </View>
     );
   }

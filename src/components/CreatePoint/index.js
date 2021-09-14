@@ -1,14 +1,18 @@
 import React, {useRef, useMemo, useState} from 'react';
 import {Alert} from 'react-native';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import PropTypes from 'prop-types';
-import {Btn, Input, View} from 'components/UI';
+import {Btn, Input, View, FlatList, Text} from 'components/UI';
 import required from 'validators/required';
 import {useDispatch, useSelector} from 'react-redux';
 import {auth} from 'store/selectors';
 import * as Actions from 'store/actions';
 import api from 'services/api';
-import {Container, Icon} from './styles';
+import Fabs from 'components/Fabs';
+import theme from 'theme/theme';
+
+import {Container, Icon, Image} from './styles';
 
 const CreatePoint = ({locationSelected, show, onClose}) => {
   const dispatch = useDispatch();
@@ -25,6 +29,33 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
 
   const [description, setDescription] = useState(DEFAULT_STATE);
   const [showMarker, setShowMarker] = useState(true);
+  const [images, setImages] = useState([]);
+
+  const cameraOptions = {
+    mediaType: 'photo',
+    maxWidth: 1300,
+    maxHeight: 1300,
+    quality: 0.9,
+    saveToPhotos: true,
+    selectionLimit: 0,
+  };
+
+  const onSelectImage = (response) => {
+    if (response.assets && response.assets.length) {
+      setImages([...images, ...response.assets]);
+    }
+  };
+
+  const actions = [
+    {
+      icon: 'camera',
+      onPress: () => launchCamera(cameraOptions, onSelectImage),
+    },
+    {
+      icon: 'paperclip',
+      onPress: () => launchImageLibrary(cameraOptions, onSelectImage),
+    },
+  ];
 
   const onSave = async () => {
     setShowMarker(false);
@@ -36,6 +67,7 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
       longitude: locationSelected.longitude,
       title: title.value,
       description: description.value,
+      multimedia: images,
     };
 
     dispatch(Actions.createMarker(newMarker));
@@ -52,12 +84,13 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
       onClose();
       setTitle(DEFAULT_STATE);
       setDescription(DEFAULT_STATE);
+      setImages([]);
     }, 1000);
     return locationSelected;
   };
 
   const pointName = () => (
-    <View mt={2}>
+    <View my={2}>
       <Input
         label="Digite aqui o título do novo ponto"
         onChange={(value) => setTitle(value)}
@@ -73,6 +106,8 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
     return title.isValid;
   };
 
+  const renderItem = ({item}) => <Image source={{uri: item.uri}} />;
+
   if (show) {
     return (
       <>
@@ -83,6 +118,19 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
           <BottomSheetScrollView keyboardShouldPersistTaps="handled">
             <View px={3}>
               {pointName()}
+              {images.length ? (
+                <View>
+                  <Text fontWeight="bold" fontSize={theme.font.sizes.SM} mb={2}>
+                    Multimídia
+                  </Text>
+                  <FlatList
+                    data={images}
+                    horizontal
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item.uri}
+                  />
+                </View>
+              ) : null}
               <View py={3}>
                 <Input
                   height={100}
@@ -101,6 +149,7 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
               />
             </View>
           </BottomSheetScrollView>
+          <Fabs actions={actions} />
         </BottomSheet>
       </>
     );

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, {useRef, useState, useEffect} from 'react';
 import {PixelRatio} from 'react-native';
 import PropTypes from 'prop-types';
@@ -31,6 +32,7 @@ const Input = ({
   onFocus,
   height,
   characterRestriction,
+  ...props
 }) => {
   const inputEl = useRef(null);
 
@@ -111,6 +113,7 @@ const Input = ({
       autoCorrect={autoCorrect}
       height={height}
       characterRestriction={characterRestriction}
+      {...props}
     />
   );
 };

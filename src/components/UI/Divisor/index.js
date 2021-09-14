@@ -9,9 +9,12 @@ import {
   border,
   position,
 } from 'styled-system';
+import theme from 'theme/theme';
 
 export default styled.View`
-  flex-direction: ${(props) => (props.row ? 'row' : 'column')};
+  height: 1px;
+  background-color: ${theme.colors.grey};
+  align-self: stretch;
   ${color}
   ${space};
   ${layout};

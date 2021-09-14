@@ -28,3 +28,10 @@ export const Option = styled.TouchableHighlight.attrs({
   justify-content: center;
   margin: 5px;
 `;
+
+export const Image = styled.Image`
+  width: 100px;
+  height: 100px;
+  border-radius: 7px;
+  margin-right: 10px;
+`;
