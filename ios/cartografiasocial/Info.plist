@@ -30,6 +30,8 @@
 	<string>Usar Loc</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Usar Loc</string>
+  <key>NSPhotoLibraryUsageDescription</key>
+	<string>Usar fotos</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
@@ -63,8 +65,6 @@
 			</dict>
 		</dict>
 	</dict>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>

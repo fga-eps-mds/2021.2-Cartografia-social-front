@@ -1,0 +1,56 @@
+name: CD Production
+
+on:
+  push:
+    branches: 
+      - main
+
+jobs:
+  # test:
+  #   name: CI Tests
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: Install Modules
+  #     run: yarn install --frozen-lockfile
+  #   - name: Run Tests
+  #     run: yarn test
+
+  build:
+    name: CD Build Android
+    # needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build container
+        run: |
+          echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+          yarn install --frozen-lockfile
+          cd ./android
+          ./gradlew clean
+          ./gradlew assembleRelease --warning-mode=all
+      - uses: actions/upload-artifact@master
+        with:
+          name: apk
+          path: ./android/app/build/outputs/apk/release/app-release.apk
+
+  tagged-release:
+    name: "Tagged Release"
+    needs: build
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Downlaod APK File
+        uses: actions/download-artifact@master
+        with:
+          name: apk
+          path: ./
+      - name: Add Github Release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: false
+          files: |
+            *.apk
+            LICENSE

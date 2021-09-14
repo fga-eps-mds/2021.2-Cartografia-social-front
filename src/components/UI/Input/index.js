@@ -1,8 +1,9 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, {useRef, useState, useEffect} from 'react';
 import {PixelRatio} from 'react-native';
 import PropTypes from 'prop-types';
 import theme from 'theme/theme';
-import {TextField} from 'rn-material-ui-textfield';
+import {OutlinedTextField} from 'rn-material-ui-textfield';
 
 const Input = ({
   label,
@@ -28,6 +29,10 @@ const Input = ({
   externalError,
   multiline,
   autoCorrect,
+  onFocus,
+  height,
+  characterRestriction,
+  ...props
 }) => {
   const inputEl = useRef(null);
 
@@ -78,7 +83,7 @@ const Input = ({
   }, [blurredOnce, value]);
 
   return (
-    <TextField
+    <OutlinedTextField
       label={label}
       keyboardType={hide ? 'default' : keyboardType}
       returnKeyType={returnKeyType}
@@ -98,6 +103,7 @@ const Input = ({
       onBlur={() => {
         setBlurredOnce(true);
       }}
+      onFocus={onFocus}
       formatText={inputMask}
       onError={onError}
       error={externalError || validationError}
@@ -105,6 +111,9 @@ const Input = ({
       renderRightAccessory={rightAccessory}
       multiline={multiline}
       autoCorrect={autoCorrect}
+      height={height}
+      characterRestriction={characterRestriction}
+      {...props}
     />
   );
 };
@@ -133,6 +142,9 @@ Input.propTypes = {
   multiline: PropTypes.bool,
   autoCorrect: PropTypes.bool,
   errorMessage: PropTypes.bool,
+  onFocus: PropTypes.func,
+  height: PropTypes.number,
+  characterRestriction: PropTypes.number,
 };
 
 Input.defaultProps = {
@@ -156,6 +168,9 @@ Input.defaultProps = {
   externalError: '',
   multiline: false,
   autoCorrect: false,
+  onFocus: () => {},
+  height: 45,
+  characterRestriction: null,
 };
 
 export default Input;

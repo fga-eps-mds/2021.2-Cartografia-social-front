@@ -1,0 +1,29 @@
+name: release
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%d-%m-%Y')"
+
+      - name: Copy repository
+        uses: actions/checkout@v2
+      - run: mkdir -p /tmp/sonar/
+      - run: curl --location --request POST 'https://sonarcloud.io/api/measures/component_tree?component=fga-eps-mds_2021.1-Cartografia-social-front&metricKeys=files,functions,complexity,comment_lines_density,duplicated_lines_density,coverage,ncloc,security_rating,tests,test_success_density,test_execution_time,reliability_rating&ps=500' > /tmp/sonar/fga-eps-mds-2021_1-Cartografia-social-front-${{ steps.date.outputs.date }}.json
+      - uses: actions/upload-artifact@v2
+        with:
+          name: fga-eps-mds-2021_1-Cartografia-social-front-${{ steps.date.outputs.date }}.json
+          path: /tmp/sonar/fga-eps-mds-2021_1-Cartografia-social-front-${{ steps.date.outputs.date }}.json
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: true
+          files: |
+            /tmp/sonar/fga-eps-mds-2021_1-Cartografia-social-front-${{ steps.date.outputs.date }}.json
