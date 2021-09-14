@@ -84,6 +84,7 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
       onClose();
       setTitle(DEFAULT_STATE);
       setDescription(DEFAULT_STATE);
+      setImages([]);
     }, 1000);
     return locationSelected;
   };

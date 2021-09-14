@@ -1,8 +1,9 @@
 import styled from 'styled-components/native';
 import theme from 'theme/theme';
 import {space, typography, flexbox} from 'styled-system';
+import {FlatList} from 'react-native-gesture-handler';
 
-export default styled.FlatList.attrs({
+export default styled(FlatList).attrs({
   showsHorizontalScrollIndicator: false,
   showsVerticalScrollIndicator: false,
 })`
