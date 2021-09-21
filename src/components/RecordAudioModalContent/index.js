@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button} from 'react-native';
-import {View, Text} from 'components/UI';
+import {Text} from 'components/UI';
 import theme from 'theme/theme';
 import PropTypes from 'prop-types';
 import {
@@ -33,7 +33,7 @@ const RecordAudioModalContent = ({toggleModal}) => {
       </ManageRecordButtons>
       <OptionsButton>
         <Button title="Cancelar" onPress={toggleModal} />
-        <Button title="Salvar" onPress={() => alert('Salvando áudio')} />
+        <Button title="Salvar" onPress={() => {}} />
       </OptionsButton>
     </Container>
   );

@@ -1,5 +1,5 @@
 import React, {useRef, useMemo, useState} from 'react';
-import {Alert, Button} from 'react-native';
+import {Alert} from 'react-native';
 import Modal from 'react-native-modal';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
