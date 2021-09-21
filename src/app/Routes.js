@@ -12,7 +12,6 @@ import theme from 'theme/theme';
 import LoginPage from 'pages/LoginPage';
 import DynamicForm from 'pages/DynamicForm';
 
-
 import Map from 'pages/Map';
 import InitialPage from 'pages/InitialPage';
 
@@ -57,7 +56,7 @@ const Routes = () => {
               component={DynamicForm}
               options={{
                 title: 'Bem Vindo',
-                headerTitleAlign: 'center'
+                headerTitleAlign: 'center',
               }}
             />
           </Stack.Navigator>
