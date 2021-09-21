@@ -5,7 +5,7 @@ import theme from 'theme/theme';
 export const Container = styled.View`
   width: 100%;
   height: 60%;
-  background-color: #FFF;
+  background-color: #fff;
   justify-content: space-evenly;
   padding: 20px;
   border-radius: 4px;
@@ -32,7 +32,7 @@ export const AudioContainer = styled.View`
   width: 100%;
   height: 17%;
   border-radius: 7px;
-  border-width: .5px;
+  border-width: 0.5px;
   align-items: center;
   flex-direction: row;
   justify-content: space-between;
@@ -43,13 +43,13 @@ export const ManageRecordButtons = styled.View`
   width: 100%;
   height: 20%;
   border-radius: 7px;
-  background-color: #00F;
+  background-color: #00f;
 `;
 
 export const OptionsButton = styled.View`
   width: 100%;
   height: 20%;
   border-radius: 7px;
-  background-color: #0F0;
+  background-color: #0f0;
   justify-content: space-evenly;
 `;
