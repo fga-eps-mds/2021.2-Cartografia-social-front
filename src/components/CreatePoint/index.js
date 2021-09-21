@@ -12,7 +12,7 @@ import * as Actions from 'store/actions';
 import api from 'services/api';
 import Fabs from 'components/Fabs';
 import theme from 'theme/theme';
-
+import RecordAudioModalContent from 'components/RecordAudioModalContent';
 import {Container, Icon, Image} from './styles';
 
 const CreatePoint = ({locationSelected, show, onClose}) => {
@@ -165,22 +165,9 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
           <Modal
             isVisible={modalVisible}
             onSwipeComplete={toggleModal}
-            swipeDirection={['up', 'left', 'right', 'down']}
+            swipeDirection={['up', 'down']}
             style={{justifyContent: 'flex-end', margin: 0}}>
-            <View
-              style={{
-                backgroundColor: 'white',
-                padding: 70,
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderRadius: 4,
-                borderColor: 'rgba(0, 0, 0, 0.1)',
-              }}>
-              <Text fontWeight="bold" fontSize={theme.font.sizes.SM} mb={2}>
-                I am the modal content!
-              </Text>
-              <Button title="Hide modal" onPress={toggleModal} />
-            </View>
+            <RecordAudioModalContent toggleModal={toggleModal} />
           </Modal>
         </View>
       </>
