@@ -3,6 +3,7 @@ import {Button} from 'react-native';
 import {Text} from 'components/UI';
 import theme from 'theme/theme';
 import PropTypes from 'prop-types';
+import Btn from '../UI/Btn';
 import {
   Container,
   Header,
@@ -27,13 +28,32 @@ const RecordAudioModalContent = ({toggleModal}) => {
         <Icon size={25} name="microphone" />
       </AudioContainer>
       <ManageRecordButtons>
-        <Text fontWeight="bold" fontSize={theme.font.sizes.SM} mb={2}>
-          I am the modal content
-        </Text>
+        {/* <Icon name="play" color={theme.colors.primary} /> */}
+        <Btn
+          icon="play-arrow"
+          size={20}
+          background="#FFF"
+          style={{width: '25%', alignItems: 'center'}}
+          color={theme.colors.primary}
+          onPress={() => {}}
+        />
+        <Btn
+          icon="stop"
+          background="#FFF"
+          style={{width: '25%'}}
+          color={theme.colors.primary}
+          onPress={() => {}}
+        />
       </ManageRecordButtons>
       <OptionsButton>
-        <Button title="Cancelar" onPress={toggleModal} />
-        <Button title="Salvar" onPress={() => {}} />
+        <Btn
+          title="Cancelar"
+          background="#FFF"
+          style={{borderWidth: 0.5}}
+          color={theme.colors.primary}
+          onPress={toggleModal}
+        />
+        <Btn title="Salvar" color="#FFF" onPress={toggleModal} />
       </OptionsButton>
     </Container>
   );
