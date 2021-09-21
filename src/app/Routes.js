@@ -10,6 +10,8 @@ import {ThemeProvider} from 'styled-components/native';
 import theme from 'theme/theme';
 
 import LoginPage from 'pages/LoginPage';
+import DynamicForm from 'pages/DynamicForm';
+
 
 import Map from 'pages/Map';
 import InitialPage from 'pages/InitialPage';
@@ -48,6 +50,14 @@ const Routes = () => {
                   elevation: 0,
                 },
                 headerTintColor: '#fff',
+              }}
+            />
+            <Stack.Screen
+              name="DynamicForm"
+              component={DynamicForm}
+              options={{
+                title: 'Bem Vindo',
+                headerTitleAlign: 'center'
               }}
             />
           </Stack.Navigator>
