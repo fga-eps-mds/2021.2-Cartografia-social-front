@@ -1,5 +1,6 @@
 import React, {useRef, useMemo, useState} from 'react';
-import {Alert} from 'react-native';
+import {Alert, Button} from 'react-native';
+import Modal from 'react-native-modal';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import PropTypes from 'prop-types';
@@ -41,6 +42,7 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
   const [description, setDescription] = useState(DEFAULT_STATE);
   const [showMarker, setShowMarker] = useState(true);
   const [images, setImages] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const cameraOptions = {
     mediaType: 'photo',
@@ -58,6 +60,10 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
   };
 
   const actions = [
+    {
+      icon: 'microphone',
+      onPress: () => setModalVisible(true),
+    },
     {
       icon: 'camera',
       onPress: () => launchCamera(cameraOptions, onSelectImage),
@@ -134,6 +140,10 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
     return title.isValid;
   };
 
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
+
   const renderItem = ({item}) => <Image source={{uri: item.uri}} />;
 
   if (show || isCreatingArea) {
@@ -166,7 +176,7 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
                   />
                 </View>
               ) : null}
-              <View py={3}>
+              <View>
                 <Input
                   height={100}
                   characterRestriction={5000}
@@ -186,6 +196,28 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
           </BottomSheetScrollView>
           <Fabs actions={actions} />
         </BottomSheet>
+        <View>
+          <Modal
+            isVisible={modalVisible}
+            onSwipeComplete={toggleModal}
+            swipeDirection={['up', 'left', 'right', 'down']}
+            style={{justifyContent: 'flex-end', margin: 0}}>
+            <View
+              style={{
+                backgroundColor: 'white',
+                padding: 70,
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 4,
+                borderColor: 'rgba(0, 0, 0, 0.1)',
+              }}>
+              <Text fontWeight="bold" fontSize={theme.font.sizes.SM} mb={2}>
+                I am the modal content!
+              </Text>
+              <Button title="Hide modal" onPress={toggleModal} />
+            </View>
+          </Modal>
+        </View>
       </>
     );
   }
