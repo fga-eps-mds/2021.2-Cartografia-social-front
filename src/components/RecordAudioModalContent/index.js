@@ -1,8 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {Text} from 'components/UI';
 import theme from 'theme/theme';
 import PropTypes from 'prop-types';
-import AudioRecorderPlayer from 'react-native-audio-recorder-player';
+import AudioRecorderPlayer, {
+  AudioEncoderAndroidType,
+  AudioSourceAndroidType,
+} from 'react-native-audio-recorder-player';
 import useRecordAudio from 'services/useRecordAudio';
 import Btn from '../UI/Btn';
 import {
@@ -15,7 +18,7 @@ import {
   Icon,
 } from './styles';
 
-var audioRecorderPlayer = new AudioRecorderPlayer();
+let audioRecorderPlayer = new AudioRecorderPlayer();
 
 const RecordAudioModalContent = ({toggleModal}) => {
   const {ableToRecord} = useRecordAudio();
@@ -26,21 +29,25 @@ const RecordAudioModalContent = ({toggleModal}) => {
   const [recording, setRecording] = useState(false);
   const [pause, setPause] = useState(false);
 
+  const audioSet = {
+    AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
+    AudioSourceAndroid: AudioSourceAndroidType.MIC,
+  };
+
   const onStartRecord = async () => {
-    const result = await audioRecorderPlayer.startRecorder();
+    setRecording(true);
+    const result = await audioRecorderPlayer.startRecorder(undefined, audioSet);
     audioRecorderPlayer.addRecordBackListener((e) => {
       const time = audioRecorderPlayer
         .mmssss(Math.floor(e.currentPosition))
         .split(':');
       setRecordSecs(e.currentPosition);
-      console.log(e.currentPosition);
       setrecordMinutesTime(time[0]);
       setrecordSecondsTime(time[1]);
-      setRecording(true);
       setPause(false);
     });
 
-    console.log(result);
+    console.log('salvando áudio em: ', result);
   };
 
   const onPauseRecord = async () => {
@@ -51,20 +58,20 @@ const RecordAudioModalContent = ({toggleModal}) => {
   };
 
   const onResumeRecord = async () => {
-    const result = await audioRecorderPlayer.resumeRecorder();
     setRecording(true);
+    const result = await audioRecorderPlayer.resumeRecorder();
     setPause(false);
     console.log(result);
   };
 
   const onStopRecord = async () => {
+    setRecording(false);
     const result = await audioRecorderPlayer.stopRecorder();
     audioRecorderPlayer.removeRecordBackListener();
     audioRecorderPlayer = new AudioRecorderPlayer();
     setRecordSecs(0);
     setrecordMinutesTime('00');
     setrecordSecondsTime('00');
-    setRecording(false);
     setPause(false);
     console.log(result);
   };
@@ -73,7 +80,6 @@ const RecordAudioModalContent = ({toggleModal}) => {
     onStopRecord();
     toggleModal();
   };
-
   return (
     <Container>
       <Header>
@@ -82,12 +88,11 @@ const RecordAudioModalContent = ({toggleModal}) => {
       <AudioContainer>
         <Icon size={25} name="clock" />
         <Text fontWeight="bold" fontSize={theme.font.sizes.SM} mb={2}>
-          {recordMinutesTime}:{recordSecondsTime}
+          {`${recordMinutesTime}:${recordSecondsTime}`}
         </Text>
         <Icon size={25} name="microphone" />
       </AudioContainer>
       <ManageRecordButtons>
-        {/* <Icon name="play" color={theme.colors.primary} /> */}
         <Btn
           title=""
           icon={recording ? 'pause' : 'play-arrow'}
@@ -97,13 +102,10 @@ const RecordAudioModalContent = ({toggleModal}) => {
           color={theme.colors.primary}
           onPress={() => {
             if (ableToRecord && recording) {
-              console.log('teste1');
               onPauseRecord();
-            } else if (ableToRecord && pause === false) {
-              console.log('teste2');
+            } else if (ableToRecord && !pause) {
               onStartRecord();
             } else if (ableToRecord && pause) {
-              console.log('teste3');
               onResumeRecord();
             }
           }}
