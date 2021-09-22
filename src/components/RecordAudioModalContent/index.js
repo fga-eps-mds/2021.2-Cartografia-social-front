@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Text} from 'components/UI';
 import theme from 'theme/theme';
 import PropTypes from 'prop-types';
@@ -15,7 +15,7 @@ import {
   Icon,
 } from './styles';
 
-const audioRecorderPlayer = new AudioRecorderPlayer();
+var audioRecorderPlayer = new AudioRecorderPlayer();
 
 const RecordAudioModalContent = ({toggleModal}) => {
   const {ableToRecord} = useRecordAudio();
@@ -24,26 +24,54 @@ const RecordAudioModalContent = ({toggleModal}) => {
   const [recordMinutesTime, setrecordMinutesTime] = useState('00');
   const [recordSecondsTime, setrecordSecondsTime] = useState('00');
   const [recording, setRecording] = useState(false);
+  const [pause, setPause] = useState(false);
 
   const onStartRecord = async () => {
-    await audioRecorderPlayer.startRecorder();
+    const result = await audioRecorderPlayer.startRecorder();
     audioRecorderPlayer.addRecordBackListener((e) => {
       const time = audioRecorderPlayer
         .mmssss(Math.floor(e.currentPosition))
         .split(':');
       setRecordSecs(e.currentPosition);
+      console.log(e.currentPosition);
       setrecordMinutesTime(time[0]);
       setrecordSecondsTime(time[1]);
       setRecording(true);
+      setPause(false);
     });
+
+    console.log(result);
+  };
+
+  const onPauseRecord = async () => {
+    const result = await audioRecorderPlayer.pauseRecorder();
+    setRecording(false);
+    setPause(true);
+    console.log(result);
+  };
+
+  const onResumeRecord = async () => {
+    const result = await audioRecorderPlayer.resumeRecorder();
+    setRecording(true);
+    setPause(false);
+    console.log(result);
   };
 
   const onStopRecord = async () => {
     const result = await audioRecorderPlayer.stopRecorder();
     audioRecorderPlayer.removeRecordBackListener();
+    audioRecorderPlayer = new AudioRecorderPlayer();
     setRecordSecs(0);
+    setrecordMinutesTime('00');
+    setrecordSecondsTime('00');
     setRecording(false);
+    setPause(false);
     console.log(result);
+  };
+
+  const onCancel = () => {
+    onStopRecord();
+    toggleModal();
   };
 
   return (
@@ -68,8 +96,15 @@ const RecordAudioModalContent = ({toggleModal}) => {
           style={{width: '25%', alignItems: 'center'}}
           color={theme.colors.primary}
           onPress={() => {
-            if (ableToRecord) {
+            if (ableToRecord && recording) {
+              console.log('teste1');
+              onPauseRecord();
+            } else if (ableToRecord && pause === false) {
+              console.log('teste2');
               onStartRecord();
+            } else if (ableToRecord && pause) {
+              console.log('teste3');
+              onResumeRecord();
             }
           }}
         />
@@ -90,7 +125,7 @@ const RecordAudioModalContent = ({toggleModal}) => {
           background="#FFF"
           style={{borderWidth: 0.5}}
           color={theme.colors.primary}
-          onPress={toggleModal}
+          onPress={onCancel}
         />
         <Btn title="Salvar" color="#FFF" onPress={toggleModal} />
       </OptionsButton>
