@@ -165,7 +165,7 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
           <Modal
             isVisible={modalVisible}
             onSwipeComplete={toggleModal}
-            swipeDirection={['up', 'down']}
+            swipeDirection={['down']}
             style={{justifyContent: 'flex-end', margin: 0}}>
             <RecordAudioModalContent toggleModal={toggleModal} />
           </Modal>
