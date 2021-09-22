@@ -21,22 +21,29 @@ const RecordAudioModalContent = ({toggleModal}) => {
   const {ableToRecord} = useRecordAudio();
   // eslint-disable-next-line no-unused-vars
   const [recordSecs, setRecordSecs] = useState(null);
-  const [recordTime, setrecordTime] = useState('00:00:00');
+  const [recordMinutesTime, setrecordMinutesTime] = useState('00');
+  const [recordSecondsTime, setrecordSecondsTime] = useState('00');
+  const [recording, setRecording] = useState(false);
 
   const onStartRecord = async () => {
     await audioRecorderPlayer.startRecorder();
     audioRecorderPlayer.addRecordBackListener((e) => {
+      const time = audioRecorderPlayer
+        .mmssss(Math.floor(e.currentPosition))
+        .split(':');
       setRecordSecs(e.currentPosition);
-      setrecordTime(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
+      setrecordMinutesTime(time[0]);
+      setrecordSecondsTime(time[1]);
+      setRecording(true);
     });
-    // console.log(result);
   };
 
   const onStopRecord = async () => {
-    await audioRecorderPlayer.stopRecorder();
+    const result = await audioRecorderPlayer.stopRecorder();
     audioRecorderPlayer.removeRecordBackListener();
     setRecordSecs(0);
-    // console.log(result);
+    setRecording(false);
+    console.log(result);
   };
 
   return (
@@ -47,7 +54,7 @@ const RecordAudioModalContent = ({toggleModal}) => {
       <AudioContainer>
         <Icon size={25} name="clock" />
         <Text fontWeight="bold" fontSize={theme.font.sizes.SM} mb={2}>
-          {recordTime}
+          {recordMinutesTime}:{recordSecondsTime}
         </Text>
         <Icon size={25} name="microphone" />
       </AudioContainer>
@@ -55,7 +62,7 @@ const RecordAudioModalContent = ({toggleModal}) => {
         {/* <Icon name="play" color={theme.colors.primary} /> */}
         <Btn
           title=""
-          icon="play-arrow"
+          icon={recording ? 'pause' : 'play-arrow'}
           size={20}
           background="#FFF"
           style={{width: '25%', alignItems: 'center'}}
