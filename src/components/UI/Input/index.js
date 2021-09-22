@@ -1,9 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useRef, useState, useEffect } from 'react';
-import { PixelRatio } from 'react-native';
+import React, {useRef, useState, useEffect} from 'react';
+import {PixelRatio} from 'react-native';
 import PropTypes from 'prop-types';
 import theme from 'theme/theme';
-import { OutlinedTextField } from 'rn-material-ui-textfield';
+import {OutlinedTextField} from 'rn-material-ui-textfield';
 
 const Input = ({
   label,
@@ -60,9 +60,8 @@ const Input = ({
         setValidationError(error);
       }
 
-      onChange({ value: inputValue, isValid: !error });
+      onChange({value: inputValue, isValid: !error});
     }
-
   };
 
   // Validate component when it is mounted with value
@@ -157,10 +156,10 @@ Input.defaultProps = {
   returnKeyType: 'default',
   autoCapitalize: 'none',
   rules: [],
-  onError: () => { },
+  onError: () => {},
   maxLength: 50,
   minLength: 0,
-  rightAccessory: () => { },
+  rightAccessory: () => {},
   inputMask: (text) => text,
   baseColor: theme.colors.grey,
   tintColor: theme.colors.grey,
@@ -171,7 +170,7 @@ Input.defaultProps = {
   externalError: '',
   multiline: false,
   autoCorrect: false,
-  onFocus: () => { },
+  onFocus: () => {},
   height: 45,
   characterRestriction: null,
 };
