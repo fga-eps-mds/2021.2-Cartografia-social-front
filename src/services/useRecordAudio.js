@@ -10,23 +10,24 @@ export default () => {
   const [hasReadStoragePermission, setReadStoragePermission] = useState(false);
   const [hasAudioPermission, setHasAudioPermission] = useState(false);
 
-  const requestAudio = () => {
+  const requestAudio = async () => {
     if (Platform.OS === 'ios') {
       // IOS check here
     } else {
-      checkPermission(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE).then(
-        (result) => {
-          setHasWriteStoragePermission(result);
-        },
+      const resultAudio = await checkPermission(
+        PERMISSIONS.ANDROID.RECORD_AUDIO,
       );
-      checkPermission(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE).then(
-        (result) => {
-          setReadStoragePermission(result);
-        },
+      setHasAudioPermission(resultAudio);
+
+      const resultWrite = await checkPermission(
+        PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
       );
-      checkPermission(PERMISSIONS.ANDROID.RECORD_AUDIO).then((result) => {
-        setHasAudioPermission(result);
-      });
+      setHasWriteStoragePermission(resultWrite);
+
+      const resultRead = await checkPermission(
+        PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
+      );
+      setReadStoragePermission(resultRead);
     }
   };
 
