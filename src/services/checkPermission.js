@@ -71,6 +71,5 @@ export async function checkPermission(permission) {
       default:
     }
   });
-  console.log(isPermissionGranted);
   return isPermissionGranted;
 }
