@@ -33,7 +33,6 @@ const RecordAudioModalContent = ({toggleModal}) => {
   };
 
   const onStopRecord = async () => {
-    console.log('aqui');
     await audioRecorderPlayer.stopRecorder();
     audioRecorderPlayer.removeRecordBackListener();
     setRecordSecs(0);
