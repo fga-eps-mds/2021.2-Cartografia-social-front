@@ -1,21 +1,19 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import ScrollView from 'components/UI/ScrollView';
 import Input from 'components/UI/Input';
 import required from 'validators/required';
 import Btn from 'components/UI/Btn';
 import api from 'services/api';
-import {FlatList} from 'react-native';
-import {Container, InputText, TextBtn} from './styles';
-
-// import {Alert} from 'react-native';
-// import api from 'services/api';
-// import {useDispatch} from 'react-redux';
-// import * as Actions from 'store/actions';
+import { FlatList } from 'react-native';
+import { Container, InputText, TextBtn } from './styles';
+import { Alert } from 'react-native';
 
 const DynamicForm = () => {
-  const [questionsFormList, setQuestionsFormList] = useState([]);
-  const [questionsStateList, setQuestionsStateList] = useState([]);
+  // Cria listas dos dados do form
+  const [questionsFormList, setQuestionsFormList] = useState([]); // Formato: { question: '', id: ''}
+  const [questionsStateList, setQuestionsStateList] = useState([]); // Formato: { value: '', isValid: Bool}
 
+  // Faz chama POST para obter dados do formulário
   const getQuestionsToCreateCommunity = () => {
     api.get('/community/questionsToCreateCommunity').then(
       (response) => {
@@ -27,14 +25,16 @@ const DynamicForm = () => {
         setQuestionsStateList(inputList);
         setQuestionsFormList(listQuestions);
       },
-      () => {},
+      () => { },
     );
   };
 
+  // Primeira função a ser chamada
   useEffect(() => {
     getQuestionsToCreateCommunity();
   }, []);
 
+  // Valida formulário
   const formIsValid = () => {
     let isValid = true;
     questionsStateList.some((item) => {
@@ -47,15 +47,32 @@ const DynamicForm = () => {
     return isValid;
   };
 
-  const onPress = async () => {};
+  // Função chamada ao pressionar o botão de envio
+  const onPress = async () => {
+    const sendFormList = [];
+    for (let cont = 0; cont < questionsFormList.length; cont++) {
+      const dadoEnvio = {
+        questionId: questionsFormList[cont]._id,
+        response: questionsStateList[cont].value
+      }
+      sendFormList.push(dadoEnvio);
+    }
+    try {
+      await api.post('/community/sendAnswers', {answers: sendFormList});
+    } catch (error) {
+      Alert.alert('Cartografia Social', error.message);
+    }
+  };
 
+  // Função chamada cada vez que um Item é alterado
   const onChangeQuestion = (value, index) => {
     const auxList = questionsStateList;
     auxList[index] = value;
     setQuestionsStateList([...auxList]);
   };
 
-  const renderItem = ({item, index}) => (
+  // Renderiza cada Item do Formulário
+  const renderItem = ({ item, index }) => (
     <>
       <InputText>{item.question}</InputText>
       <Input
@@ -81,7 +98,7 @@ const DynamicForm = () => {
           <TextBtn onPress={() => null}>Enviar Formulário</TextBtn>
           <Btn
             disabled={!formIsValid()}
-            style={{marginVertical: 50}}
+            style={{ marginVertical: 50 }}
             title="Entrar"
             onPress={onPress}
           />
