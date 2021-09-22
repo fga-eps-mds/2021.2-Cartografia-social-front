@@ -36,7 +36,7 @@ const RecordAudioModalContent = ({toggleModal}) => {
 
   const onStartRecord = async () => {
     setRecording(true);
-    const result = await audioRecorderPlayer.startRecorder(undefined, audioSet);
+    await audioRecorderPlayer.startRecorder(undefined, audioSet);
     audioRecorderPlayer.addRecordBackListener((e) => {
       const time = audioRecorderPlayer
         .mmssss(Math.floor(e.currentPosition))
@@ -46,34 +46,29 @@ const RecordAudioModalContent = ({toggleModal}) => {
       setrecordSecondsTime(time[1]);
       setPause(false);
     });
-
-    console.log('salvando áudio em: ', result);
   };
 
   const onPauseRecord = async () => {
-    const result = await audioRecorderPlayer.pauseRecorder();
+    await audioRecorderPlayer.pauseRecorder();
     setRecording(false);
     setPause(true);
-    console.log(result);
   };
 
   const onResumeRecord = async () => {
     setRecording(true);
-    const result = await audioRecorderPlayer.resumeRecorder();
+    await audioRecorderPlayer.resumeRecorder();
     setPause(false);
-    console.log(result);
   };
 
   const onStopRecord = async () => {
     setRecording(false);
-    const result = await audioRecorderPlayer.stopRecorder();
+    await audioRecorderPlayer.stopRecorder();
     audioRecorderPlayer.removeRecordBackListener();
     audioRecorderPlayer = new AudioRecorderPlayer();
     setRecordSecs(0);
     setrecordMinutesTime('00');
     setrecordSecondsTime('00');
     setPause(false);
-    console.log(result);
   };
 
   const onCancel = () => {
