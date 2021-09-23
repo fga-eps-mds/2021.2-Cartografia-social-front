@@ -3,7 +3,7 @@ import React, {useRef, useState, useEffect} from 'react';
 import {PixelRatio} from 'react-native';
 import PropTypes from 'prop-types';
 import theme from 'theme/theme';
-import {OutlinedTextField} from 'rn-material-ui-textfield';
+// import {OutlinedTextField} from 'rn-material-ui-textfield';
 
 const Input = ({
   label,
