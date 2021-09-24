@@ -37,7 +37,7 @@ const InitialPage = ({navigation}) => {
       <Btn
         style={{marginVertical: 10}}
         title="Solicitar apoio"
-        onPress={() => navigateToScreen('')}
+        onPress={() => navigateToScreen('DynamicForm')}
       />
     </Container>
   );

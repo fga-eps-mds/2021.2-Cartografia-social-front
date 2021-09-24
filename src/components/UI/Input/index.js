@@ -54,12 +54,14 @@ const Input = ({
   };
 
   const inputChanged = (inputValue) => {
-    const error = validateInput(inputValue);
-    if (blurredOnce) {
-      setValidationError(error);
-    }
+    if (inputValue !== undefined) {
+      const error = validateInput(inputValue);
+      if (blurredOnce) {
+        setValidationError(error);
+      }
 
-    onChange({value: inputValue, isValid: !error});
+      onChange({value: inputValue, isValid: !error});
+    }
   };
 
   // Validate component when it is mounted with value
