@@ -4,6 +4,7 @@ const INITIAL_STATE = {
   name: '',
   id: '',
   token: '',
+  demonstrationMode: false,
 };
 
 const reducer = (state = INITIAL_STATE, action) => {
@@ -12,6 +13,8 @@ const reducer = (state = INITIAL_STATE, action) => {
       return {...state, ...action.loginObject};
     case actionTypes.LOGOUT:
       return INITIAL_STATE;
+    case actionTypes.DEMONSTRATION_MODE:
+      return {...state, demonstrationMode: true};
     default:
       return state;
   }
