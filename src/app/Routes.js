@@ -3,7 +3,10 @@ import {StatusBar} from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {createDrawerNavigator} from '@react-navigation/drawer';
+import {
+  createDrawerNavigator,
+  DrawerToggleButton,
+} from '@react-navigation/drawer';
 import {ThemeProvider} from 'styled-components/native';
 import {useSelector} from 'react-redux';
 import {auth} from 'store/selectors';
@@ -23,7 +26,7 @@ const Routes = () => {
   const Drawer = createDrawerNavigator();
 
   const AuthRoutes = () => (
-    <>
+    <Stack.Navigator>
       <Stack.Screen
         name="InitialPage"
         component={InitialPage}
@@ -49,7 +52,7 @@ const Routes = () => {
           headerTitleAlign: 'center',
         }}
       />
-    </>
+    </Stack.Navigator>
   );
 
   const DemonstrationMode = () => (
@@ -93,14 +96,11 @@ const Routes = () => {
   );
 
   const AppRoutes = () => {
-    if (user.id) return <Stack.Screen name="SignedIn" component={SignedIn} />;
+    if (user.id) return <SignedIn />;
 
-    if (user.demonstrationMode)
-      return (
-        <Stack.Screen name="DemonstrationMode" component={DemonstrationMode} />
-      );
+    if (user.demonstrationMode) return <DemonstrationMode />;
 
-    return AuthRoutes();
+    return <AuthRoutes />;
   };
 
   return (
@@ -111,7 +111,7 @@ const Routes = () => {
           backgroundColor={theme.colors.white}
         />
         <NavigationContainer theme={{colors: {background: theme.colors.white}}}>
-          <Stack.Navigator>{AppRoutes()}</Stack.Navigator>
+          {AppRoutes()}
         </NavigationContainer>
       </ThemeProvider>
     </>
