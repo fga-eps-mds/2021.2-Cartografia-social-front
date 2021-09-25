@@ -3,10 +3,7 @@ import {StatusBar} from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {
-  createDrawerNavigator,
-  DrawerToggleButton,
-} from '@react-navigation/drawer';
+import {createDrawerNavigator} from '@react-navigation/drawer';
 import {ThemeProvider} from 'styled-components/native';
 import {useSelector} from 'react-redux';
 import {auth} from 'store/selectors';
