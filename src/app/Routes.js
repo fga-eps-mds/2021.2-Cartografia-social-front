@@ -63,7 +63,7 @@ const Routes = () => {
         name="LoginPage"
         component={LoginPage}
         options={{
-          title: '',
+          title: 'Fazer Login',
           headerStyle: {
             backgroundColor: `${theme.colors.primary}`,
             elevation: 0,
@@ -93,10 +93,14 @@ const Routes = () => {
   );
 
   const AppRoutes = () => {
-    if (user.id) return <SignedIn />;
-    if (user.demonstrationMode) return <DemonstrationMode />;
+    if (user.id) return <Stack.Screen name="SignedIn" component={SignedIn} />;
 
-    return <AuthRoutes />;
+    if (user.demonstrationMode)
+      return (
+        <Stack.Screen name="DemonstrationMode" component={DemonstrationMode} />
+      );
+
+    return AuthRoutes();
   };
 
   return (
@@ -107,9 +111,7 @@ const Routes = () => {
           backgroundColor={theme.colors.white}
         />
         <NavigationContainer theme={{colors: {background: theme.colors.white}}}>
-          <Stack.Navigator initialRouteName="InitialPage">
-            <AppRoutes />
-          </Stack.Navigator>
+          <Stack.Navigator>{AppRoutes()}</Stack.Navigator>
         </NavigationContainer>
       </ThemeProvider>
     </>
