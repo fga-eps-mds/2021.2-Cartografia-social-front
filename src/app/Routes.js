@@ -92,6 +92,13 @@ const Routes = () => {
     </Drawer.Navigator>
   );
 
+  const AppRoutes = () => {
+    if (user.id) return <SignedIn />;
+    if (user.demonstrationMode) return <DemonstrationMode />;
+
+    return <AuthRoutes />;
+  };
+
   return (
     <>
       <ThemeProvider theme={theme}>
@@ -101,13 +108,7 @@ const Routes = () => {
         />
         <NavigationContainer theme={{colors: {background: theme.colors.white}}}>
           <Stack.Navigator initialRouteName="InitialPage">
-            {user.id ? (
-              <SignedIn />
-            ) : user.demonstrationMode ? (
-              <DemonstrationMode />
-            ) : (
-              <AuthRoutes
-            )}
+            <AppRoutes />
           </Stack.Navigator>
         </NavigationContainer>
       </ThemeProvider>
