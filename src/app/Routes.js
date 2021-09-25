@@ -3,9 +3,10 @@ import {StatusBar} from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+import {createDrawerNavigator} from '@react-navigation/drawer';
 import {ThemeProvider} from 'styled-components/native';
-// import {useSelector} from 'react-redux';
-// import {auth} from 'store/selectors';
+import {useSelector} from 'react-redux';
+import {auth} from 'store/selectors';
 
 import theme from 'theme/theme';
 
@@ -16,9 +17,80 @@ import Map from 'pages/Map';
 import InitialPage from 'pages/InitialPage';
 
 const Routes = () => {
-  // const user = useSelector(auth);
+  const user = useSelector(auth);
 
   const Stack = createStackNavigator();
+  const Drawer = createDrawerNavigator();
+
+  const AuthRoutes = () => (
+    <>
+      <Stack.Screen
+        name="InitialPage"
+        component={InitialPage}
+        options={{header: () => null}}
+      />
+      <Stack.Screen
+        name="LoginPage"
+        component={LoginPage}
+        options={{
+          title: '',
+          headerStyle: {
+            backgroundColor: `${theme.colors.primary}`,
+            elevation: 0,
+          },
+          headerTintColor: '#fff',
+        }}
+      />
+      <Stack.Screen
+        name="DynamicForm"
+        component={DynamicForm}
+        options={{
+          title: 'Bem Vindo',
+          headerTitleAlign: 'center',
+        }}
+      />
+    </>
+  );
+
+  const DemonstrationMode = () => (
+    <Drawer.Navigator>
+      <Drawer.Screen
+        name="Map"
+        component={Map}
+        options={{header: () => null, title: 'Mapa'}}
+      />
+      <Drawer.Screen
+        name="LoginPage"
+        component={LoginPage}
+        options={{
+          title: '',
+          headerStyle: {
+            backgroundColor: `${theme.colors.primary}`,
+            elevation: 0,
+          },
+          headerTintColor: '#fff',
+        }}
+      />
+    </Drawer.Navigator>
+  );
+
+  const SignedIn = () => (
+    <Drawer.Navigator>
+      <Drawer.Screen
+        name="Map"
+        component={Map}
+        options={{header: () => null, title: 'Mapa'}}
+      />
+      <Stack.Screen
+        name="DynamicForm"
+        component={DynamicForm}
+        options={{
+          title: 'Bem Vindo',
+          headerTitleAlign: 'center',
+        }}
+      />
+    </Drawer.Navigator>
+  );
 
   return (
     <>
@@ -29,36 +101,13 @@ const Routes = () => {
         />
         <NavigationContainer theme={{colors: {background: theme.colors.white}}}>
           <Stack.Navigator initialRouteName="InitialPage">
-            <Stack.Screen
-              name="Map"
-              component={Map}
-              options={{header: () => null}}
-            />
-            <Stack.Screen
-              name="InitialPage"
-              component={InitialPage}
-              options={{header: () => null}}
-            />
-            <Stack.Screen
-              name="LoginPage"
-              component={LoginPage}
-              options={{
-                title: '',
-                headerStyle: {
-                  backgroundColor: `${theme.colors.primary}`,
-                  elevation: 0,
-                },
-                headerTintColor: '#fff',
-              }}
-            />
-            <Stack.Screen
-              name="DynamicForm"
-              component={DynamicForm}
-              options={{
-                title: 'Bem Vindo',
-                headerTitleAlign: 'center',
-              }}
-            />
+            {user.id ? (
+              <SignedIn />
+            ) : user.demonstrationMode ? (
+              <DemonstrationMode />
+            ) : (
+              <AuthRoutes
+            )}
           </Stack.Navigator>
         </NavigationContainer>
       </ThemeProvider>
