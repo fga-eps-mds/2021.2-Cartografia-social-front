@@ -17,7 +17,6 @@ export const HeaderText = styled.Text`
   position: absolute;
   bottom: 20%;
   left: 5%;
-  font-family: Roboto;
   font-style: normal;
   font-weight: bold;
   color: ${theme.colors.white}
