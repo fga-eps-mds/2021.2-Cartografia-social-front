@@ -14,8 +14,10 @@ import Fabs from 'components/Fabs';
 import theme from 'theme/theme';
 import RecordAudioModalContent from 'components/RecordAudioModalContent';
 import {Container, Icon, Image} from './styles';
+import UseCamera from '../../services/useCamera';
 
 const CreatePoint = ({locationSelected, show, onClose}) => {
+  const{camera} = UseCamera();
   const dispatch = useDispatch();
   const user = useSelector(auth);
   const snapPoints = useMemo(() => [110, '50%', '95%'], []);
@@ -55,7 +57,9 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
     },
     {
       icon: 'camera',
-      onPress: () => launchCamera(cameraOptions, onSelectImage),
+      onPress: () => {
+        launchCamera(cameraOptions, onSelectImage)
+      }
     },
     {
       icon: 'paperclip',
