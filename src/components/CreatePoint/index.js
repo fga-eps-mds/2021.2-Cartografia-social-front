@@ -17,7 +17,7 @@ import {Container, Icon, Image} from './styles';
 import UseCamera from '../../services/useCamera';
 
 const CreatePoint = ({locationSelected, show, onClose}) => {
-  const{camera} = UseCamera();
+  UseCamera();
   const dispatch = useDispatch();
   const user = useSelector(auth);
   const snapPoints = useMemo(() => [110, '50%', '95%'], []);
@@ -58,8 +58,8 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
     {
       icon: 'camera',
       onPress: () => {
-        launchCamera(cameraOptions, onSelectImage)
-      }
+        launchCamera(cameraOptions, onSelectImage);
+      },
     },
     {
       icon: 'paperclip',

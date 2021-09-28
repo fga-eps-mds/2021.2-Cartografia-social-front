@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { Platform } from 'react-native';
-import { PERMISSIONS } from 'react-native-permissions';
-import { checkPermission } from './checkPermission';
+import {useState, useEffect} from 'react';
+import {Platform} from 'react-native';
+import {PERMISSIONS} from 'react-native-permissions';
+import {checkPermission} from './checkPermission';
 
 export default () => {
   const [hasCameraPermission, setHasCameraPermission] = useState(false);
