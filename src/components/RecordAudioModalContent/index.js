@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Text} from 'components/UI';
+import React, { useState } from 'react';
+import { Text } from 'components/UI';
 import theme from 'theme/theme';
 import PropTypes from 'prop-types';
 import AudioRecorderPlayer, {
@@ -7,6 +7,8 @@ import AudioRecorderPlayer, {
   AudioSourceAndroidType,
 } from 'react-native-audio-recorder-player';
 import useRecordAudio from 'services/useRecordAudio';
+import instance from 'services/api2';
+import FormData from 'form-data';
 import Btn from '../UI/Btn';
 import {
   Container,
@@ -19,8 +21,8 @@ import {
 
 let audioRecorderPlayer = new AudioRecorderPlayer();
 
-const RecordAudioModalContent = ({toggleModal}) => {
-  const {ableToRecord} = useRecordAudio();
+const RecordAudioModalContent = ({ toggleModal }) => {
+  const { ableToRecord } = useRecordAudio();
   const [recordMinutesTime, setrecordMinutesTime] = useState('00');
   const [recordSecondsTime, setrecordSecondsTime] = useState('00');
   const [recording, setRecording] = useState(false);
@@ -28,6 +30,7 @@ const RecordAudioModalContent = ({toggleModal}) => {
   const [recordPlaySecTime, setRecordPlaySecTime] = useState('00');
   const [hasAudio, setHasAudio] = useState(false);
   const [startPlay, setStartPlay] = useState(false);
+  const [audioPath, setAudioPath] = useState('');
 
   const audioSet = {
     AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
@@ -37,7 +40,7 @@ const RecordAudioModalContent = ({toggleModal}) => {
   // função para começar a gravar
   const onStartRecord = async () => {
     setRecording(true);
-    await audioRecorderPlayer.startRecorder(undefined, audioSet);
+    const path = await audioRecorderPlayer.startRecorder(undefined, audioSet);
     audioRecorderPlayer.addRecordBackListener((e) => {
       const time = audioRecorderPlayer
         .mmssss(Math.floor(e.currentPosition))
@@ -45,6 +48,8 @@ const RecordAudioModalContent = ({toggleModal}) => {
       setrecordMinutesTime(time[0]);
       setrecordSecondsTime(time[1]);
     });
+
+    setAudioPath(path);
   };
 
   const onStopRecord = async () => {
@@ -90,6 +95,24 @@ const RecordAudioModalContent = ({toggleModal}) => {
     onStopRecord();
     toggleModal();
   };
+
+  const onSave = async () => {
+    toggleModal();
+    const formData = new FormData();
+    formData.append('name', 'new_audio');
+    formData.append('file', {
+      uri: audioPath,
+      type: 'audio/mpeg',
+      name: 'last_recording',
+    });
+
+    await instance.post('midia/uploadMidia', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  };
+
   return (
     <Container>
       <Header>
@@ -106,7 +129,7 @@ const RecordAudioModalContent = ({toggleModal}) => {
               title=""
               icon="delete"
               background="#FFF"
-              style={{width: '10%'}}
+              style={{ width: '10%' }}
               color={theme.colors.primary}
               onPress={() => {
                 deleteRecord();
@@ -120,7 +143,7 @@ const RecordAudioModalContent = ({toggleModal}) => {
               icon={recording ? 'pause' : 'mic'}
               size={25}
               background="#FFF"
-              style={{width: '10%', alignItems: 'center'}}
+              style={{ width: '10%', alignItems: 'center' }}
               color={theme.colors.primary}
               onPress={() => {
                 if (ableToRecord && recording) {
@@ -143,7 +166,7 @@ const RecordAudioModalContent = ({toggleModal}) => {
             icon={startPlay ? 'pause' : 'play-arrow'}
             size={25}
             background="#FFF"
-            style={{width: '25%', alignItems: 'center'}}
+            style={{ width: '25%', alignItems: 'center' }}
             color={theme.colors.primary}
             onPress={() => {
               if (!startPlay) {
@@ -159,11 +182,11 @@ const RecordAudioModalContent = ({toggleModal}) => {
         <Btn
           title="Cancelar"
           background="#FFF"
-          style={{borderWidth: 0.5}}
+          style={{ borderWidth: 0.5 }}
           color={theme.colors.primary}
           onPress={onCancel}
         />
-        <Btn title="Salvar" color="#FFF" onPress={toggleModal} />
+        <Btn title="Salvar" color="#FFF" onPress={onSave} />
       </OptionsButton>
     </Container>
   );
@@ -174,7 +197,7 @@ RecordAudioModalContent.propTypes = {
 };
 
 RecordAudioModalContent.defaultProps = {
-  toggleModal: () => {},
+  toggleModal: () => { },
 };
 
 export default RecordAudioModalContent;
