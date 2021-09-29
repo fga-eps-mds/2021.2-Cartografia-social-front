@@ -34,10 +34,6 @@ const CreateArea = ({show, onPressCreatingArea, reset, getArea, index}) => {
     getArea(getNewArea);
   }, [show, reset]);
 
-  useEffect(() => {
-    console.tron.log(newArea);
-  }, [newArea]);
-
   // const onSave = async () => {};
 
   if (show) {
