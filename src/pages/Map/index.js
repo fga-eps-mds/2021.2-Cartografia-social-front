@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
 import React, {useState, useEffect, useRef} from 'react';
 import {View} from 'components/UI';
@@ -8,6 +9,7 @@ import {useSelector} from 'react-redux';
 import * as selectors from 'store/selectors';
 import Marker from 'components/Marker';
 import MarkerDetails from 'components/MarkerDetails';
+import CreateArea from 'components/CreateArea';
 
 import {MapView} from './styles';
 
@@ -16,14 +18,16 @@ const Map = () => {
   const [showPointCreation, setShowPointCreation] = useState(false);
   const [region, setRegion] = useState(null);
   const [selectedMarker, setSelectedMarker] = useState({});
+  const [isCreatingArea, setIsCreatingArea] = useState(false);
   const detailsRef = useRef(null);
+  const onPressCreatingArea = useRef(null);
 
   const markers = useSelector(selectors.markers);
 
   const actions = [
     {
       icon: 'draw-polygon',
-      onPress: () => {},
+      onPress: () => setIsCreatingArea(true),
     },
     {
       icon: 'map-marker-alt',
@@ -61,14 +65,30 @@ const Map = () => {
   };
 
   if (region) {
+    const mapOptions = {
+      scrollEnabled: true,
+    };
+
+    if (isCreatingArea) {
+      mapOptions.scrollEnabled = false;
+      mapOptions.onPress = (e) => onPressCreatingArea.current(e);
+    }
+
     return (
       <View flex={1}>
         <MapView
           region={region}
-          onRegionChangeComplete={(value) => setRegion(value)}>
+          onRegionChangeComplete={(value) => setRegion(value)}
+          {...mapOptions}>
           {markers.map((marker, index) => (
             <Marker key={index} marker={marker} onPress={onPressMarker} />
           ))}
+          <CreateArea
+            show={isCreatingArea}
+            onPressCreatingArea={(func) => {
+              onPressCreatingArea.current = func;
+            }}
+          />
         </MapView>
         <Fabs actions={actions} alwaysOpenActions={alwaysOpenActions} />
         <CreatePoint
