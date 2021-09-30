@@ -88,7 +88,6 @@ const Map = () => {
           region={region}
           onRegionChangeComplete={(value) => setRegion(value)}
           {...mapOptions}>
-          {console.tron.log(markers)}
           {markers.map((marker, index) =>
             marker.coordinates ? (
               <Polygon
