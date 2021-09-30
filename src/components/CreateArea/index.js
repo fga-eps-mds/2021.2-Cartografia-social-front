@@ -34,14 +34,11 @@ const CreateArea = ({show, onPressCreatingArea, reset, getArea, index}) => {
   useEffect(() => {
     onPressCreatingArea(onPress);
     reset(resetState);
-    getArea(getNewArea);
   }, [show, reset]);
 
   useEffect(() => {
-    onPressCreatingArea(onPress);
-    reset(resetState);
     getArea(getNewArea);
-  }, [show, reset]);
+  }, [newArea.coordinates.length]);
 
   // const onSave = async () => {};
 
