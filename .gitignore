@@ -1,6 +1,7 @@
 # OSX
 #
 .DS_Store
+.env
 
 # Xcode
 #
@@ -60,3 +61,6 @@ buck-out/
 
 # Tests
 /coverage
+
+#Environment
+.env

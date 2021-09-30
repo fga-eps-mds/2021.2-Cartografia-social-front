@@ -27,6 +27,7 @@ export const HeaderText = styled.Text`
 export const InputText = styled.Text`
   color: ${theme.colors.primary};
   padding-bottom: 3%;
+  margin-top: 10px;
 `;
 
 export const TextBtn = styled.Text`
