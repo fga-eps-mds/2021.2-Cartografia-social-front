@@ -1,5 +1,6 @@
 import React, {useRef, useMemo, useState} from 'react';
 import {Alert} from 'react-native';
+import Modal from 'react-native-modal';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import PropTypes from 'prop-types';
@@ -11,8 +12,11 @@ import * as Actions from 'store/actions';
 import api from 'services/api';
 import Fabs from 'components/Fabs';
 import theme from 'theme/theme';
-
-import {Container, Icon, Image} from './styles';
+import instance from 'services/api2';
+import FormData from 'form-data';
+import RecordAudioModalContent from 'components/RecordAudioModalContent';
+import normalize from 'react-native-normalize';
+import {Container, Icon, Image, Audio} from './styles';
 
 const CreatePoint = ({locationSelected, show, onClose}) => {
   const dispatch = useDispatch();
@@ -30,6 +34,9 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
   const [description, setDescription] = useState(DEFAULT_STATE);
   const [showMarker, setShowMarker] = useState(true);
   const [images, setImages] = useState([]);
+  const [audios, setAudios] = useState([]);
+  const [media, setMedia] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const cameraOptions = {
     mediaType: 'photo',
@@ -43,10 +50,15 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
   const onSelectImage = (response) => {
     if (response.assets && response.assets.length) {
       setImages([...images, ...response.assets]);
+      setMedia([...media, ...response.assets]);
     }
   };
 
   const actions = [
+    {
+      icon: 'microphone',
+      onPress: () => setModalVisible(true),
+    },
     {
       icon: 'camera',
       onPress: () => launchCamera(cameraOptions, onSelectImage),
@@ -67,7 +79,7 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
       longitude: locationSelected.longitude,
       title: title.value,
       description: description.value,
-      multimedia: images,
+      multimedia: media,
     };
 
     dispatch(Actions.createMarker(newMarker));
@@ -78,13 +90,35 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
         Alert.alert('Cartografia Social', error.message);
       }
     }
+
     sheetRef.current.close();
+
+    audios.map(async (audio) => {
+      try {
+        const formData = new FormData();
+        formData.append('file', {
+          uri: audio.uri,
+          type: audio.type,
+          name: audio.fileName,
+        });
+
+        await instance.post('midia/uploadMidia', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+      } catch (error) {
+        Alert.alert('erro ao salvar áudio: ', audio.fileName);
+      }
+    });
 
     setTimeout(() => {
       onClose();
       setTitle(DEFAULT_STATE);
       setDescription(DEFAULT_STATE);
       setImages([]);
+      setAudios([]);
+      setMedia([]);
     }, 1000);
     return locationSelected;
   };
@@ -106,7 +140,35 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
     return title.isValid;
   };
 
-  const renderItem = ({item}) => <Image source={{uri: item.uri}} />;
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
+
+  const setAudiosList = (newAudio) => {
+    if (audios.length === 0) {
+      setAudios(newAudio);
+    }
+    setAudios([...audios, ...newAudio]);
+    setMedia([...media, ...newAudio]);
+  };
+
+  const getTime = (time) => {
+    return new Date(time).toISOString().slice(11, -1);
+  };
+
+  const renderItem = ({item}) => {
+    if (item.type === 'image/jpeg') {
+      return <Image source={{uri: item.uri}} />;
+    }
+    return (
+      <Audio>
+        <Icon size={normalize(40)} name="microphone" color="#2a3c46" />
+        <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>
+          {getTime(item.duration).split('.')[0]}
+        </Text>
+      </Audio>
+    );
+  };
 
   if (show) {
     return (
@@ -118,20 +180,21 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
           <BottomSheetScrollView keyboardShouldPersistTaps="handled">
             <View px={3}>
               {pointName()}
-              {images.length ? (
+              {media.length ? (
                 <View>
                   <Text fontWeight="bold" fontSize={theme.font.sizes.SM} mb={2}>
                     Multimídia
                   </Text>
                   <FlatList
-                    data={images}
+                    mb={3}
+                    data={media}
                     horizontal
                     renderItem={renderItem}
                     keyExtractor={(item) => item.uri}
                   />
                 </View>
               ) : null}
-              <View py={3}>
+              <View>
                 <Input
                   height={100}
                   characterRestriction={5000}
@@ -151,6 +214,19 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
           </BottomSheetScrollView>
           <Fabs actions={actions} />
         </BottomSheet>
+        <View>
+          <Modal
+            isVisible={modalVisible}
+            onSwipeComplete={toggleModal}
+            swipeDirection={['down']}
+            style={{justifyContent: 'flex-end', margin: 0}}>
+            <RecordAudioModalContent
+              toggleModal={toggleModal}
+              setAudios={setAudiosList}
+              value={audios.length + 1}
+            />
+          </Modal>
+        </View>
       </>
     );
   }
