@@ -186,6 +186,7 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
                     Multimídia
                   </Text>
                   <FlatList
+                    mb={3}
                     data={media}
                     horizontal
                     renderItem={renderItem}
