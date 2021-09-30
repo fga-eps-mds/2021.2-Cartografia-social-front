@@ -72,7 +72,7 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
     setTitle(DEFAULT_STATE);
     setDescription(DEFAULT_STATE);
     setImages([]);
-  }
+  };
 
   const onSave = async () => {
     setShowMarker(false);

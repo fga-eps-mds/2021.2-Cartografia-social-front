@@ -27,7 +27,7 @@ const CreateArea = ({show, onPressCreatingArea, reset, getArea, index}) => {
   const resetState = () => {
     setNewArea(DEFAULT_STATE);
     newAreaRef.current = DEFAULT_STATE;
-  }
+  };
 
   const getNewArea = () => newArea;
 
@@ -64,7 +64,7 @@ const CreateArea = ({show, onPressCreatingArea, reset, getArea, index}) => {
 CreateArea.propTypes = {
   onPressCreatingArea: PropTypes.func.isRequired,
   reset: PropTypes.func,
-  getArea: PropTypes.bool,
+  getArea: PropTypes.func,
   show: PropTypes.bool,
   index: PropTypes.number,
 };
