@@ -18,24 +18,39 @@ Repositório do frontend do projeto de Cartografia Social
 Para a execução local da Wiki do projeto serão necessárias as seguintes dependências:
 
 * [NodeJs](https://nodejs.org/en/)
+* [React Native](https://reactnative.dev/)
+* [Android Studio](https://developer.android.com/studio)
 * [VSCode](https://code.visualstudio.com/) (Opcional)
 
 ## [**Execução**](#Sumário)
 
-Para executar o repositório de documentação é necessários os seguintes passos:
+Para executar o frontend, é necessário possuir o **Android Studio** e os módulos do **Node** instalados os seguintes passos:
 
 ```bash
 # 1. Clone o repositório atual
 $ git clone https://github.com/fga-eps-mds/2021.1-Cartografia-social-front
 
-# 2. Entre na página src do repositório
+# 2. Entre na página do repositório
 $ cd 2021.1-Cartografia-social-front/
 
 # 3. Install as dependências
 $ npm install
 
-# 4. Execute o projeto
-$ npm run dev
+# 4. Execute o projeto para conexão
+$ npm start
+```
+
+Após executar os comandos anteriores, em um outro terminal realize os seguintes comandos:
+
+```bash
+# 1. Entre novamente na página do repositório
+$ cd 2021.1-Cartografia-social-front/
+
+# 2. Install as dependências
+$ npm install
+
+# 3. Execute o projeto android
+$ npm run android
 ```
 
 ## [**Guia de Contribuição**](#Sumário)
