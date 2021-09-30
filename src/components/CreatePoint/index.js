@@ -13,6 +13,7 @@ import api from 'services/api';
 import Fabs from 'components/Fabs';
 import theme from 'theme/theme';
 import RecordAudioModalContent from 'components/RecordAudioModalContent';
+import SelectModal from 'components/SelectModal';
 import {Container, Icon, Image} from './styles';
 import UseCamera from '../../services/useCamera';
 
@@ -34,6 +35,7 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
   const [showMarker, setShowMarker] = useState(true);
   const [images, setImages] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalCamVisible, setModalCamVisible] = useState(false);
 
   const cameraOptions = {
     mediaType: 'photo',
@@ -45,6 +47,7 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
   };
 
   const onSelectImage = (response) => {
+    console.log(response);
     if (response.assets && response.assets.length) {
       setImages([...images, ...response.assets]);
     }
@@ -58,7 +61,7 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
     {
       icon: 'camera',
       onPress: () => {
-        launchCamera(cameraOptions, onSelectImage);
+        setModalCamVisible(true);
       },
     },
     {
@@ -120,6 +123,10 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
     setModalVisible(!modalVisible);
   };
 
+  const toggleCamModal = () => {
+    setModalCamVisible(!modalCamVisible);
+  };
+
   const renderItem = ({item}) => <Image source={{uri: item.uri}} />;
 
   if (show) {
@@ -172,6 +179,13 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
             swipeDirection={['down']}
             style={{justifyContent: 'flex-end', margin: 0}}>
             <RecordAudioModalContent toggleModal={toggleModal} />
+          </Modal>
+          <Modal
+            isVisible={modalCamVisible}
+            onSwipeComplete={toggleCamModal}
+            swipeDirection={['down']}
+            style={{justifyContent: 'flex-end', margin: 0}}>
+            <SelectModal />
           </Modal>
         </View>
       </>
