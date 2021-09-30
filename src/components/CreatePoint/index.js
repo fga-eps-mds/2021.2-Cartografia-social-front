@@ -1,4 +1,4 @@
-import React, {useRef, useMemo, useState, useEffect} from 'react';
+import React, {useRef, useMemo, useState} from 'react';
 import {Alert} from 'react-native';
 import Modal from 'react-native-modal';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -135,12 +135,11 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
           name: audio.fileName,
         });
 
-        const response = await instance.post('midia/uploadMidia', formData, {
+        await instance.post('midia/uploadMidia', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
-        console.log(response);
       } catch (error) {
         Alert.alert('erro ao salvar áudio: ', audio.fileName);
       }
@@ -189,18 +188,14 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
     if (item.type === 'image/jpeg') {
       return <Image source={{uri: item.uri}} />;
     }
-    if (item.type === 'audio/mpeg') {
-      return (
-        <Audio>
-          <Icon size={normalize(40)} name="microphone" color="#2a3c46" />
-          <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>
-            {getTime(item.duration).split('.')[0]}
-          </Text>
-        </Audio>
-      );
-    }
-
-    return null;
+    return (
+      <Audio>
+        <Icon size={normalize(40)} name="microphone" color="#2a3c46" />
+        <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>
+          {getTime(item.duration).split('.')[0]}
+        </Text>
+      </Audio>
+    );
   };
 
   if (show || isCreatingArea) {

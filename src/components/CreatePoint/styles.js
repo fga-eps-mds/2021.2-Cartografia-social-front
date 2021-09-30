@@ -3,7 +3,7 @@ import {Platform} from 'react-native';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import theme from 'theme/theme';
 
-export const Icon = styled(FontAwesomeIcon).attrs(props => ({
+export const Icon = styled(FontAwesomeIcon).attrs((props) => ({
   color: props.color ? props.color : theme.colors.black,
 }))``;
 

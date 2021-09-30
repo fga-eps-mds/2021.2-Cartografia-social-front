@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import {Alert} from 'react-native';
-import { Text } from 'components/UI';
+import React, {useState} from 'react';
+import {Alert, Platform} from 'react-native';
+import {Text} from 'components/UI';
 import theme from 'theme/theme';
 import PropTypes from 'prop-types';
 import AudioRecorderPlayer, {
@@ -8,7 +8,7 @@ import AudioRecorderPlayer, {
   AudioSourceAndroidType,
 } from 'react-native-audio-recorder-player';
 import useRecordAudio from 'services/useRecordAudio';
-import RNFetchBlob from 'rn-fetch-blob'
+import RNFetchBlob from 'rn-fetch-blob';
 import Btn from '../UI/Btn';
 import {
   Container,
@@ -21,8 +21,8 @@ import {
 
 let audioRecorderPlayer = new AudioRecorderPlayer();
 
-const RecordAudioModalContent = ({ toggleModal, setAudios, value }) => {
-  const { ableToRecord } = useRecordAudio();
+const RecordAudioModalContent = ({toggleModal, setAudios, value}) => {
+  const {ableToRecord} = useRecordAudio();
   const [recordMinutesTime, setrecordMinutesTime] = useState('00');
   const [recordSecondsTime, setrecordSecondsTime] = useState('00');
   const [recording, setRecording] = useState(false);
@@ -31,14 +31,15 @@ const RecordAudioModalContent = ({ toggleModal, setAudios, value }) => {
   const [hasAudio, setHasAudio] = useState(false);
   const [startPlay, setStartPlay] = useState(false);
   const [audioPath, setAudioPath] = useState('');
-  const [duration, setDuration] = useState(0);
+  const [audioDuration, setAudioDuration] = useState(0);
 
   const audioSet = {
     AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
     AudioSourceAndroid: AudioSourceAndroidType.MIC,
   };
 
-  const dirs = RNFetchBlob.fs.dirs;
+  const {dirs} = RNFetchBlob.fs;
+
   const path = Platform.select({
     ios: 'hello.m4a',
     android: `${dirs.CacheDir}/sound${value}.mp4`,
@@ -46,15 +47,17 @@ const RecordAudioModalContent = ({ toggleModal, setAudios, value }) => {
 
   // função para começar a gravar
   const onStartRecord = async () => {
-    if (value == 6) {
-      Alert.alert('Atingiu o limite máximo (5) de gravação de áudios na criação de um marcador')
+    if (value === 6) {
+      Alert.alert(
+        'Atingiu o limite máximo (5) de gravação de áudios na criação de um marcador',
+      );
       toggleModal();
       return;
     }
     setRecording(true);
     const response = await audioRecorderPlayer.startRecorder(path, audioSet);
     audioRecorderPlayer.addRecordBackListener((e) => {
-      setDuration(e.currentPosition);
+      setAudioDuration(e.currentPosition);
       const time = audioRecorderPlayer
         .mmssss(Math.floor(e.currentPosition))
         .split(':');
@@ -110,12 +113,12 @@ const RecordAudioModalContent = ({ toggleModal, setAudios, value }) => {
   };
 
   const onSave = async () => {
-    objAudio = {
+    const objAudio = {
       fileName: `sound${value}.mp4`,
       type: 'audio/mpeg',
       uri: audioPath,
-      duration: duration,
-    }
+      duration: audioDuration,
+    };
     setAudios([objAudio]);
     toggleModal();
   };
@@ -136,7 +139,7 @@ const RecordAudioModalContent = ({ toggleModal, setAudios, value }) => {
               title=""
               icon="delete"
               background="#FFF"
-              style={{ width: '10%' }}
+              style={{width: '10%'}}
               color={theme.colors.primary}
               onPress={() => {
                 deleteRecord();
@@ -150,7 +153,7 @@ const RecordAudioModalContent = ({ toggleModal, setAudios, value }) => {
               icon={recording ? 'pause' : 'mic'}
               size={25}
               background="#FFF"
-              style={{ width: '10%', alignItems: 'center' }}
+              style={{width: '10%', alignItems: 'center'}}
               color={theme.colors.primary}
               onPress={() => {
                 if (ableToRecord && recording) {
@@ -173,7 +176,7 @@ const RecordAudioModalContent = ({ toggleModal, setAudios, value }) => {
             icon={startPlay ? 'pause' : 'play-arrow'}
             size={25}
             background="#FFF"
-            style={{ width: '25%', alignItems: 'center' }}
+            style={{width: '25%', alignItems: 'center'}}
             color={theme.colors.primary}
             onPress={() => {
               if (!startPlay) {
@@ -189,14 +192,19 @@ const RecordAudioModalContent = ({ toggleModal, setAudios, value }) => {
         <Btn
           title="Cancelar"
           background="#FFF"
-          style={{ borderWidth: 0.5 }}
+          style={{borderWidth: 0.5}}
           color={theme.colors.primary}
           onPress={onCancel}
         />
         {hasAudio ? (
           <Btn title="Salvar" color="#FFF" onPress={onSave} />
         ) : (
-          <Btn title="Salvar" background={theme.colors.grey} color="#FFF" onPress={() => {}} />
+          <Btn
+            title="Salvar"
+            background={theme.colors.grey}
+            color="#FFF"
+            onPress={() => {}}
+          />
         )}
       </OptionsButton>
     </Container>
@@ -205,10 +213,14 @@ const RecordAudioModalContent = ({ toggleModal, setAudios, value }) => {
 
 RecordAudioModalContent.propTypes = {
   toggleModal: PropTypes.func,
+  setAudios: PropTypes.func,
+  value: PropTypes.number,
 };
 
 RecordAudioModalContent.defaultProps = {
-  toggleModal: () => { },
+  toggleModal: () => {},
+  setAudios: () => {},
+  value: 1,
 };
 
 export default RecordAudioModalContent;
