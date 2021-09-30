@@ -12,10 +12,13 @@ import * as Actions from 'store/actions';
 import api from 'services/api';
 import Fabs from 'components/Fabs';
 import theme from 'theme/theme';
+import instance from 'services/api2';
+import FormData from 'form-data';
 import RecordAudioModalContent from 'components/RecordAudioModalContent';
 import SelectModal from 'components/SelectModal';
-import {Container, Icon, Image} from './styles';
 import UseCamera from '../../services/useCamera';
+import {Container, Icon, Image, Audio} from './styles';
+import normalize from 'react-native-normalize';
 
 const CreatePoint = ({locationSelected, show, onClose}) => {
   UseCamera();
@@ -34,6 +37,8 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
   const [description, setDescription] = useState(DEFAULT_STATE);
   const [showMarker, setShowMarker] = useState(true);
   const [images, setImages] = useState([]);
+  const [audios, setAudios] = useState([]);
+  const [media, setMedia] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalCamVisible, setModalCamVisible] = useState(false);
 
@@ -49,6 +54,7 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
   const onSelectImage = (response) => {
     if (response.assets && response.assets.length) {
       setImages([...images, ...response.assets]);
+      setMedia([...media, ...response.assets]);
     }
   };
 
@@ -79,7 +85,7 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
       longitude: locationSelected.longitude,
       title: title.value,
       description: description.value,
-      multimedia: images,
+      multimedia: media,
     };
 
     dispatch(Actions.createMarker(newMarker));
@@ -90,13 +96,35 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
         Alert.alert('Cartografia Social', error.message);
       }
     }
+
     sheetRef.current.close();
+
+    audios.map(async (audio) => {
+      try {
+        const formData = new FormData();
+        formData.append('file', {
+          uri: audio.uri,
+          type: audio.type,
+          name: audio.fileName,
+        });
+
+        await instance.post('midia/uploadMidia', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+      } catch (error) {
+        Alert.alert('erro ao salvar áudio: ', audio.fileName);
+      }
+    });
 
     setTimeout(() => {
       onClose();
       setTitle(DEFAULT_STATE);
       setDescription(DEFAULT_STATE);
       setImages([]);
+      setAudios([]);
+      setMedia([]);
     }, 1000);
     return locationSelected;
   };
@@ -125,8 +153,32 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
   const toggleCamModal = () => {
     setModalCamVisible(!modalCamVisible);
   };
+  
+  const setAudiosList = (newAudio) => {
+    if (audios.length === 0) {
+      setAudios(newAudio);
+    }
+    setAudios([...audios, ...newAudio]);
+    setMedia([...media, ...newAudio]);
+  };
 
-  const renderItem = ({item}) => <Image source={{uri: item.uri}} />;
+  const getTime = (time) => {
+    return new Date(time).toISOString().slice(11, -1);
+  };
+
+  const renderItem = ({item}) => {
+    if (item.type === 'image/jpeg') {
+      return <Image source={{uri: item.uri}} />;
+    }
+    return (
+      <Audio>
+        <Icon size={normalize(40)} name="microphone" color="#2a3c46" />
+        <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>
+          {getTime(item.duration).split('.')[0]}
+        </Text>
+      </Audio>
+    );
+  };
 
   if (show) {
     return (
@@ -138,13 +190,14 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
           <BottomSheetScrollView keyboardShouldPersistTaps="handled">
             <View px={3}>
               {pointName()}
-              {images.length ? (
+              {media.length ? (
                 <View>
                   <Text fontWeight="bold" fontSize={theme.font.sizes.SM} mb={2}>
                     Multimídia
                   </Text>
                   <FlatList
-                    data={images}
+                    mb={3}
+                    data={media}
                     horizontal
                     renderItem={renderItem}
                     keyExtractor={(item) => item.uri}
@@ -177,7 +230,11 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
             onSwipeComplete={toggleModal}
             swipeDirection={['down']}
             style={{justifyContent: 'flex-end', margin: 0}}>
-            <RecordAudioModalContent toggleModal={toggleModal} />
+            <RecordAudioModalContent
+              toggleModal={toggleModal}
+              setAudios={setAudiosList}
+              value={audios.length + 1}
+            />
           </Modal>
           <Modal
             isVisible={modalCamVisible}
