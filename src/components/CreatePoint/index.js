@@ -1,4 +1,4 @@
-import React, {useRef, useMemo, useState, useEffect} from 'react';
+import React, {useRef, useMemo, useState} from 'react';
 import {Alert} from 'react-native';
 import Modal from 'react-native-modal';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -15,8 +15,8 @@ import theme from 'theme/theme';
 import instance from 'services/api2';
 import FormData from 'form-data';
 import RecordAudioModalContent from 'components/RecordAudioModalContent';
-import {Container, Icon, Image, Audio} from './styles';
 import normalize from 'react-native-normalize';
+import {Container, Icon, Image, Audio} from './styles';
 
 const CreatePoint = ({locationSelected, show, onClose}) => {
   const dispatch = useDispatch();
@@ -50,7 +50,7 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
   const onSelectImage = (response) => {
     if (response.assets && response.assets.length) {
       setImages([...images, ...response.assets]);
-      setMedia([...media, ...response.assets])
+      setMedia([...media, ...response.assets]);
     }
   };
 
@@ -90,9 +90,9 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
         Alert.alert('Cartografia Social', error.message);
       }
     }
-  
+
     sheetRef.current.close();
-    
+
     audios.map(async (audio) => {
       try {
         const formData = new FormData();
@@ -101,13 +101,12 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
           type: audio.type,
           name: audio.fileName,
         });
-        
-        const response = await instance.post('midia/uploadMidia', formData, {
+
+        await instance.post('midia/uploadMidia', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
-        console.log(response);
       } catch (error) {
         Alert.alert('erro ao salvar áudio: ', audio.fileName);
       }
@@ -146,33 +145,30 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
   };
 
   const setAudiosList = (newAudio) => {
-    if (audios.length == 0) {
+    if (audios.length === 0) {
       setAudios(newAudio);
     }
     setAudios([...audios, ...newAudio]);
     setMedia([...media, ...newAudio]);
-  }
+  };
 
   const getTime = (time) => {
     return new Date(time).toISOString().slice(11, -1);
-  }
+  };
 
   const renderItem = ({item}) => {
     if (item.type === 'image/jpeg') {
       return <Image source={{uri: item.uri}} />;
-    } else if (item.type === 'audio/mpeg') {
-      return (
-        <Audio>
-          <Icon size={normalize(40)} name="microphone" color="#2a3c46" />
-          <Text style={{fontSize: normalize(15), color:"#2a3c46"}}>{getTime(item.duration).split('.')[0]}</Text>
-        </Audio>
-      );
     }
-  }
-
-  useEffect(() => {
-    console.log('->>>', audios);
-  }, [audios]);
+    return (
+      <Audio>
+        <Icon size={normalize(40)} name="microphone" color="#2a3c46" />
+        <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>
+          {getTime(item.duration).split('.')[0]}
+        </Text>
+      </Audio>
+    );
+  };
 
   if (show) {
     return (
@@ -223,7 +219,11 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
             onSwipeComplete={toggleModal}
             swipeDirection={['down']}
             style={{justifyContent: 'flex-end', margin: 0}}>
-            <RecordAudioModalContent toggleModal={toggleModal} setAudios={setAudiosList} value={audios.length + 1} />
+            <RecordAudioModalContent
+              toggleModal={toggleModal}
+              setAudios={setAudiosList}
+              value={audios.length + 1}
+            />
           </Modal>
         </View>
       </>
