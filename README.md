@@ -77,14 +77,14 @@ De forma que o elemento **PREFIXO** siga o seguinte padrão
 | DOCS | Documentação | `[DOCS] Melhorar README`|
 | DEVOPS | Integração, DevOps | `[DEVOPS] Implementar CI/CD`|
 | USXX | História de Usuário, em que *XX* se refera ao número da história de usuário | `[US12] Questionário para criação de uma nova comunidade`|
-
+| IMPROVE | Melhoria ou adição de funcionalidades não correlacionadas a uma História de Usuário | `[IMPROVE] Adiciona regras de navegação ao frontend`|
 
 
 ### [**Branches**](#Sumário)
 
 Para a padronização das branches foi tomada uma adaptação do modelo padrão do [gitflow](https://nvie.com/posts/a-successful-git-branching-model/) conforme representado pelo diagrama abaixo:
 
-![gitflow-adapted](./images-git/gitflow_adapted.png)
+![gitflow-adapted](./images-git/gitflow_adapted_tag.png)
 
 Esse modelo segue a seguinte categorização para as respectivas branches:
 
@@ -98,8 +98,6 @@ Esse modelo segue a seguinte categorização para as respectivas branches:
 
 * ***Support*** - As Branches *Support* servem para armazenar modificações que integram o projeto mas não representam funcionalidades (ou *features*), como documentação, Integração Contínua, Deploy Contínuo e demais configurações focadas na estrutura do projeto.
 
-* ***Release*** - Esse tipo de branch representa uma estabilização dos recursos presentes na *develop* para uma integração com os dados existentes na *master*, representando um próximo ciclo de lançamento.
-
 #### **Nomenclatura**
 
 A Nomenclatura das branches deve seguir o seguinte padrão
@@ -110,7 +108,6 @@ A Nomenclatura das branches deve seguir o seguinte padrão
 | Develop | develop |
 | Feature | feature/<span style="color:#fc6a03">[NUMERO-USER-STORY]</span>-<span style="color:#ed820e">[BREVE-DESCRIÇÃO-EM-INGLES]</span> <br> Ex.: `feature/01-mark-point-on-map` |
 | Support | support/<span style="color:#ffcd01">[BREVE-DESCRIÇÃO-EM-INGLES]</span> <br> Ex.: `support/document-contribution-guide` |
-| Release | release/v-<span style="color:#03c0c1">[NUMERO-DA-VERSAO]</span> <br> Ex.: `release/v-0.1`  |
 | Hotfix | hotfix/<span style="color:#cf513d">[BREVE-DESCRIÇÃO-EM-INGLES]</span> <br> Ex.: `hotfix/remove-second-callback`  |
 
 ### [**Commits**](#Sumário)
@@ -229,7 +226,24 @@ Indica a reverão de um commit anterior.
 
 ### [**Pull Requests**](#Sumário)
 
-Deve seguir o mesmo padrão de nomenclatura da issue.
+Deve seguir o mesmo padrão de nomenclatura da issue, e os usuŕios devem se atentar a linkar a respectiva issue a ser fechada pelo pull request.
+
+#### **Nomenclatura**
+
+A Nomenclatura de Pull Requests deve seguir o padrão:
+
+```
+[PREFIXO] Breve descrição do Pull Request em português
+```
+
+De forma que o elemento **PREFIXO** siga o seguinte padrão
+
+| Prefixo | Tema | Exemplo |
+| --- | --- | --- |
+| DOCS | Documentação | `[DOCS] Melhorar README`|
+| DEVOPS | Integração, DevOps | `[DEVOPS] Implementar CI/CD`|
+| USXX | História de Usuário, em que *XX* se refera ao número da história de usuário | `[US12] Questionário para criação de uma nova comunidade`|
+| IMPROVE | Melhoria ou adição de funcionalidades não correlacionadas a uma História de Usuário | `[IMPROVE] Adiciona regras de navegação ao frontend`|
 
 ## [**Licença**](#Sumário)
 
