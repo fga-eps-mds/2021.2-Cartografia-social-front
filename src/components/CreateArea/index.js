@@ -1,14 +1,18 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useRef, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {Polygon} from 'react-native-maps';
+import {useSelector, useDispatch} from 'react-redux';
+import * as selectors from 'store/selectors';
+import * as Actions from 'store/actions';
 
 const DEFAULT_STATE = {
   coordinates: [],
   holes: [],
 };
 
-const CreateArea = ({show, onPressCreatingArea, reset, getArea, index}) => {
-  const [newArea, setNewArea] = useState(DEFAULT_STATE);
+const CreateArea = ({show, onPressCreatingArea, reset, index}) => {
+  const dispatch = useDispatch();
+  const newArea = useSelector(selectors.newArea);
   const newAreaRef = useRef(DEFAULT_STATE);
 
   const onPress = (e) => {
@@ -20,16 +24,13 @@ const CreateArea = ({show, onPressCreatingArea, reset, getArea, index}) => {
       ],
     };
 
-    setNewArea(newPoint);
-    newAreaRef.current = newPoint;
+    dispatch(Actions.updateArea(newPoint));
   };
 
   const resetState = () => {
-    setNewArea(DEFAULT_STATE);
+    dispatch(Actions.resetNewArea());
     newAreaRef.current = DEFAULT_STATE;
   };
-
-  const getNewArea = () => newArea;
 
   useEffect(() => {
     onPressCreatingArea(onPress);
@@ -37,10 +38,8 @@ const CreateArea = ({show, onPressCreatingArea, reset, getArea, index}) => {
   }, [show, reset]);
 
   useEffect(() => {
-    getArea(getNewArea);
+    newAreaRef.current = newArea;
   }, [newArea.coordinates.length]);
-
-  // const onSave = async () => {};
 
   if (show) {
     return (
@@ -61,7 +60,6 @@ const CreateArea = ({show, onPressCreatingArea, reset, getArea, index}) => {
 CreateArea.propTypes = {
   onPressCreatingArea: PropTypes.func.isRequired,
   reset: PropTypes.func,
-  getArea: PropTypes.func,
   show: PropTypes.bool,
   index: PropTypes.number,
 };
@@ -69,7 +67,6 @@ CreateArea.propTypes = {
 CreateArea.defaultProps = {
   show: false,
   index: 0,
-  getArea: () => {},
   reset: () => {},
 };
 

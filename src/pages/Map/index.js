@@ -10,7 +10,7 @@ import * as selectors from 'store/selectors';
 import Marker from 'components/Marker';
 import MarkerDetails from 'components/MarkerDetails';
 import CreateArea from 'components/CreateArea';
-
+import {Polygon} from 'react-native-maps';
 import {MapView} from './styles';
 
 const Map = () => {
@@ -21,6 +21,7 @@ const Map = () => {
   const [isCreatingArea, setIsCreatingArea] = useState(false);
   const detailsRef = useRef(null);
   const onPressCreatingArea = useRef(null);
+  const newArea = useRef(null);
   const resetArea = useRef(() => {});
 
   const markers = useSelector(selectors.markers);
@@ -87,9 +88,20 @@ const Map = () => {
           region={region}
           onRegionChangeComplete={(value) => setRegion(value)}
           {...mapOptions}>
-          {markers.map((marker, index) => (
-            <Marker key={index} marker={marker} onPress={onPressMarker} />
-          ))}
+          {console.tron.log(markers)}
+          {markers.map((marker, index) =>
+            marker.coordinates ? (
+              <Polygon
+                key={index}
+                coordinates={marker.coordinates}
+                strokeColor="#000"
+                fillColor="rgba(255,0,0,0.5)"
+                strokeWidth={1}
+              />
+            ) : (
+              <Marker key={index} marker={marker} onPress={onPressMarker} />
+            ),
+          )}
           <CreateArea
             reset={(func) => {
               resetArea.current = func;
@@ -97,6 +109,9 @@ const Map = () => {
             show={isCreatingArea}
             onPressCreatingArea={(func) => {
               onPressCreatingArea.current = func;
+            }}
+            getArea={(area) => {
+              newArea.current = area;
             }}
           />
         </MapView>
@@ -106,6 +121,7 @@ const Map = () => {
           locationSelected={region}
           show={showPointCreation}
           onClose={onCloseCreation}
+          area={newArea.current}
         />
         <MarkerDetails marker={selectedMarker} sheetRef={detailsRef} />
       </View>

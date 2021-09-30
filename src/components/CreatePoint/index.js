@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import {Btn, Input, View, FlatList, Text} from 'components/UI';
 import required from 'validators/required';
 import {useDispatch, useSelector} from 'react-redux';
-import {auth} from 'store/selectors';
+import {auth, newArea} from 'store/selectors';
 import * as Actions from 'store/actions';
 import api from 'services/api';
 import Fabs from 'components/Fabs';
@@ -17,6 +17,7 @@ import {Container, Icon, Image} from './styles';
 const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
   const dispatch = useDispatch();
   const user = useSelector(auth);
+  const area = useSelector(newArea);
   const snapPoints = useMemo(() => [110, '50%', '95%'], []);
   const sheetRef = useRef(null);
 
@@ -79,13 +80,26 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
     setTimeout(() => {
       setShowMarker(true);
     }, 2000);
-    const newMarker = {
-      latitude: locationSelected.latitude,
-      longitude: locationSelected.longitude,
-      title: title.value,
-      description: description.value,
-      multimedia: images,
-    };
+
+    let newMarker;
+
+    if (isCreatingArea) {
+      newMarker = {
+        coordinates: area.coordinates,
+        title: title.value,
+        description: description.value,
+        multimedia: images,
+      };
+      dispatch(Actions.resetNewArea());
+    } else {
+      newMarker = {
+        latitude: locationSelected.latitude,
+        longitude: locationSelected.longitude,
+        title: title.value,
+        description: description.value,
+        multimedia: images,
+      };
+    }
 
     dispatch(Actions.createMarker(newMarker));
     if (user && user.id) {
