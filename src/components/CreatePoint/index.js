@@ -1,7 +1,7 @@
 import React, {useRef, useMemo, useState} from 'react';
 import {Alert} from 'react-native';
 import Modal from 'react-native-modal';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import PropTypes from 'prop-types';
 import {Btn, Input, View, FlatList, Text} from 'components/UI';
@@ -47,7 +47,6 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
   };
 
   const onSelectImage = (response) => {
-    console.log(response);
     if (response.assets && response.assets.length) {
       setImages([...images, ...response.assets]);
     }

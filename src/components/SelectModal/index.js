@@ -1,17 +1,11 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import theme from 'theme/theme';
 import PropTypes from 'prop-types';
-import Btn from '../UI/Btn';
 import {launchCamera} from 'react-native-image-picker';
-import {
-  Container,
-  Header,
-  Title,
-  OptionsButton,
-} from './styles';
+import Btn from '../UI/Btn';
+import {Container, Header, Title, OptionsButton} from './styles';
 
-const SelectModal = ({ toggleModal }) => {
-
+const SelectModal = ({toggleModal}) => {
   const [option, setOption] = useState('');
 
   const cameraOptions = {
@@ -23,16 +17,12 @@ const SelectModal = ({ toggleModal }) => {
     selectionLimit: 0,
   };
 
-  const onSelectMedia = (response) => {
-    console.log(response);
-  };
-
   const handleOption = (selected) => {
     setOption(selected);
     toggleModal();
-    cameraOptions.mediaType = selected
-    
-    launchCamera(cameraOptions, onSelectMedia);
+    cameraOptions.mediaType = selected;
+
+    launchCamera(cameraOptions, () => {});
   };
 
   return (
@@ -44,14 +34,14 @@ const SelectModal = ({ toggleModal }) => {
         <Btn
           title="Foto"
           background="#FFF"
-          style={{ borderWidth: 0.5 }}
+          style={{borderWidth: 0.5}}
           color={theme.colors.primary}
           onPress={() => handleOption('photo')}
         />
         <Btn
           title="Vídeo"
           background="#FFF"
-          style={{ borderWidth: 0.5 }}
+          style={{borderWidth: 0.5}}
           color={theme.colors.primary}
           onPress={() => handleOption('video')}
         />
@@ -65,7 +55,7 @@ SelectModal.propTypes = {
 };
 
 SelectModal.defaultProps = {
-  toggleModal: () => { },
+  toggleModal: () => {},
 };
 
 export default SelectModal;
