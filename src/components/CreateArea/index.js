@@ -24,9 +24,18 @@ const CreateArea = ({show, onPressCreatingArea, reset, getArea, index}) => {
     newAreaRef.current = newPoint;
   };
 
-  const resetState = () => setNewArea(DEFAULT_STATE);
+  const resetState = () => {
+    setNewArea(DEFAULT_STATE);
+    newAreaRef.current = DEFAULT_STATE;
+  }
 
   const getNewArea = () => newArea;
+
+  useEffect(() => {
+    onPressCreatingArea(onPress);
+    reset(resetState);
+    getArea(getNewArea);
+  }, [show, reset]);
 
   useEffect(() => {
     onPressCreatingArea(onPress);

@@ -21,6 +21,7 @@ const Map = () => {
   const [isCreatingArea, setIsCreatingArea] = useState(false);
   const detailsRef = useRef(null);
   const onPressCreatingArea = useRef(null);
+  const resetArea = useRef(() => {});
 
   const markers = useSelector(selectors.markers);
 
@@ -64,6 +65,12 @@ const Map = () => {
     });
   };
 
+  const onCloseCreation = () => {
+    setShowPointCreation(false);
+    setIsCreatingArea(false);
+    resetArea.current();
+  };
+
   if (region) {
     const mapOptions = {
       scrollEnabled: true,
@@ -84,6 +91,9 @@ const Map = () => {
             <Marker key={index} marker={marker} onPress={onPressMarker} />
           ))}
           <CreateArea
+            reset={(func) => {
+              resetArea.current = func;
+            }}
             show={isCreatingArea}
             onPressCreatingArea={(func) => {
               onPressCreatingArea.current = func;
@@ -92,9 +102,10 @@ const Map = () => {
         </MapView>
         <Fabs actions={actions} alwaysOpenActions={alwaysOpenActions} />
         <CreatePoint
+          isCreatingArea={isCreatingArea}
           locationSelected={region}
           show={showPointCreation}
-          onClose={() => setShowPointCreation(false)}
+          onClose={onCloseCreation}
         />
         <MarkerDetails marker={selectedMarker} sheetRef={detailsRef} />
       </View>
