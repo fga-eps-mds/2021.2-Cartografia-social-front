@@ -19,6 +19,7 @@ import SelectModal from 'components/SelectModal';
 import normalize from 'react-native-normalize';
 import UseCamera from '../../services/useCamera';
 import {Container, Icon, Image, MidiaContainer} from './styles';
+import MediaModalContent from 'components/MediaModalContent';
 
 const CreatePoint = ({locationSelected, show, onClose}) => {
   UseCamera();
@@ -39,21 +40,7 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
   const [medias, setMedias] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalCamVisible, setModalCamVisible] = useState(false);
-
-  const cameraOptions = {
-    mediaType: 'photo',
-    maxWidth: 1300,
-    maxHeight: 1300,
-    quality: 0.9,
-    saveToPhotos: true,
-    selectionLimit: 0,
-  };
-
-  const onSelectImage = (response) => {
-    if (response.assets && response.assets.length) {
-      setMedias([...medias, ...response.assets]);
-    }
-  };
+  const [modalMediaVisible, setModalMediaVisible] = useState(false);
 
   const actions = [
     {
@@ -68,7 +55,9 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
     },
     {
       icon: 'paperclip',
-      onPress: () => launchImageLibrary(cameraOptions, onSelectImage),
+      onPress: () => {
+        setModalMediaVisible(true);
+      },
     },
   ];
 
@@ -150,6 +139,10 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
     setModalCamVisible(!modalCamVisible);
   };
 
+  const toggleMediaModal = () => {
+    setModalMediaVisible(!modalMediaVisible);
+  };
+
   const setMediasList = (newMedia) => {
     setMedias([...medias, ...newMedia]);
   };
@@ -175,7 +168,7 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
     }
     return (
       <MidiaContainer>
-        <Icon size={normalize(40)} name="camera" color="#2a3c46" />
+        <Icon size={normalize(40)} name="video" color="#2a3c46" />
         <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>Vídeo</Text>
         <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>
           {getTime(item.duration * 1000).split('.')[0]}
@@ -248,6 +241,16 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
             style={{justifyContent: 'flex-end', margin: 0}}>
             <SelectModal
               toggleModal={toggleCamModal}
+              setMedias={setMediasList}
+            />
+          </Modal>
+          <Modal
+            isVisible={modalMediaVisible}
+            onSwipeComplete={toggleMediaModal}
+            swipeDirection={['down']}
+            style={{justifyContent: 'flex-end', margin: 0}}>
+            <MediaModalContent
+              toggleModal={toggleMediaModal}
               setMedias={setMediasList}
             />
           </Modal>
