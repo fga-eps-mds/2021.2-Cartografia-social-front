@@ -7,11 +7,13 @@ const instance = axios.create({
   baseURL: 'http://143.244.155.117:8000/',
 });
 
-instance.interceptors.request.use(async (config) => {
-  const accessToken = await AsyncStorage.getItem('access_token');
-  config.headers.Authorization = `${accessToken}`;
-  return config;
-});
+instance.interceptors.request.use(async (config) => ({
+  ...config,
+  headers: {
+    ...config.headers,
+    Authorization: await AsyncStorage.getItem('access_token'),
+  },
+}));
 
 instance.interceptors.response.use(
   (response) => {
