@@ -179,7 +179,9 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
       );
     }
     return (
-      <ImageBackground source={{uri: item.thumb}}>
+      <ImageBackground
+        source={{uri: item.thumb}}
+        imageStyle={{borderRadius: 7}}>
         <Icon size={normalize(20)} name="play" color={theme.colors.primary} />
       </ImageBackground>
     );
