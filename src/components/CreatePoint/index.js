@@ -1,7 +1,6 @@
 import React, {useRef, useMemo, useState} from 'react';
 import {Alert} from 'react-native';
 import Modal from 'react-native-modal';
-import {launchImageLibrary} from 'react-native-image-picker';
 import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import PropTypes from 'prop-types';
 import {Btn, Input, View, FlatList, Text} from 'components/UI';
@@ -17,9 +16,9 @@ import FormData from 'form-data';
 import RecordAudioModalContent from 'components/RecordAudioModalContent';
 import SelectModal from 'components/SelectModal';
 import normalize from 'react-native-normalize';
+import MediaModalContent from 'components/MediaModalContent';
 import UseCamera from '../../services/useCamera';
 import {Container, Icon, Image, MidiaContainer} from './styles';
-import MediaModalContent from 'components/MediaModalContent';
 
 const CreatePoint = ({locationSelected, show, onClose}) => {
   UseCamera();
