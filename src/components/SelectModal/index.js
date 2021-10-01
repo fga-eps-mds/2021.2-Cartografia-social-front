@@ -1,28 +1,36 @@
-import React, {useState} from 'react';
+import React from 'react';
 import theme from 'theme/theme';
 import PropTypes from 'prop-types';
 import {launchCamera} from 'react-native-image-picker';
 import Btn from '../UI/Btn';
 import {Container, Header, Title, OptionsButton} from './styles';
 
-const SelectModal = ({toggleModal}) => {
-  const [option, setOption] = useState('');
-
-  const cameraOptions = {
-    mediaType: option,
+const SelectModal = ({toggleModal, setMedias}) => {
+  const photoOptions = {
+    mediaType: 'photo',
     maxWidth: 1300,
     maxHeight: 1300,
     quality: 0.9,
     saveToPhotos: true,
-    selectionLimit: 0,
+  };
+
+  const videoOptions = {
+    mediaType: 'video',
+    videoQuality: 'high',
+    saveToPhotos: true,
   };
 
   const handleOption = (selected) => {
-    setOption(selected);
     toggleModal();
-    cameraOptions.mediaType = selected;
 
-    launchCamera(cameraOptions, () => {});
+    launchCamera(
+      selected === 'photo' ? photoOptions : videoOptions,
+      (response) => {
+        if (response.assets && response.assets.length) {
+          setMedias([...response.assets]);
+        }
+      },
+    );
   };
 
   return (
@@ -52,10 +60,12 @@ const SelectModal = ({toggleModal}) => {
 
 SelectModal.propTypes = {
   toggleModal: PropTypes.func,
+  setMedias: PropTypes.func,
 };
 
 SelectModal.defaultProps = {
   toggleModal: () => {},
+  setMedias: () => {},
 };
 
 export default SelectModal;
