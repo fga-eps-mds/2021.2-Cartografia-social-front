@@ -2,8 +2,8 @@ import React from 'react';
 import theme from 'theme/theme';
 import PropTypes from 'prop-types';
 import {launchImageLibrary} from 'react-native-image-picker';
-import {View, Text, TouchableOpacity} from 'react-native';
-import {Container, Header, Title, Icon} from './styles';
+import {Text, TouchableOpacity} from 'react-native';
+import {Container, Header, Title, Icon, Column, Row} from './styles';
 
 const MediaModalContent = ({toggleModal, setMedias}) => {
   const photoOptions = {
@@ -39,24 +39,14 @@ const MediaModalContent = ({toggleModal, setMedias}) => {
       <Header>
         <Title fontSize={theme.font.sizes.ML}>Upload</Title>
       </Header>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <View
-          style={{
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
+      <Row>
+        <Column>
           <TouchableOpacity
             onPress={() => null}
             style={{
               width: 80,
               height: 80,
-              borderRadius: 70,
+              borderRadius: 80,
               margin: 5,
               borderColor: theme.colors.primary,
               borderWidth: 1,
@@ -66,19 +56,14 @@ const MediaModalContent = ({toggleModal, setMedias}) => {
             <Icon name="file" />
           </TouchableOpacity>
           <Text>Documento</Text>
-        </View>
-        <View
-          style={{
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
+        </Column>
+        <Column>
           <TouchableOpacity
             onPress={() => handleOption('photo')}
             style={{
               width: 80,
               height: 80,
-              borderRadius: 70,
+              borderRadius: 80,
               margin: 5,
               borderColor: theme.colors.primary,
               borderWidth: 1,
@@ -88,19 +73,14 @@ const MediaModalContent = ({toggleModal, setMedias}) => {
             <Icon name="camera" />
           </TouchableOpacity>
           <Text>Foto</Text>
-        </View>
-        <View
-          style={{
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
+        </Column>
+        <Column>
           <TouchableOpacity
             onPress={() => handleOption('video')}
             style={{
               width: 80,
               height: 80,
-              borderRadius: 70,
+              borderRadius: 80,
               margin: 5,
               borderColor: theme.colors.primary,
               borderWidth: 1,
@@ -110,19 +90,14 @@ const MediaModalContent = ({toggleModal, setMedias}) => {
             <Icon name="video" />
           </TouchableOpacity>
           <Text>Video</Text>
-        </View>
-        <View
-          style={{
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
+        </Column>
+        <Column>
           <TouchableOpacity
             onPress={() => null}
             style={{
               width: 80,
               height: 80,
-              borderRadius: 70,
+              borderRadius: 80,
               margin: 5,
               borderColor: theme.colors.primary,
               borderWidth: 1,
@@ -132,8 +107,8 @@ const MediaModalContent = ({toggleModal, setMedias}) => {
             <Icon name="microphone" />
           </TouchableOpacity>
           <Text>Audio</Text>
-        </View>
-      </View>
+        </Column>
+      </Row>
     </Container>
   );
 };

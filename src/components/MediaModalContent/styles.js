@@ -30,23 +30,14 @@ export const Icon = styled(FontAwesomeIcon).attrs({
   size: 26,
 })``;
 
-export const AudioContainer = styled.View`
-  width: 100%;
-  height: 17%;
-  border-radius: 7px;
-  border-width: 0.5px;
+export const Column = styled.View`
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 15px;
 `;
 
-export const ManageRecordButtons = styled.View`
-  width: 50%;
-  height: 20%;
-  border-radius: 7px;
-  /* background-color: #00f; */
+export const Row = styled.View`
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
 `;
