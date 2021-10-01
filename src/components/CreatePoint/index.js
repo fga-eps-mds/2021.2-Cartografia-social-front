@@ -18,7 +18,14 @@ import SelectModal from 'components/SelectModal';
 import normalize from 'react-native-normalize';
 import MediaModalContent from 'components/MediaModalContent';
 import UseCamera from '../../services/useCamera';
-import {Container, Icon, Image, MidiaContainer} from './styles';
+
+import {
+  Container,
+  Icon,
+  Image,
+  MidiaContainer,
+  ImageBackground,
+} from './styles';
 
 const CreatePoint = ({locationSelected, show, onClose}) => {
   UseCamera();
@@ -85,22 +92,20 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
     sheetRef.current.close();
 
     medias.map(async (media) => {
-      if (media.type === 'audio/mpeg') {
-        try {
-          const formData = new FormData();
-          formData.append('file', {
-            uri: media.uri,
-            type: media.type,
-            name: media.fileName,
-          });
-          await instance.post('midia/uploadMidia', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          });
-        } catch (error) {
-          Alert.alert('erro ao salvar áudio: ', media.fileName);
-        }
+      try {
+        const formData = new FormData();
+        formData.append('file', {
+          uri: media.uri,
+          type: media.type,
+          name: media.fileName,
+        });
+        await instance.post('midia/uploadMidia', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+      } catch (error) {
+        Alert.alert('erro ao salvar áudio: ', media.fileName);
       }
     });
 
@@ -166,13 +171,11 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
       );
     }
     return (
-      <MidiaContainer>
-        <Icon size={normalize(40)} name="video" color="#2a3c46" />
-        <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>Vídeo</Text>
-        <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>
-          {getTime(item.duration * 1000).split('.')[0]}
-        </Text>
-      </MidiaContainer>
+      <ImageBackground
+        source={{uri: item.thumb}}
+        imageStyle={{borderRadius: 7}}>
+        <Icon size={normalize(20)} name="play" color={theme.colors.primary} />
+      </ImageBackground>
     );
   };
 

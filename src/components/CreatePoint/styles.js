@@ -45,3 +45,11 @@ export const MidiaContainer = styled.View`
   align-items: center;
   justify-content: space-around;
 `;
+
+export const ImageBackground = styled.ImageBackground`
+  width: 100px;
+  height: 100px;
+  margin-right: 10px;
+  justify-content: center;
+  align-items: center;
+`;
