@@ -2,10 +2,11 @@ import React from 'react';
 import theme from 'theme/theme';
 import PropTypes from 'prop-types';
 import {launchCamera} from 'react-native-image-picker';
+import {createThumbnail} from 'react-native-create-thumbnail';
 import Btn from '../UI/Btn';
 import {Container, Header, Title, OptionsButton} from './styles';
 
-const SelectModal = ({toggleModal, setMedias}) => {
+const SelectModal = ({setMedias}) => {
   const photoOptions = {
     mediaType: 'photo',
     maxWidth: 1300,
@@ -21,13 +22,21 @@ const SelectModal = ({toggleModal, setMedias}) => {
   };
 
   const handleOption = (selected) => {
-    toggleModal();
-
     launchCamera(
       selected === 'photo' ? photoOptions : videoOptions,
-      (response) => {
-        if (response.assets && response.assets.length) {
-          setMedias([...response.assets]);
+      async (videoResponse) => {
+        if (selected === 'video') {
+          const newType = videoResponse;
+          newType.assets[0].type = 'video/mp4';
+
+          const thumb = await createThumbnail({
+            url: videoResponse.assets[0].uri,
+            timeStamp: 10000,
+          });
+          newType.assets[0].thumb = thumb.path;
+        }
+        if (videoResponse.assets && videoResponse.assets.length) {
+          setMedias([...videoResponse.assets]);
         }
       },
     );
@@ -59,12 +68,10 @@ const SelectModal = ({toggleModal, setMedias}) => {
 };
 
 SelectModal.propTypes = {
-  toggleModal: PropTypes.func,
   setMedias: PropTypes.func,
 };
 
 SelectModal.defaultProps = {
-  toggleModal: () => {},
   setMedias: () => {},
 };
 
