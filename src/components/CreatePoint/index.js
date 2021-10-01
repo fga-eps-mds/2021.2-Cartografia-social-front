@@ -97,22 +97,20 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
     sheetRef.current.close();
 
     medias.map(async (media) => {
-      if (media.type === 'audio/mpeg') {
-        try {
-          const formData = new FormData();
-          formData.append('file', {
-            uri: media.uri,
-            type: media.type,
-            name: media.fileName,
-          });
-          await instance.post('midia/uploadMidia', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          });
-        } catch (error) {
-          Alert.alert('erro ao salvar áudio: ', media.fileName);
-        }
+      try {
+        const formData = new FormData();
+        formData.append('file', {
+          uri: media.uri,
+          type: media.type,
+          name: media.fileName,
+        });
+        await instance.post('midia/uploadMidia', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+      } catch (error) {
+        Alert.alert('erro ao salvar áudio: ', media.fileName);
       }
     });
 

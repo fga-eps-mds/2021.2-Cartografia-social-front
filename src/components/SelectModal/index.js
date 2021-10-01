@@ -5,7 +5,7 @@ import {launchCamera} from 'react-native-image-picker';
 import Btn from '../UI/Btn';
 import {Container, Header, Title, OptionsButton} from './styles';
 
-const SelectModal = ({toggleModal, setMedias}) => {
+const SelectModal = ({setMedias}) => {
   const photoOptions = {
     mediaType: 'photo',
     maxWidth: 1300,
@@ -21,11 +21,12 @@ const SelectModal = ({toggleModal, setMedias}) => {
   };
 
   const handleOption = (selected) => {
-    toggleModal();
-
     launchCamera(
       selected === 'photo' ? photoOptions : videoOptions,
       (response) => {
+        if (selected === 'video') {
+          response.assets[0].type = 'video/mp4';
+        }
         if (response.assets && response.assets.length) {
           setMedias([...response.assets]);
         }
@@ -59,12 +60,10 @@ const SelectModal = ({toggleModal, setMedias}) => {
 };
 
 SelectModal.propTypes = {
-  toggleModal: PropTypes.func,
   setMedias: PropTypes.func,
 };
 
 SelectModal.defaultProps = {
-  toggleModal: () => {},
   setMedias: () => {},
 };
 
