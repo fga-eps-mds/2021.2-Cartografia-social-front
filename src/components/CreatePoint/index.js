@@ -18,7 +18,14 @@ import RecordAudioModalContent from 'components/RecordAudioModalContent';
 import SelectModal from 'components/SelectModal';
 import normalize from 'react-native-normalize';
 import UseCamera from '../../services/useCamera';
-import {Container, Icon, Image, MidiaContainer} from './styles';
+
+import {
+  Container,
+  Icon,
+  Image,
+  MidiaContainer,
+  ImageBackground,
+} from './styles';
 
 const CreatePoint = ({locationSelected, show, onClose}) => {
   UseCamera();
@@ -172,13 +179,9 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
       );
     }
     return (
-      <MidiaContainer>
-        <Icon size={normalize(40)} name="camera" color="#2a3c46" />
-        <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>Vídeo</Text>
-        <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>
-          {getTime(item.duration * 1000).split('.')[0]}
-        </Text>
-      </MidiaContainer>
+      <ImageBackground source={{uri: item.thumb}}>
+        <Icon size={normalize(20)} name="play" color={theme.colors.primary} />
+      </ImageBackground>
     );
   };
 
