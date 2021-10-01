@@ -4,10 +4,10 @@ import Input from 'components/UI/Input';
 import required from 'validators/required';
 import Btn from 'components/UI/Btn';
 import auth from '@react-native-firebase/auth';
-import {Container, Header, HeaderText, InputText, TextBtn} from './styles';
 import AsyncStorage from '@react-native-community/async-storage';
 import * as Actions from 'store/actions';
 import {useDispatch} from 'react-redux';
+import {Container, Header, HeaderText, InputText, TextBtn} from './styles';
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -33,7 +33,7 @@ const LoginPage = () => {
       .then(async (userCredentials) => {
         const idTokenUser = await userCredentials.user.getIdToken();
 
-        //console.log(idTokenUser);
+        // console.log(idTokenUser);
         await AsyncStorage.setItem('access_token', `Bearer ${idTokenUser}`);
         dispatch(Actions.useDemonstrationMode());
       })

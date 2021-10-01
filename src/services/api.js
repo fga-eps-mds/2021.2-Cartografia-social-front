@@ -1,6 +1,5 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
-import Config from 'react-native-config';
 import auth from '@react-native-firebase/auth';
 
 const instance = axios.create({
@@ -26,7 +25,7 @@ instance.interceptors.response.use(
 
       return auth()
         .currentUser.getIdToken(true)
-        .then((idToken) => {
+        .then(() => {
           return axios(originalRequest);
         });
     }
