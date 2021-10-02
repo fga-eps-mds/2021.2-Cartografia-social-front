@@ -3,9 +3,9 @@ import {Platform} from 'react-native';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import theme from 'theme/theme';
 
-export const Icon = styled(FontAwesomeIcon).attrs((props) => ({
-  color: props.color ? props.color : theme.colors.black,
-}))``;
+export const Icon = styled(FontAwesomeIcon).attrs({
+  color: theme.colors.black,
+})``;
 
 export const Container = styled.View`
   position: absolute;
@@ -34,14 +34,4 @@ export const Image = styled.Image`
   height: 100px;
   border-radius: 7px;
   margin-right: 10px;
-`;
-
-export const Audio = styled.View`
-  width: 100px;
-  height: 100px;
-  border-radius: 7px;
-  margin-right: 10px;
-  background-color: #b8cad4;
-  align-items: center;
-  justify-content: space-around;
 `;

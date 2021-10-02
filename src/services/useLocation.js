@@ -1,27 +1,53 @@
 import {useEffect, useState} from 'react';
 import {Alert, Platform} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
-import {PERMISSIONS} from 'react-native-permissions';
-import {checkPermission} from './checkPermission';
+import {request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 
 export default () => {
   const [location, setLocation] = useState(null);
   const [hasLocationPermission, setHasLocationPermission] = useState(false);
 
   const requestLocation = () => {
+    let permission;
     if (Platform.OS === 'ios') {
-      checkPermission(PERMISSIONS.IOS.LOCATION_ALWAYS).then((result) => {
-        setHasLocationPermission(result);
-      });
+      permission = PERMISSIONS.IOS.LOCATION_ALWAYS;
     } else {
-      checkPermission(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(
-        (result) => {
-          setHasLocationPermission(result);
-        },
-      );
+      permission = PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
     }
-  };
 
+    request(permission).then((result) => {
+      switch (result) {
+        case RESULTS.UNAVAILABLE:
+          Alert.alert(
+            'Atenção',
+            'This feature is not available (on this device / in this context)',
+          );
+          break;
+        case RESULTS.DENIED:
+          Alert.alert(
+            'Atenção',
+            'The permission has not been requested / is denied but requestable',
+          );
+          break;
+        case RESULTS.LIMITED:
+          Alert.alert(
+            'Atenção',
+            'The permission is limited: some actions are possible',
+          );
+          break;
+        case RESULTS.GRANTED:
+          setHasLocationPermission(true);
+          break;
+        case RESULTS.BLOCKED:
+          Alert.alert(
+            'Atenção',
+            'The permission is denied and not requestable anymore',
+          );
+          break;
+        default:
+      }
+    });
+  };
   const getLocation = () => {
     if (hasLocationPermission) {
       Geolocation.getCurrentPosition(
