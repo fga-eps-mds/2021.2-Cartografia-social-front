@@ -1,4 +1,4 @@
-import React, {useRef, useMemo, useState} from 'react';
+import React, {useRef, useMemo, useState, useEffect} from 'react';
 import {Alert} from 'react-native';
 import Modal from 'react-native-modal';
 import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
@@ -15,6 +15,7 @@ import instance from 'services/api2';
 import FormData from 'form-data';
 import RecordAudioModalContent from 'components/RecordAudioModalContent';
 import SelectModal from 'components/SelectModal';
+import ShowMediaModal from 'components/ShowMediaModal';
 import normalize from 'react-native-normalize';
 import MediaModalContent from 'components/MediaModalContent';
 import UseCamera from '../../services/useCamera';
@@ -25,6 +26,7 @@ import {
   Image,
   MidiaContainer,
   ImageBackground,
+  MediaButton,
 } from './styles';
 
 const CreatePoint = ({locationSelected, show, onClose}) => {
@@ -47,6 +49,8 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalCamVisible, setModalCamVisible] = useState(false);
   const [modalMediaVisible, setModalMediaVisible] = useState(false);
+  const [modalShowMediaVisible, setModalShowMediaVisible] = useState(false);
+  const [mediaShowed, setMediaShowed] = useState({});
 
   const actions = [
     {
@@ -147,6 +151,20 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
     setModalMediaVisible(!modalMediaVisible);
   };
 
+  const closeShowMediaModal = () => {
+    setMediaShowed({});
+    setModalShowMediaVisible(false);
+  };
+
+  const handleShowMedia = (fileType, fileUri, fileDuration) => {
+    const media = {
+      type: fileType,
+      uri: fileUri,
+      duration: fileDuration,
+    };
+    setMediaShowed(media);
+  };
+
   const setMediasList = (newMedia) => {
     setMedias([...medias, ...newMedia]);
   };
@@ -155,27 +173,44 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
     return new Date(time).toISOString().slice(11, -1);
   };
 
+  useEffect(() => {
+    if (Object.keys(mediaShowed).length !== 0) {
+      setModalShowMediaVisible(true);
+    }
+  }, [mediaShowed]);
+
   const renderItem = ({item}) => {
     if (item.type === 'image/jpeg') {
-      return <Image source={{uri: item.uri}} />;
+      return (
+        <MediaButton onPress={() => handleShowMedia(item.type, item.uri)}>
+          <Image source={{uri: item.uri}} />
+        </MediaButton>
+      );
     }
     if (item.type === 'audio/mpeg') {
       return (
-        <MidiaContainer>
-          <Icon size={normalize(40)} name="microphone" color="#2a3c46" />
-          <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>Áudio</Text>
-          <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>
-            {getTime(item.duration).split('.')[0]}
-          </Text>
-        </MidiaContainer>
+        <MediaButton
+          onPress={() => handleShowMedia(item.type, item.uri, item.duration)}>
+          <MidiaContainer>
+            <Icon size={normalize(40)} name="microphone" color="#2a3c46" />
+            <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>
+              Áudio
+            </Text>
+            <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>
+              {getTime(item.duration).split('.')[0]}
+            </Text>
+          </MidiaContainer>
+        </MediaButton>
       );
     }
     return (
-      <ImageBackground
-        source={{uri: item.thumb}}
-        imageStyle={{borderRadius: 7}}>
-        <Icon size={normalize(20)} name="play" color={theme.colors.primary} />
-      </ImageBackground>
+      <MediaButton onPress={() => handleShowMedia(item.type, item.uri)}>
+        <ImageBackground
+          source={{uri: item.thumb}}
+          imageStyle={{borderRadius: 7}}>
+          <Icon size={normalize(20)} name="play" color={theme.colors.primary} />
+        </ImageBackground>
+      </MediaButton>
     );
   };
 
@@ -254,6 +289,16 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
             <MediaModalContent
               toggleModal={toggleMediaModal}
               setMedias={setMediasList}
+            />
+          </Modal>
+          <Modal
+            isVisible={modalShowMediaVisible}
+            onSwipeComplete={closeShowMediaModal}
+            swipeDirection={['down']}
+            style={{justifyContent: 'center', margin: 0}}>
+            <ShowMediaModal
+              media={mediaShowed}
+              closeModal={closeShowMediaModal}
             />
           </Modal>
         </View>

@@ -53,3 +53,12 @@ export const ImageBackground = styled.ImageBackground`
   justify-content: center;
   align-items: center;
 `;
+
+export const MediaButton = styled.TouchableOpacity`
+  width: 100px;
+  height: 100px;
+  margin-left: 5px;
+  margin-right: 5px;
+  justify-content: center;
+  align-items: center;
+`;
