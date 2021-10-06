@@ -41,7 +41,7 @@ const CreateArea = ({show, onPressCreatingArea, reset, index}) => {
     newAreaRef.current = newArea;
   }, [newArea.coordinates.length]);
 
-  if (show) {
+  if (show && newArea.coordinates.length) {
     return (
       <Polygon
         key={index}
