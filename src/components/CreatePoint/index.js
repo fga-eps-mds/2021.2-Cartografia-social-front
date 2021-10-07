@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import {Btn, Input, View, FlatList, Text} from 'components/UI';
 import required from 'validators/required';
 import {useDispatch, useSelector} from 'react-redux';
-import {auth} from 'store/selectors';
+import {auth, newArea} from 'store/selectors';
 import * as Actions from 'store/actions';
 import api from 'services/api';
 import Fabs from 'components/Fabs';
@@ -27,12 +27,23 @@ import {
   ImageBackground,
 } from './styles';
 
-const CreatePoint = ({locationSelected, show, onClose}) => {
+const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
   UseCamera();
   const dispatch = useDispatch();
   const user = useSelector(auth);
+  const area = useSelector(newArea);
   const snapPoints = useMemo(() => [110, '50%', '95%'], []);
   const sheetRef = useRef(null);
+
+  let namePlaceholder = 'Digite aqui o título do novo ponto';
+  let descriptionPlaceholder = 'Digite aqui a descrição do novo ponto';
+  let buttonName = 'Salvar ponto';
+
+  if (isCreatingArea) {
+    namePlaceholder = 'Digite aqui o título da nova área';
+    descriptionPlaceholder = 'Digite aqui a descrição da nova área';
+    buttonName = 'Salvar área';
+  }
 
   const DEFAULT_STATE = {
     isValid: false,
@@ -79,18 +90,38 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
     },
   ];
 
+  const onCloseBottomSheet = () => {
+    onClose();
+    setTitle(DEFAULT_STATE);
+    setDescription(DEFAULT_STATE);
+    setMedias([]);
+  };
+
   const onSave = async () => {
     setShowMarker(false);
     setTimeout(() => {
       setShowMarker(true);
     }, 2000);
-    const newMarker = {
-      latitude: locationSelected.latitude,
-      longitude: locationSelected.longitude,
-      title: title.value,
-      description: description.value,
-      multimedia: medias,
-    };
+
+    let newMarker;
+
+    if (isCreatingArea) {
+      newMarker = {
+        coordinates: area.coordinates,
+        title: title.value,
+        description: description.value,
+        multimedia: medias,
+      };
+      dispatch(Actions.resetNewArea());
+    } else {
+      newMarker = {
+        latitude: locationSelected.latitude,
+        longitude: locationSelected.longitude,
+        title: title.value,
+        description: description.value,
+        multimedia: medias,
+      };
+    }
 
     dispatch(Actions.createMarker(newMarker));
     if (user && user.id) {
@@ -122,10 +153,7 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
     });
 
     setTimeout(() => {
-      onClose();
-      setTitle(DEFAULT_STATE);
-      setDescription(DEFAULT_STATE);
-      setMedias([]);
+      onCloseBottomSheet();
     }, 1000);
     return locationSelected;
   };
@@ -133,7 +161,7 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
   const pointName = () => (
     <View my={2}>
       <Input
-        label="Digite aqui o título do novo ponto"
+        label={namePlaceholder}
         onChange={(value) => setTitle(value)}
         value={title.value}
         autoCapitalize="words"
@@ -187,13 +215,20 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
     );
   };
 
-  if (show) {
+  if (show || isCreatingArea) {
     return (
       <>
         <Container>
-          {showMarker ? <Icon size={40} name="map-marker-alt" /> : null}
+          {showMarker && !isCreatingArea ? (
+            <Icon size={40} name="map-marker-alt" />
+          ) : null}
         </Container>
-        <BottomSheet ref={sheetRef} index={0} snapPoints={snapPoints}>
+        <BottomSheet
+          ref={sheetRef}
+          index={0}
+          snapPoints={snapPoints}
+          onClose={onCloseBottomSheet}
+          enablePanDownToClose>
           <BottomSheetScrollView keyboardShouldPersistTaps="handled">
             <View px={3}>
               {pointName()}
@@ -216,7 +251,7 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
                   height={100}
                   characterRestriction={5000}
                   maxLength={5000}
-                  label="Digite aqui a descrição do novo ponto"
+                  label={descriptionPlaceholder}
                   onChange={(value) => setDescription(value)}
                   value={description.value}
                   multiline
@@ -225,7 +260,7 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
               <Btn
                 onPress={onSave}
                 disabled={!formIsValid()}
-                title="Salvar ponto"
+                title={buttonName}
               />
             </View>
           </BottomSheetScrollView>
@@ -269,12 +304,14 @@ CreatePoint.propTypes = {
   }),
   show: PropTypes.bool,
   onClose: PropTypes.func,
+  isCreatingArea: PropTypes.bool,
 };
 
 CreatePoint.defaultProps = {
   locationSelected: {},
   show: false,
   onClose: () => {},
+  isCreatingArea: false,
 };
 
 export default CreatePoint;
