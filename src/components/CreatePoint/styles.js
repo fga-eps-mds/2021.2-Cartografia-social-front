@@ -36,7 +36,7 @@ export const Image = styled.Image`
   margin-right: 10px;
 `;
 
-export const Audio = styled.View`
+export const MidiaContainer = styled.View`
   width: 100px;
   height: 100px;
   border-radius: 7px;
@@ -44,4 +44,12 @@ export const Audio = styled.View`
   background-color: #b8cad4;
   align-items: center;
   justify-content: space-around;
+`;
+
+export const ImageBackground = styled.ImageBackground`
+  width: 100px;
+  height: 100px;
+  margin-right: 10px;
+  justify-content: center;
+  align-items: center;
 `;

@@ -21,7 +21,12 @@ import {
 
 let audioRecorderPlayer = new AudioRecorderPlayer();
 
-const RecordAudioModalContent = ({toggleModal, setAudios, value}) => {
+const RecordAudioModalContent = ({
+  toggleModal,
+  setMedias,
+  value,
+  setAudioCount,
+}) => {
   const {ableToRecord} = useRecordAudio();
   const [recordMinutesTime, setrecordMinutesTime] = useState('00');
   const [recordSecondsTime, setrecordSecondsTime] = useState('00');
@@ -119,7 +124,8 @@ const RecordAudioModalContent = ({toggleModal, setAudios, value}) => {
       uri: audioPath,
       duration: audioDuration,
     };
-    setAudios([objAudio]);
+    setAudioCount();
+    setMedias([objAudio]);
     toggleModal();
   };
 
@@ -213,14 +219,16 @@ const RecordAudioModalContent = ({toggleModal, setAudios, value}) => {
 
 RecordAudioModalContent.propTypes = {
   toggleModal: PropTypes.func,
-  setAudios: PropTypes.func,
+  setMedias: PropTypes.func,
   value: PropTypes.number,
+  setAudioCount: PropTypes.func,
 };
 
 RecordAudioModalContent.defaultProps = {
   toggleModal: () => {},
-  setAudios: () => {},
+  setMedias: () => {},
   value: 1,
+  setAudioCount: () => {},
 };
 
 export default RecordAudioModalContent;
