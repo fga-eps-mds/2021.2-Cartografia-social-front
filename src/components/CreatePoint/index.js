@@ -69,7 +69,15 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
   const selectPdf = async () => {
     const results = await useDocumentPicker();
 
-    console.tron.log(results);
+    if (results) {
+      const formattedResults = results.map((item) => ({
+        uri: item.uri,
+        fileName: item.name,
+        type: item.type,
+      }));
+
+      setMedia([...media, ...formattedResults]);
+    }
   }
 
   const actions = [
@@ -182,10 +190,6 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
-
-  useEffect(() => {
-    console.tron.log(media);
-  }, [media.length]);
 
   const setAudiosList = (newAudio) => {
     if (audios.length === 0) {
