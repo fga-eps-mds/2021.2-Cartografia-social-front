@@ -227,13 +227,15 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
       );
     }
 
-    if (item.type === 'audio/mpeg') {
+    if (item.type === 'application/pdf') {
       return (
         <MidiaContainer>
-          <Icon size={normalize(40)} name="microphone" color="#2a3c46" />
-          <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>Áudio</Text>
-          <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>
-            {getTime(item.duration).split('.')[0]}
+          <Icon size={normalize(40)} name="file-pdf" color="#2a3c46" />
+          <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>PDF</Text>
+          <Text
+            numberOfLines={1}
+            style={{fontSize: normalize(15), color: '#2a3c46'}}>
+            {item.fileName}
           </Text>
         </MidiaContainer>
       );
