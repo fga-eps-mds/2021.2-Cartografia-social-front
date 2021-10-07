@@ -9,9 +9,13 @@ import * as Actions from 'store/actions';
 import {useDispatch} from 'react-redux';
 import {Container, Header, HeaderText, InputText, TextBtn} from './styles';
 
-const LoginPage = () => {
+const LoginPage = ({navigation}) => {
   const dispatch = useDispatch();
   // const dispatch = useDispatch();
+
+  const navigateToScreen = async (screen) => {
+    navigation.navigate(screen);
+  };
 
   const [password, setPassword] = useState({
     isValid: false,
@@ -66,7 +70,9 @@ const LoginPage = () => {
             value={password.value}
             rules={[required]}
           />
-          <TextBtn onPress={() => null}>Esqueci a senha</TextBtn>
+          <TextBtn onPress={() => navigateToScreen('ForgotPasswordPage')}>
+            Esqueci a senha
+          </TextBtn>
           <Btn
             disabled={!formIsValid()}
             style={{marginVertical: 50}}
