@@ -1,4 +1,4 @@
-import React, {useRef, useMemo, useState, useEffect} from 'react';
+import React, {useRef, useMemo, useState} from 'react';
 import {Alert} from 'react-native';
 import Modal from 'react-native-modal';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -78,7 +78,7 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
 
       setMedia([...media, ...formattedResults]);
     }
-  }
+  };
 
   const actions = [
     {
