@@ -1,4 +1,4 @@
-import React, {useRef, useMemo, useState} from 'react';
+import React, {useRef, useMemo, useState, useEffect} from 'react';
 import {Alert} from 'react-native';
 import Modal from 'react-native-modal';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -13,6 +13,7 @@ import api from 'services/api';
 import Fabs from 'components/Fabs';
 import theme from 'theme/theme';
 import instance from 'services/api2';
+import useDocumentPicker from 'services/useDocumentPicker';
 import FormData from 'form-data';
 import RecordAudioModalContent from 'components/RecordAudioModalContent';
 import normalize from 'react-native-normalize';
@@ -65,7 +66,17 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
     }
   };
 
+  const selectPdf = async () => {
+    const results = await useDocumentPicker();
+
+    console.tron.log(results);
+  }
+
   const actions = [
+    {
+      icon: 'file-pdf',
+      onPress: () => selectPdf(),
+    },
     {
       icon: 'microphone',
       onPress: () => setModalVisible(true),
@@ -171,6 +182,10 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
+
+  useEffect(() => {
+    console.tron.log(media);
+  }, [media.length]);
 
   const setAudiosList = (newAudio) => {
     if (audios.length === 0) {
