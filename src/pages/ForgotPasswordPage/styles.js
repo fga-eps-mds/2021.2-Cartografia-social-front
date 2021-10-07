@@ -44,3 +44,9 @@ export const FirstInput = styled.View`
 export const InputView = styled.View`
   flex: 1;
 `;
+
+export const Text = styled.Text`
+  color: ${theme.colors.primary};
+  padding-bottom: 3%;
+  font-size: ${theme.font.sizes.L};
+`;

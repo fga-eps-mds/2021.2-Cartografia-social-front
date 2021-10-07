@@ -70,7 +70,9 @@ const LoginPage = ({navigation}) => {
             value={password.value}
             rules={[required]}
           />
-          <TextBtn onPress={() => navigateToScreen('ForgotPasswordPage')}>Esqueci a senha</TextBtn>
+          <TextBtn onPress={() => navigateToScreen('ForgotPasswordPage')}>
+            Esqueci a senha
+          </TextBtn>
           <Btn
             disabled={!formIsValid()}
             style={{marginVertical: 50}}
