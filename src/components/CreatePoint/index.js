@@ -84,7 +84,7 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
         type: item.type,
       }));
 
-      setMedia([...media, ...formattedResults]);
+      setMedias([...medias, ...formattedResults]);
     }
   };
 
@@ -214,6 +214,7 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
     if (item.type === 'image/jpeg') {
       return <Image source={{uri: item.uri}} />;
     }
+
     if (item.type === 'audio/mpeg') {
       return (
         <MidiaContainer>
@@ -225,6 +226,19 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
         </MidiaContainer>
       );
     }
+
+    if (item.type === 'audio/mpeg') {
+      return (
+        <MidiaContainer>
+          <Icon size={normalize(40)} name="microphone" color="#2a3c46" />
+          <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>Áudio</Text>
+          <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>
+            {getTime(item.duration).split('.')[0]}
+          </Text>
+        </MidiaContainer>
+      );
+    }
+
     return (
       <ImageBackground
         source={{uri: item.thumb}}
