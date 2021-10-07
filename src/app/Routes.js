@@ -16,6 +16,8 @@ import DynamicForm from 'pages/DynamicForm';
 import Map from 'pages/Map';
 import InitialPage from 'pages/InitialPage';
 
+import ForgotPasswordPage from 'pages/ForgotPasswordPage';
+
 const Routes = () => {
   const user = useSelector(auth);
 
@@ -32,6 +34,18 @@ const Routes = () => {
       <Stack.Screen
         name="LoginPage"
         component={LoginPage}
+        options={{
+          title: '',
+          headerStyle: {
+            backgroundColor: `${theme.colors.primary}`,
+            elevation: 0,
+          },
+          headerTintColor: '#fff',
+        }}
+      />
+      <Stack.Screen
+        name="ForgotPasswordPage"
+        component={ForgotPasswordPage}
         options={{
           title: '',
           headerStyle: {
