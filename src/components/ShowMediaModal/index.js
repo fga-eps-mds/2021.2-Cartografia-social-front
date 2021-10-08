@@ -26,7 +26,10 @@ const ShowMediaModal = ({media, closeModal}) => {
   const [recordPlaySecTime, setRecordPlaySecTime] = useState('00');
 
   const getTime = (time) => {
-    return new Date(time).toISOString().slice(11, -1);
+    if (time) {
+      return new Date(time).toISOString().slice(11, -1);
+    }
+    return '';
   };
 
   const getTitle = () => {
@@ -98,7 +101,7 @@ const ShowMediaModal = ({media, closeModal}) => {
             fontWeight="bold"
             fontSize={theme.font.sizes.SM}
             mb={2}>
-            {`${`00:${recordPlayMinTime}:${recordPlaySecTime}`} / ${durationTime}`}
+            {`00:${recordPlayMinTime}:${recordPlaySecTime} / ${durationTime}`}
           </Text>
         </AudioContainer>
         <Btn
@@ -119,6 +122,14 @@ const ShowMediaModal = ({media, closeModal}) => {
       </Audio>
     );
   };
+
+  const MediaContainer = (duration, path) => {
+    if (media.type === 'audio/mpeg') {
+      return displayAudio(duration, path);
+    }
+    return displayDocument(path);
+  };
+
   return (
     <Container>
       {media.type === 'video/mp4' ? (
@@ -135,12 +146,7 @@ const ShowMediaModal = ({media, closeModal}) => {
           </Header>
 
           <Media>
-            {media.type === 'audio/mpeg'
-              ? displayAudio(getTime(media.duration).split('.')[0], media.uri)
-              : null}
-            {media.type === 'application/pdf'
-              ? displayDocument(media.uri)
-              : null}
+            {MediaContainer(getTime(media.duration).split('.')[0], media.uri)}
           </Media>
           <OptionsButton onPress={handleCloseModal}>
             <Btn
@@ -168,7 +174,7 @@ ShowMediaModal.propTypes = {
 
 ShowMediaModal.defaultProps = {
   media: {},
-  closeModal: () => {},
+  closeModal: () => null,
 };
 
 export default ShowMediaModal;

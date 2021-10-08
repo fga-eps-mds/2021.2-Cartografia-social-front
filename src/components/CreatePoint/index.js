@@ -17,21 +17,15 @@ import FormData from 'form-data';
 import RecordAudioModalContent from 'components/RecordAudioModalContent';
 import SelectModal from 'components/SelectModal';
 import ShowMediaModal from 'components/ShowMediaModal';
-import normalize from 'react-native-normalize';
 import MediaModalContent from 'components/MediaModalContent';
 import ImageView from 'react-native-image-viewing';
 import UseCamera from '../../services/useCamera';
+import ImagePreview from '../ImagePreview';
+import AudioPreview from '../AudioPreview';
+import DocumentPreview from '../DocumentPreview';
+import VideoPreview from '../VideoPreview';
 
-import {
-  Container,
-  Icon,
-  Image,
-  AudioContainer,
-  ImageBackground,
-  MediaButton,
-  MediaContainer,
-  DeleteButton,
-} from './styles';
+import {Container, Icon} from './styles';
 
 const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
   UseCamera();
@@ -221,10 +215,6 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
     setMedias([...medias, ...newMedia]);
   };
 
-  const getTime = (time) => {
-    return new Date(time).toISOString().slice(11, -1);
-  };
-
   const DeleteMedia = (mediaPath) => {
     const newMediasList = medias.filter((media) => media.uri !== mediaPath);
 
@@ -240,81 +230,43 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
   const renderItem = ({item}) => {
     if (item.type === 'image/jpeg') {
       return (
-        <MediaContainer>
-          <MediaButton
-            onPress={() => {
-              setOpenedImage(item);
-              setIsVisibleImageModal(true);
-            }}>
-            <Image source={{uri: item.uri}} />
-          </MediaButton>
-          <DeleteButton onPress={() => DeleteMedia(item.uri)}>
-            <Icon size={normalize(20)} name="trash" color="#FF0000" />
-          </DeleteButton>
-        </MediaContainer>
+        <ImagePreview
+          item={item}
+          setOpenedImage={setOpenedImage}
+          setIsVisibleImageModal={setIsVisibleImageModal}
+          DeleteMedia={DeleteMedia}
+        />
       );
     }
 
     if (item.type === 'audio/mpeg') {
       return (
-        <MediaContainer>
-          <MediaButton
-            onPress={() => handleShowMedia(item.type, item.uri, item.duration)}>
-            <AudioContainer>
-              <Icon size={normalize(20)} name="microphone" color="#2a3c46" />
-              <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>
-                {getTime(item.duration).split('.')[0]}
-              </Text>
-            </AudioContainer>
-          </MediaButton>
-          <DeleteButton
-            onPress={() => {
-              DeleteMedia(item.uri);
-              setAudioCount(audioCount - 1);
-            }}>
-            <Icon size={normalize(20)} name="trash" color="#FF0000" />
-          </DeleteButton>
-        </MediaContainer>
+        <AudioPreview
+          item={item}
+          handleShowMedia={handleShowMedia}
+          audioCount={audioCount}
+          setAudioCount={setAudioCount}
+          DeleteMedia={DeleteMedia}
+        />
       );
     }
 
     if (item.type === 'application/pdf') {
       return (
-        <MediaContainer>
-          <MediaButton
-            onPress={() => handleShowMedia(item.type, item.uri, item.duration)}>
-            <Icon size={normalize(40)} name="file-pdf" color="#2a3c46" />
-            <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>PDF</Text>
-            <Text
-              numberOfLines={1}
-              style={{fontSize: normalize(15), color: '#2a3c46'}}>
-              {item.fileName}
-            </Text>
-          </MediaButton>
-          <DeleteButton onPress={() => DeleteMedia(item.uri)}>
-            <Icon size={normalize(20)} name="trash" color="#FF0000" />
-          </DeleteButton>
-        </MediaContainer>
+        <DocumentPreview
+          item={item}
+          handleShowMedia={handleShowMedia}
+          DeleteMedia={DeleteMedia}
+        />
       );
     }
 
     return (
-      <MediaContainer>
-        <MediaButton onPress={() => handleShowMedia(item.type, item.uri)}>
-          <ImageBackground
-            source={{uri: item.thumb}}
-            imageStyle={{borderRadius: 7}}>
-            <Icon
-              size={normalize(20)}
-              name="play"
-              color={theme.colors.primary}
-            />
-          </ImageBackground>
-        </MediaButton>
-        <DeleteButton onPress={() => DeleteMedia(item.uri)}>
-          <Icon size={normalize(20)} name="trash" color="#FF0000" />
-        </DeleteButton>
-      </MediaContainer>
+      <VideoPreview
+        item={item}
+        handleShowMedia={handleShowMedia}
+        DeleteMedia={DeleteMedia}
+      />
     );
   };
 
@@ -404,8 +356,6 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
           </Modal>
           <Modal
             isVisible={modalShowMediaVisible}
-            // onSwipeComplete={closeShowMediaModal}
-            // swipeDirection={['down']}
             style={{justifyContent: 'center', margin: 0}}>
             <ShowMediaModal
               media={mediaShowed}
