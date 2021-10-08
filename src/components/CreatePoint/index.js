@@ -67,7 +67,7 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
   const [modalShowMediaVisible, setModalShowMediaVisible] = useState(false);
   const [mediaShowed, setMediaShowed] = useState({});
   const [visibleImageModal, setIsVisibleImageModal] = useState(false);
-  const [imageIndex, setImageIndex] = useState(0);
+  const [openedImage, setOpenedImage] = useState({});
 
   const selectPdf = async () => {
     const results = await useDocumentPicker();
@@ -225,10 +225,6 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
     return new Date(time).toISOString().slice(11, -1);
   };
 
-  const filterImages = (media) => {
-    return media.type === 'image/jpeg';
-  };
-
   const DeleteMedia = (mediaPath) => {
     const newMediasList = medias.filter((media) => media.uri !== mediaPath);
 
@@ -241,13 +237,13 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
     }
   }, [mediaShowed]);
 
-  const renderItem = ({item, index}) => {
+  const renderItem = ({item}) => {
     if (item.type === 'image/jpeg') {
       return (
         <MediaContainer>
           <MediaButton
             onPress={() => {
-              setImageIndex(index);
+              setOpenedImage(item);
               setIsVisibleImageModal(true);
             }}>
             <Image source={{uri: item.uri}} />
@@ -280,26 +276,41 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
 
     if (item.type === 'application/pdf') {
       return (
-        <MidiaContainer>
-          <Icon size={normalize(40)} name="file-pdf" color="#2a3c46" />
-          <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>PDF</Text>
-          <Text
-            numberOfLines={1}
-            style={{fontSize: normalize(15), color: '#2a3c46'}}>
-            {item.fileName}
-          </Text>
-        </MidiaContainer>
+        <MediaContainer>
+          <MediaButton
+            onPress={() => handleShowMedia(item.type, item.uri, item.duration)}>
+            <Icon size={normalize(40)} name="file-pdf" color="#2a3c46" />
+            <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>PDF</Text>
+            <Text
+              numberOfLines={1}
+              style={{fontSize: normalize(15), color: '#2a3c46'}}>
+              {item.fileName}
+            </Text>
+          </MediaButton>
+          <DeleteButton onPress={() => DeleteMedia(item.uri)}>
+            <Icon size={normalize(20)} name="trash" color="#FF0000" />
+          </DeleteButton>
+        </MediaContainer>
       );
     }
 
     return (
-      <MediaButton onPress={() => handleShowMedia(item.type, item.uri)}>
-        <ImageBackground
-          source={{uri: item.thumb}}
-          imageStyle={{borderRadius: 7}}
-        />
-        <Icon size={normalize(20)} name="play" color={theme.colors.primary} />
-      </MediaButton>
+      <MediaContainer>
+        <MediaButton onPress={() => handleShowMedia(item.type, item.uri)}>
+          <ImageBackground
+            source={{uri: item.thumb}}
+            imageStyle={{borderRadius: 7}}>
+            <Icon
+              size={normalize(20)}
+              name="play"
+              color={theme.colors.primary}
+            />
+          </ImageBackground>
+        </MediaButton>
+        <DeleteButton onPress={() => DeleteMedia(item.uri)}>
+          <Icon size={normalize(20)} name="trash" color="#FF0000" />
+        </DeleteButton>
+      </MediaContainer>
     );
   };
 
@@ -398,8 +409,8 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
             />
           </Modal>
           <ImageView
-            images={medias.filter(filterImages)}
-            imageIndex={imageIndex}
+            images={[openedImage]}
+            imageIndex={0}
             visible={visibleImageModal}
             onRequestClose={() => setIsVisibleImageModal(false)}
           />

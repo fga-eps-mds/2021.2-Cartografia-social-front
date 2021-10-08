@@ -48,9 +48,10 @@ export const AudioContainer = styled.View`
 `;
 
 export const ImageBackground = styled.ImageBackground`
-  width: 100px;
-  height: 100px;
-  margin-right: 10px;
+  width: 100%;
+  height: 100%;
+  margin-left: 5px;
+  margin-right: 5px;
   justify-content: center;
   align-items: center;
 `;
@@ -60,6 +61,7 @@ export const MediaButton = styled.TouchableOpacity`
   height: 70%;
   margin-left: 5px;
   margin-right: 5px;
+  margin-top: 5px;
   justify-content: center;
   align-items: center;
 `;
