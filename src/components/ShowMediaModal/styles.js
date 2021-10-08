@@ -8,7 +8,7 @@ export const Container = styled.View`
   background-color: #fff;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  padding: 0px;
   border-radius: 4px;
   border-color: rgba(0, 0, 0, 0.1);
 `;
@@ -58,9 +58,10 @@ export const Audio = styled.View`
 `;
 
 export const OptionsButton = styled.View`
-  width: 100%;
-  height: 15%;
+  width: 90%;
+  height: 10%;
   border-radius: 7px;
+  margin-bottom: 10px;
   flex-direction: column;
   justify-content: flex-end;
 `;

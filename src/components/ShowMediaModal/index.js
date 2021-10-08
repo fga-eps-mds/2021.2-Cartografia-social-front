@@ -4,6 +4,7 @@ import theme from 'theme/theme';
 import normalize from 'react-native-normalize';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import Pdf from 'react-native-pdf';
+import VideoPlayer from 'react-native-video-controls';
 import {
   Container,
   Header,
@@ -31,9 +32,6 @@ const ShowMediaModal = ({media, closeModal}) => {
   const getTitle = () => {
     if (media.type === 'audio/mpeg') {
       return 'Áudio';
-    }
-    if (media.type === 'video/mp4') {
-      return 'Vídeo';
     }
     return 'Documento';
   };
@@ -123,27 +121,38 @@ const ShowMediaModal = ({media, closeModal}) => {
   };
   return (
     <Container>
-      <Header>
-        <Text fontSize={theme.font.sizes.ML}>{getTitle()}</Text>
-      </Header>
-      <Media>
-        {media.type === 'audio/mpeg'
-          ? displayAudio(getTime(media.duration).split('.')[0], media.uri)
-          : null}
-        {media.type === 'video/mp4' ? (
-          <Text fontSize={theme.font.sizes.ML}>{media.uri}</Text>
-        ) : null}
-        {media.type === 'application/pdf' ? displayDocument(media.uri) : null}
-      </Media>
-      <OptionsButton onPress={handleCloseModal}>
-        <Btn
-          title="Fechar"
-          background="#FFF"
-          style={{borderWidth: 0.5}}
-          color={theme.colors.primary}
-          onPress={handleCloseModal}
+      {media.type === 'video/mp4' ? (
+        <VideoPlayer
+          source={{uri: media.uri}}
+          showOnStart={false}
+          onBack={closeModal}
+          paused
         />
-      </OptionsButton>
+      ) : (
+        <>
+          <Header>
+            <Text fontSize={theme.font.sizes.ML}>{getTitle()}</Text>
+          </Header>
+
+          <Media>
+            {media.type === 'audio/mpeg'
+              ? displayAudio(getTime(media.duration).split('.')[0], media.uri)
+              : null}
+            {media.type === 'application/pdf'
+              ? displayDocument(media.uri)
+              : null}
+          </Media>
+          <OptionsButton onPress={handleCloseModal}>
+            <Btn
+              title="Fechar"
+              background="#FFF"
+              style={{borderWidth: 0.5}}
+              color={theme.colors.primary}
+              onPress={handleCloseModal}
+            />
+          </OptionsButton>
+        </>
+      )}
     </Container>
   );
 };
