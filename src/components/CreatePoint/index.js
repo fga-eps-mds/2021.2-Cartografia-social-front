@@ -190,7 +190,7 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
 
   useEffect(() => {
     if (Object.keys(mediaShowed).length !== 0) {
-      () => setModalShowMediaVisible(true);
+      setModalShowMediaVisible(true);
     }
   }, [mediaShowed]);
 
@@ -217,15 +217,15 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
           <MediaButton
             onPress={() => handleShowMedia(item.type, item.uri, item.duration)}>
             <AudioContainer>
-              <Icon size={normalize(40)} name="microphone" color="#2a3c46" />
-              <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>
-                Áudio
-              </Text>
+              <Icon size={normalize(20)} name="microphone" color="#2a3c46" />
               <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>
                 {getTime(item.duration).split('.')[0]}
               </Text>
             </AudioContainer>
           </MediaButton>
+          <DeleteButton onPress={() => DeleteMedia(item.uri)}>
+            <Icon size={normalize(20)} name="trash" color="#FF0000" />
+          </DeleteButton>
         </MediaContainer>
       );
     }

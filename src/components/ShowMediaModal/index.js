@@ -100,7 +100,7 @@ const ShowMediaModal = ({media, closeModal}) => {
   return (
     <Container>
       <Header>
-        <Text fontSize={theme.font.sizes.ML}>Nome</Text>
+        <Text fontSize={theme.font.sizes.ML}>Áudio</Text>
       </Header>
       <Media>
         {media.type === 'image/jpeg' ? displayImage(media.uri) : null}
@@ -112,13 +112,6 @@ const ShowMediaModal = ({media, closeModal}) => {
         ) : null}
       </Media>
       <OptionsButton onPress={handleCloseModal}>
-        <Btn
-          title="Apagar"
-          background="#FFF"
-          style={{borderWidth: 0.5, marginBottom: normalize(20)}}
-          color={theme.colors.primary}
-          onPress={() => {}}
-        />
         <Btn
           title="Fechar"
           background="#FFF"

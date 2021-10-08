@@ -59,9 +59,10 @@ export const Audio = styled.View`
 
 export const OptionsButton = styled.View`
   width: 100%;
-  height: 20%;
+  height: 15%;
   border-radius: 7px;
   flex-direction: column;
+  justify-content: flex-end;
 `;
 
 export const Icon = styled(FontAwesomeIcon).attrs((props) => ({

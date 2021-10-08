@@ -37,10 +37,11 @@ export const Image = styled.Image`
 `;
 
 export const AudioContainer = styled.View`
-  width: 100px;
-  height: 100px;
+  width: 100%;
+  height: 100%;
   border-radius: 7px;
-  margin-right: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
   background-color: #b8cad4;
   align-items: center;
   justify-content: space-around;
