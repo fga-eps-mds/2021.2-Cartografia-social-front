@@ -18,15 +18,18 @@ import SelectModal from 'components/SelectModal';
 import ShowMediaModal from 'components/ShowMediaModal';
 import normalize from 'react-native-normalize';
 import MediaModalContent from 'components/MediaModalContent';
+import ImageView from 'react-native-image-viewing';
 import UseCamera from '../../services/useCamera';
 
 import {
   Container,
   Icon,
   Image,
-  MidiaContainer,
+  AudioContainer,
   ImageBackground,
   MediaButton,
+  MediaContainer,
+  DeleteButton,
 } from './styles';
 
 const CreatePoint = ({locationSelected, show, onClose}) => {
@@ -51,6 +54,8 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
   const [modalMediaVisible, setModalMediaVisible] = useState(false);
   const [modalShowMediaVisible, setModalShowMediaVisible] = useState(false);
   const [mediaShowed, setMediaShowed] = useState({});
+  const [visibleImageModal, setIsVisibleImageModal] = useState(false);
+  const [imageIndex, setImageIndex] = useState(0);
 
   const actions = [
     {
@@ -173,43 +178,64 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
     return new Date(time).toISOString().slice(11, -1);
   };
 
+  const filterImages = (media) => {
+    return media.type === 'image/jpeg';
+  };
+
+  const DeleteMedia = (mediaPath) => {
+    const newMediasList = medias.filter((media) => media.uri !== mediaPath);
+
+    setMedias(newMediasList);
+  };
+
   useEffect(() => {
     if (Object.keys(mediaShowed).length !== 0) {
-      setModalShowMediaVisible(true);
+      () => setModalShowMediaVisible(true);
     }
   }, [mediaShowed]);
 
-  const renderItem = ({item}) => {
+  const renderItem = ({item, index}) => {
     if (item.type === 'image/jpeg') {
       return (
-        <MediaButton onPress={() => handleShowMedia(item.type, item.uri)}>
-          <Image source={{uri: item.uri}} />
-        </MediaButton>
+        <MediaContainer>
+          <MediaButton
+            onPress={() => {
+              setImageIndex(index);
+              setIsVisibleImageModal(true);
+            }}>
+            <Image source={{uri: item.uri}} />
+          </MediaButton>
+          <DeleteButton onPress={() => DeleteMedia(item.uri)}>
+            <Icon size={normalize(20)} name="trash" color="#FF0000" />
+          </DeleteButton>
+        </MediaContainer>
       );
     }
     if (item.type === 'audio/mpeg') {
       return (
-        <MediaButton
-          onPress={() => handleShowMedia(item.type, item.uri, item.duration)}>
-          <MidiaContainer>
-            <Icon size={normalize(40)} name="microphone" color="#2a3c46" />
-            <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>
-              Áudio
-            </Text>
-            <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>
-              {getTime(item.duration).split('.')[0]}
-            </Text>
-          </MidiaContainer>
-        </MediaButton>
+        <MediaContainer>
+          <MediaButton
+            onPress={() => handleShowMedia(item.type, item.uri, item.duration)}>
+            <AudioContainer>
+              <Icon size={normalize(40)} name="microphone" color="#2a3c46" />
+              <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>
+                Áudio
+              </Text>
+              <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>
+                {getTime(item.duration).split('.')[0]}
+              </Text>
+            </AudioContainer>
+          </MediaButton>
+        </MediaContainer>
       );
     }
     return (
       <MediaButton onPress={() => handleShowMedia(item.type, item.uri)}>
         <ImageBackground
           source={{uri: item.thumb}}
-          imageStyle={{borderRadius: 7}}>
-          <Icon size={normalize(20)} name="play" color={theme.colors.primary} />
-        </ImageBackground>
+          imageStyle={{borderRadius: 7}}
+        />
+        <Icon size={normalize(20)} name="play" color={theme.colors.primary} />
       </MediaButton>
     );
   };
@@ -230,11 +256,11 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
                     Multimídia
                   </Text>
                   <FlatList
-                    mb={3}
+                    mb={1}
                     data={medias}
                     horizontal
-                    renderItem={renderItem}
                     keyExtractor={(item) => item.uri}
+                    renderItem={renderItem}
                   />
                 </View>
               ) : null}
@@ -301,6 +327,12 @@ const CreatePoint = ({locationSelected, show, onClose}) => {
               closeModal={closeShowMediaModal}
             />
           </Modal>
+          <ImageView
+            images={medias.filter(filterImages)}
+            imageIndex={imageIndex}
+            visible={visibleImageModal}
+            onRequestClose={() => setIsVisibleImageModal(false)}
+          />
         </View>
       </>
     );
