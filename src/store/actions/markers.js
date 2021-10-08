@@ -6,3 +6,16 @@ export const createMarker = (newMarker) => {
     newMarker,
   };
 };
+
+export const updateArea = (newArea) => {
+  return {
+    type: actionTypes.UPDATE_NEW_AREA,
+    newArea,
+  };
+};
+
+export const resetNewArea = () => {
+  return {
+    type: actionTypes.RESET_NEW_AREA,
+  };
+};

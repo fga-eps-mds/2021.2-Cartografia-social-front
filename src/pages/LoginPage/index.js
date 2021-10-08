@@ -4,14 +4,13 @@ import Input from 'components/UI/Input';
 import required from 'validators/required';
 import Btn from 'components/UI/Btn';
 import auth from '@react-native-firebase/auth';
+import AsyncStorage from '@react-native-community/async-storage';
+import * as Actions from 'store/actions';
+import {useDispatch} from 'react-redux';
 import {Container, Header, HeaderText, InputText, TextBtn} from './styles';
 
-// import {Alert} from 'react-native';
-// import api from 'services/api';
-// import {useDispatch} from 'react-redux';
-// import * as Actions from 'store/actions';
-
-const LoginPage = ({navigation}) => {
+const LoginPage = () => {
+  const dispatch = useDispatch();
   // const dispatch = useDispatch();
 
   const [password, setPassword] = useState({
@@ -31,8 +30,12 @@ const LoginPage = ({navigation}) => {
   const onPress = async () => {
     auth()
       .signInWithEmailAndPassword(email.value, password.value)
-      .then(() => {
-        navigation.navigate('Map');
+      .then(async (userCredentials) => {
+        const idTokenUser = await userCredentials.user.getIdToken();
+
+        // console.log(idTokenUser);
+        await AsyncStorage.setItem('access_token', `Bearer ${idTokenUser}`);
+        dispatch(Actions.useDemonstrationMode());
       })
       .catch((error) => {
         // eslint-disable-next-line no-console

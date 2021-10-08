@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
 import React, {useState, useEffect, useRef} from 'react';
 import {View} from 'components/UI';
@@ -8,7 +9,8 @@ import {useSelector} from 'react-redux';
 import * as selectors from 'store/selectors';
 import Marker from 'components/Marker';
 import MarkerDetails from 'components/MarkerDetails';
-
+import CreateArea from 'components/CreateArea';
+import {Polygon} from 'react-native-maps';
 import {MapView} from './styles';
 
 const Map = () => {
@@ -16,14 +18,18 @@ const Map = () => {
   const [showPointCreation, setShowPointCreation] = useState(false);
   const [region, setRegion] = useState(null);
   const [selectedMarker, setSelectedMarker] = useState({});
+  const [isCreatingArea, setIsCreatingArea] = useState(false);
   const detailsRef = useRef(null);
+  const onPressCreatingArea = useRef(null);
+  const newArea = useRef(null);
+  const resetArea = useRef(() => {});
 
   const markers = useSelector(selectors.markers);
 
   const actions = [
     {
       icon: 'draw-polygon',
-      onPress: () => {},
+      onPress: () => setIsCreatingArea(true),
     },
     {
       icon: 'map-marker-alt',
@@ -60,21 +66,61 @@ const Map = () => {
     });
   };
 
+  const onCloseCreation = () => {
+    setShowPointCreation(false);
+    setIsCreatingArea(false);
+    resetArea.current();
+  };
+
   if (region) {
+    const mapOptions = {
+      scrollEnabled: true,
+    };
+
+    if (isCreatingArea) {
+      mapOptions.scrollEnabled = false;
+      mapOptions.onPress = (e) => onPressCreatingArea.current(e);
+    }
+
     return (
       <View flex={1}>
         <MapView
           region={region}
-          onRegionChangeComplete={(value) => setRegion(value)}>
-          {markers.map((marker, index) => (
-            <Marker key={index} marker={marker} onPress={onPressMarker} />
-          ))}
+          onRegionChangeComplete={(value) => setRegion(value)}
+          {...mapOptions}>
+          {markers.map((marker, index) =>
+            marker.coordinates ? (
+              <Polygon
+                key={index}
+                coordinates={marker.coordinates}
+                strokeColor="#000"
+                fillColor="rgba(255,0,0,0.5)"
+                strokeWidth={1}
+              />
+            ) : (
+              <Marker key={index} marker={marker} onPress={onPressMarker} />
+            ),
+          )}
+          <CreateArea
+            reset={(func) => {
+              resetArea.current = func;
+            }}
+            show={isCreatingArea}
+            onPressCreatingArea={(func) => {
+              onPressCreatingArea.current = func;
+            }}
+            getArea={(area) => {
+              newArea.current = area;
+            }}
+          />
         </MapView>
         <Fabs actions={actions} alwaysOpenActions={alwaysOpenActions} />
         <CreatePoint
+          isCreatingArea={isCreatingArea}
           locationSelected={region}
           show={showPointCreation}
-          onClose={() => setShowPointCreation(false)}
+          onClose={onCloseCreation}
+          area={newArea.current}
         />
         <MarkerDetails marker={selectedMarker} sheetRef={detailsRef} />
       </View>
