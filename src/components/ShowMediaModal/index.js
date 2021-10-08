@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import theme from 'theme/theme';
 import normalize from 'react-native-normalize';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
+import Pdf from 'react-native-pdf';
 import {
   Container,
-  Image,
   Header,
   OptionsButton,
   Icon,
@@ -13,6 +13,7 @@ import {
   Media,
   Audio,
   AudioContainer,
+  Document,
 } from './styles';
 import Btn from '../UI/Btn';
 
@@ -23,12 +24,18 @@ const ShowMediaModal = ({media, closeModal}) => {
   const [recordPlayMinTime, setRecordPlayMinTime] = useState('00');
   const [recordPlaySecTime, setRecordPlaySecTime] = useState('00');
 
-  const displayImage = (uri) => {
-    return <Image source={{uri}} />;
-  };
-
   const getTime = (time) => {
     return new Date(time).toISOString().slice(11, -1);
+  };
+
+  const getTitle = () => {
+    if (media.type === 'audio/mpeg') {
+      return 'Áudio';
+    }
+    if (media.type === 'video/mp4') {
+      return 'Vídeo';
+    }
+    return 'Documento';
   };
 
   const onStartPlay = async (path) => {
@@ -66,6 +73,23 @@ const ShowMediaModal = ({media, closeModal}) => {
     closeModal();
   };
 
+  const displayDocument = (uri) => {
+    return (
+      <Document>
+        <Pdf
+          source={{uri}}
+          page={0}
+          style={{
+            backgroundColor: '#000',
+            flex: 1,
+            height: '100%',
+            width: '100%',
+          }}
+        />
+      </Document>
+    );
+  };
+
   const displayAudio = (durationTime, uri) => {
     return (
       <Audio>
@@ -100,16 +124,16 @@ const ShowMediaModal = ({media, closeModal}) => {
   return (
     <Container>
       <Header>
-        <Text fontSize={theme.font.sizes.ML}>Áudio</Text>
+        <Text fontSize={theme.font.sizes.ML}>{getTitle()}</Text>
       </Header>
       <Media>
-        {media.type === 'image/jpeg' ? displayImage(media.uri) : null}
         {media.type === 'audio/mpeg'
           ? displayAudio(getTime(media.duration).split('.')[0], media.uri)
           : null}
         {media.type === 'video/mp4' ? (
           <Text fontSize={theme.font.sizes.ML}>{media.uri}</Text>
         ) : null}
+        {media.type === 'application/pdf' ? displayDocument(media.uri) : null}
       </Media>
       <OptionsButton onPress={handleCloseModal}>
         <Btn

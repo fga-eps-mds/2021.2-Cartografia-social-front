@@ -267,7 +267,11 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
               </Text>
             </AudioContainer>
           </MediaButton>
-          <DeleteButton onPress={() => DeleteMedia(item.uri)}>
+          <DeleteButton
+            onPress={() => {
+              DeleteMedia(item.uri);
+              setAudioCount(audioCount - 1);
+            }}>
             <Icon size={normalize(20)} name="trash" color="#FF0000" />
           </DeleteButton>
         </MediaContainer>
@@ -400,8 +404,8 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
           </Modal>
           <Modal
             isVisible={modalShowMediaVisible}
-            onSwipeComplete={closeShowMediaModal}
-            swipeDirection={['down']}
+            // onSwipeComplete={closeShowMediaModal}
+            // swipeDirection={['down']}
             style={{justifyContent: 'center', margin: 0}}>
             <ShowMediaModal
               media={mediaShowed}
