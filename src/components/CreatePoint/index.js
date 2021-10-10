@@ -12,6 +12,7 @@ import api from 'services/api';
 import Fabs from 'components/Fabs';
 import theme from 'theme/theme';
 import instance from 'services/api2';
+import useDocumentPicker from 'services/useDocumentPicker';
 import FormData from 'form-data';
 import RecordAudioModalContent from 'components/RecordAudioModalContent';
 import SelectModal from 'components/SelectModal';
@@ -59,7 +60,25 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
   const [modalCamVisible, setModalCamVisible] = useState(false);
   const [modalMediaVisible, setModalMediaVisible] = useState(false);
 
+  const selectPdf = async () => {
+    const results = await useDocumentPicker();
+
+    if (results) {
+      const formattedResults = results.map((item) => ({
+        uri: item.uri,
+        fileName: item.name,
+        type: item.type,
+      }));
+
+      setMedias([...medias, ...formattedResults]);
+    }
+  };
+
   const actions = [
+    {
+      icon: 'file-pdf',
+      onPress: () => selectPdf(),
+    },
     {
       icon: 'microphone',
       onPress: () => setModalVisible(true),
@@ -187,6 +206,7 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
     if (item.type === 'image/jpeg') {
       return <Image source={{uri: item.uri}} />;
     }
+
     if (item.type === 'audio/mpeg') {
       return (
         <MidiaContainer>
@@ -198,6 +218,21 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
         </MidiaContainer>
       );
     }
+
+    if (item.type === 'application/pdf') {
+      return (
+        <MidiaContainer>
+          <Icon size={normalize(40)} name="file-pdf" color="#2a3c46" />
+          <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>PDF</Text>
+          <Text
+            numberOfLines={1}
+            style={{fontSize: normalize(15), color: '#2a3c46'}}>
+            {item.fileName}
+          </Text>
+        </MidiaContainer>
+      );
+    }
+
     return (
       <ImageBackground
         source={{uri: item.thumb}}
