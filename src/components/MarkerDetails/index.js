@@ -1,12 +1,30 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {View, Text, Divisor} from 'components/UI';
 import theme from 'theme/theme';
-import MediaCarousel from '../MediaCarousel';
+import MediasList from '../MediasList';
 
 const MarkerDetails = ({marker, sheetRef}) => {
   const snapPoints = [400, '95%'];
+  const [visibleImageModal, setIsVisibleImageModal] = useState(false);
+  const [openedImage, setOpenedImage] = useState({});
+  const [audioCount, setAudioCount] = useState(0);
+
+  const handleShowMedia = (fileType, fileUri, fileDuration) => {
+    const media = {
+      type: fileType,
+      uri: fileUri,
+      duration: fileDuration,
+    };
+    setMediaShowed(media);
+  };
+
+  const DeleteMedia = (mediaPath) => {
+    const newMediasList = medias.filter((media) => media.uri !== mediaPath);
+
+    setMedias(newMediasList);
+  };
 
   return (
     <BottomSheet
@@ -28,7 +46,6 @@ const MarkerDetails = ({marker, sheetRef}) => {
                 <View
                   style={{
                     justifyContent: 'flex-start',
-                    backgroundColor: '#000',
                     height: '35%',
                   }}>
                   <Text
@@ -38,7 +55,15 @@ const MarkerDetails = ({marker, sheetRef}) => {
                     flex={1}>
                     Visualizar todos
                   </Text>
-                  <MediaCarousel />
+                  <MediasList
+                    medias={marker.multimedia}
+                    setOpenedImage={setOpenedImage}
+                    setIsVisibleImageModal={setIsVisibleImageModal}
+                    DeleteMedia={DeleteMedia}
+                    handleShowMedia={handleShowMedia}
+                    audioCount={audioCount}
+                    setAudioCount={setAudioCount}
+                  />
                 </View>
               ) : null}
               <View p={3}>

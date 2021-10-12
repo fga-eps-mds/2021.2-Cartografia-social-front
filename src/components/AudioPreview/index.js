@@ -12,6 +12,7 @@ const AudioPreview = ({
   audioCount,
   setAudioCount,
   DeleteMedia,
+  hasDelete,
 }) => {
   const getTime = (time) => {
     return new Date(time).toISOString().slice(11, -1);
@@ -27,13 +28,15 @@ const AudioPreview = ({
           </Text>
         </AudioContainer>
       </MediaButton>
-      <DeleteButton
-        onPress={() => {
-          DeleteMedia(item.uri);
-          setAudioCount(audioCount - 1);
-        }}>
-        <Icon size={normalize(20)} name="trash" color="#FF0000" />
-      </DeleteButton>
+      {hasDelete ? (
+        <DeleteButton
+          onPress={() => {
+            DeleteMedia(item.uri);
+            setAudioCount(audioCount - 1);
+          }}>
+          <Icon size={normalize(20)} name="trash" color="#FF0000" />
+        </DeleteButton>
+      ) : null}
     </MediaContainer>
   );
 };
@@ -48,6 +51,7 @@ AudioPreview.propTypes = {
   audioCount: PropTypes.number,
   setAudioCount: PropTypes.func,
   DeleteMedia: PropTypes.func,
+  hasDelete: PropTypes.bool,
 };
 
 AudioPreview.defaultProps = {
@@ -56,6 +60,7 @@ AudioPreview.defaultProps = {
   audioCount: 0,
   setAudioCount: () => null,
   DeleteMedia: () => null,
+  hasDelete: true,
 };
 
 export default AudioPreview;

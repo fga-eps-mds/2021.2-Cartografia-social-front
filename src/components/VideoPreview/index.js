@@ -6,7 +6,7 @@ import {MediaContainer, MediaButton, DeleteButton, Icon} from '../../styles';
 
 import {ImageBackground} from './styles';
 
-const VideoPreview = ({item, handleShowMedia, DeleteMedia}) => {
+const VideoPreview = ({item, handleShowMedia, DeleteMedia, hasDelete}) => {
   return (
     <MediaContainer>
       <MediaButton onPress={() => handleShowMedia(item.type, item.uri)}>
@@ -16,9 +16,11 @@ const VideoPreview = ({item, handleShowMedia, DeleteMedia}) => {
           <Icon size={normalize(20)} name="play" color={theme.colors.primary} />
         </ImageBackground>
       </MediaButton>
-      <DeleteButton onPress={() => DeleteMedia(item.uri)}>
-        <Icon size={normalize(20)} name="trash" color="#FF0000" />
-      </DeleteButton>
+      {hasDelete ? (
+        <DeleteButton onPress={() => DeleteMedia(item.uri)}>
+          <Icon size={normalize(20)} name="trash" color="#FF0000" />
+        </DeleteButton>
+      ) : null}
     </MediaContainer>
   );
 };
@@ -31,12 +33,14 @@ VideoPreview.propTypes = {
   }),
   handleShowMedia: PropTypes.func,
   DeleteMedia: PropTypes.func,
+  hasDelete: PropTypes.bool,
 };
 
 VideoPreview.defaultProps = {
   item: {},
   handleShowMedia: () => null,
   DeleteMedia: () => null,
+  hasDelete: true,
 };
 
 export default VideoPreview;

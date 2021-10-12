@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react';
 import PropTypes from 'prop-types';
 import normalize from 'react-native-normalize';
@@ -9,6 +10,7 @@ const ImagePreview = ({
   setOpenedImage,
   setIsVisibleImageModal,
   DeleteMedia,
+  hasDelete,
 }) => {
   return (
     <MediaContainer>
@@ -19,9 +21,12 @@ const ImagePreview = ({
         }}>
         <Image source={{uri: item.uri}} />
       </MediaButton>
-      <DeleteButton onPress={() => DeleteMedia(item.uri)}>
-        <Icon size={normalize(20)} name="trash" color="#FF0000" />
-      </DeleteButton>
+      {hasDelete ? (
+        <DeleteButton onPress={() => DeleteMedia(item.uri)}>
+          <Icon size={normalize(20)} name="trash" color="#FF0000" />
+        </DeleteButton>
+
+      ) : null}
     </MediaContainer>
   );
 };
@@ -33,6 +38,7 @@ ImagePreview.propTypes = {
   setOpenedImage: PropTypes.func,
   setIsVisibleImageModal: PropTypes.func,
   DeleteMedia: PropTypes.func,
+  hasDelete: PropTypes.bool,
 };
 
 ImagePreview.defaultProps = {
@@ -40,6 +46,7 @@ ImagePreview.defaultProps = {
   setOpenedImage: () => null,
   setIsVisibleImageModal: () => null,
   DeleteMedia: () => null,
+  hasDelete: true,
 };
 
 export default ImagePreview;
