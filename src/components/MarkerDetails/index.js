@@ -3,6 +3,9 @@ import React, {useEffect, useState} from 'react';
 import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {View, Text, Divisor} from 'components/UI';
 import theme from 'theme/theme';
+import ImageView from 'react-native-image-viewing';
+import Modal from 'react-native-modal';
+import ShowMediaModal from 'components/ShowMediaModal';
 import MediasList from '../MediasList';
 
 const MarkerDetails = ({marker, sheetRef}) => {
@@ -10,6 +13,8 @@ const MarkerDetails = ({marker, sheetRef}) => {
   const [visibleImageModal, setIsVisibleImageModal] = useState(false);
   const [openedImage, setOpenedImage] = useState({});
   const [audioCount, setAudioCount] = useState(0);
+  const [mediaShowed, setMediaShowed] = useState({});
+  const [modalShowMediaVisible, setModalShowMediaVisible] = useState(false);
 
   const handleShowMedia = (fileType, fileUri, fileDuration) => {
     const media = {
@@ -20,11 +25,16 @@ const MarkerDetails = ({marker, sheetRef}) => {
     setMediaShowed(media);
   };
 
-  const DeleteMedia = (mediaPath) => {
-    const newMediasList = medias.filter((media) => media.uri !== mediaPath);
-
-    setMedias(newMediasList);
+  const closeShowMediaModal = () => {
+    setMediaShowed({});
+    setModalShowMediaVisible(false);
   };
+
+  useEffect(() => {
+    if (Object.keys(mediaShowed).length !== 0) {
+      setModalShowMediaVisible(true);
+    }
+  }, [mediaShowed]);
 
   return (
     <BottomSheet
@@ -59,7 +69,6 @@ const MarkerDetails = ({marker, sheetRef}) => {
                     medias={marker.multimedia}
                     setOpenedImage={setOpenedImage}
                     setIsVisibleImageModal={setIsVisibleImageModal}
-                    DeleteMedia={DeleteMedia}
                     handleShowMedia={handleShowMedia}
                     audioCount={audioCount}
                     setAudioCount={setAudioCount}
@@ -74,6 +83,20 @@ const MarkerDetails = ({marker, sheetRef}) => {
         ) : (
           <View />
         )}
+        <ImageView
+          images={[openedImage]}
+          imageIndex={0}
+          visible={visibleImageModal}
+          onRequestClose={() => setIsVisibleImageModal(false)}
+        />
+        <Modal
+          isVisible={modalShowMediaVisible}
+          style={{justifyContent: 'center', margin: 0}}>
+          <ShowMediaModal
+            media={mediaShowed}
+            closeModal={closeShowMediaModal}
+          />
+        </Modal>
       </BottomSheetScrollView>
     </BottomSheet>
   );

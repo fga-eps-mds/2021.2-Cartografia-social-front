@@ -13,7 +13,7 @@ const ImagePreview = ({
   hasDelete,
 }) => {
   return (
-    <MediaContainer>
+    <MediaContainer bigger={hasDelete || null}>
       <MediaButton
         onPress={() => {
           setOpenedImage(item);

@@ -12,7 +12,6 @@ const MediasList = ({
   medias,
   setOpenedImage,
   setIsVisibleImageModal,
-  DeleteMedia,
   handleShowMedia,
   audioCount,
   setAudioCount,
@@ -24,7 +23,6 @@ const MediasList = ({
           item={item}
           setOpenedImage={setOpenedImage}
           setIsVisibleImageModal={setIsVisibleImageModal}
-          DeleteMedia={DeleteMedia}
           hasDelete={false}
         />
       );
@@ -37,7 +35,6 @@ const MediasList = ({
           handleShowMedia={handleShowMedia}
           audioCount={audioCount}
           setAudioCount={setAudioCount}
-          DeleteMedia={DeleteMedia}
           hasDelete={false}
         />
       );
@@ -48,7 +45,6 @@ const MediasList = ({
         <DocumentPreview
           item={item}
           handleShowMedia={handleShowMedia}
-          DeleteMedia={DeleteMedia}
           hasDelete={false}
         />
       );
@@ -58,7 +54,6 @@ const MediasList = ({
       <VideoPreview
         item={item}
         handleShowMedia={handleShowMedia}
-        DeleteMedia={DeleteMedia}
         hasDelete={false}
       />
     );
@@ -80,7 +75,6 @@ MediasList.propTypes = {
   medias: PropTypes.arrayOf(PropTypes.object),
   setOpenedImage: PropTypes.func,
   setIsVisibleImageModal: PropTypes.func,
-  DeleteMedia: PropTypes.func,
   handleShowMedia: PropTypes.func,
   audioCount: PropTypes.number,
   setAudioCount: PropTypes.func,
@@ -90,7 +84,6 @@ MediasList.defaultProps = {
   medias: [{}],
   setOpenedImage: () => null,
   setIsVisibleImageModal: () => null,
-  DeleteMedia: () => null,
   handleShowMedia: () => null,
   audioCount: 0,
   setAudioCount: () => null,

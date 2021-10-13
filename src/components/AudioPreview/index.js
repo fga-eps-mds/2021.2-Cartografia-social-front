@@ -18,7 +18,7 @@ const AudioPreview = ({
     return new Date(time).toISOString().slice(11, -1);
   };
   return (
-    <MediaContainer>
+    <MediaContainer bigger={hasDelete || null}>
       <MediaButton
         onPress={() => handleShowMedia(item.type, item.uri, item.duration)}>
         <AudioContainer>

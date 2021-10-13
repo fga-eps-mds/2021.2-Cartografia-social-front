@@ -6,7 +6,7 @@ import {MediaContainer, MediaButton, DeleteButton, Icon} from '../../styles';
 
 const DocumentPreview = ({item, handleShowMedia, DeleteMedia, hasDelete}) => {
   return (
-    <MediaContainer>
+    <MediaContainer bigger={hasDelete || null}>
       <MediaButton
         onPress={() => handleShowMedia(item.type, item.uri, item.duration)}>
         <Icon size={normalize(40)} name="file-pdf" color="#2a3c46" />
