@@ -105,11 +105,11 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
   };
 
   const onSave = async () => {
+    let locationId = '';
     setShowMarker(false);
     setTimeout(() => {
       setShowMarker(true);
     }, 2000);
-
     let newMarker;
 
     if (isCreatingArea) {
@@ -133,7 +133,9 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
     dispatch(Actions.createMarker(newMarker));
     if (user && user.id) {
       try {
-        await api.post('/maps/point', newMarker);
+        await api.post('/maps/point', newMarker).then((response) => {
+          locationId = response.data;
+        });
       } catch (error) {
         Alert.alert('Cartografia Social', error.message);
       }
@@ -142,6 +144,7 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
     sheetRef.current.close();
 
     medias.map(async (media) => {
+      let mediaId = '';
       try {
         const formData = new FormData();
         formData.append('file', {
@@ -149,16 +152,24 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
           type: media.type,
           name: media.fileName,
         });
-        await instance.post('midia/uploadMidia', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
+        await instance
+          .post('midia/uploadMidia', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          })
+          .then((response) => {
+            mediaId = response.data;
+          });
+        const newMediaPoint = {
+          locationId,
+          mediaId,
+        };
+        await api.post('/maps/addMediaToPoint', newMediaPoint);
       } catch (error) {
         Alert.alert('erro ao salvar áudio: ', media.fileName);
       }
     });
-
     setTimeout(() => {
       onCloseBottomSheet();
     }, 1000);
