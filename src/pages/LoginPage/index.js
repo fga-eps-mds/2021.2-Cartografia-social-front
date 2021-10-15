@@ -11,7 +11,6 @@ import {Container, Header, HeaderText, InputText, TextBtn} from './styles';
 
 const LoginPage = ({navigation}) => {
   const dispatch = useDispatch();
-  // const dispatch = useDispatch();
 
   const navigateToScreen = async (screen) => {
     navigation.navigate(screen);
@@ -35,10 +34,16 @@ const LoginPage = ({navigation}) => {
     auth()
       .signInWithEmailAndPassword(email.value, password.value)
       .then(async (userCredentials) => {
+        const userLogIn = {
+          name: userCredentials.user.displayName,
+          id: userCredentials.user.providerId,
+          token: userCredentials.user.getIdToken(),
+          demonstrationMode: true,
+        };
         const idTokenUser = await userCredentials.user.getIdToken();
 
-        // console.log(idTokenUser);
         await AsyncStorage.setItem('access_token', `Bearer ${idTokenUser}`);
+        dispatch(Actions.login(userLogIn));
         dispatch(Actions.useDemonstrationMode());
       })
       .catch((error) => {
