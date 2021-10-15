@@ -12,6 +12,7 @@ import theme from 'theme/theme';
 
 import LoginPage from 'pages/LoginPage';
 import DynamicForm from 'pages/DynamicForm';
+import SupportForm from 'pages/SupportForm';
 
 import Map from 'pages/Map';
 import InitialPage from 'pages/InitialPage';
@@ -85,6 +86,18 @@ const Routes = () => {
           headerTintColor: '#fff',
         }}
       />
+      <Drawer.Screen
+        name="Solicitar Apoio"
+        component={SupportForm}
+        options={{
+          title: 'Solicitar Apoio',
+          headerStyle: {
+            backgroundColor: `${theme.colors.primary}`,
+            elevation: 0,
+          },
+          headerTintColor: '#fff',
+        }}
+      />
     </Drawer.Navigator>
   );
 
@@ -121,9 +134,7 @@ const Routes = () => {
           barStyle="dark-content"
           backgroundColor={theme.colors.white}
         />
-        <NavigationContainer theme={{colors: {background: theme.colors.white}}}>
-          {AppRoutes()}
-        </NavigationContainer>
+        <NavigationContainer>{AppRoutes()}</NavigationContainer>
       </ThemeProvider>
     </>
   );
