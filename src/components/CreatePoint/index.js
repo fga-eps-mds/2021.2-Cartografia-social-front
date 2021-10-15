@@ -145,30 +145,33 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
 
     medias.map(async (media) => {
       let mediaId = '';
-      try {
-        const formData = new FormData();
-        formData.append('file', {
-          uri: media.uri,
-          type: media.type,
-          name: media.fileName,
+
+      const formData = new FormData();
+      formData.append('file', {
+        uri: media.uri,
+        type: media.type,
+        name: media.fileName,
+      });
+      await instance
+        .post('midia/uploadMidia', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then((response) => {
+          mediaId = response.data;
+        })
+        .catch(() => {
+          Alert.alert('erro ao salvar áudio: ', media.fileName);
         });
-        await instance
-          .post('midia/uploadMidia', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          })
-          .then((response) => {
-            mediaId = response.data;
-          });
-        const newMediaPoint = {
-          locationId,
-          mediaId,
-        };
-        await api.post('/maps/addMediaToPoint', newMediaPoint);
-      } catch (error) {
-        Alert.alert('erro ao salvar áudio: ', media.fileName);
-      }
+      const newMediaPoint = {
+        locationId,
+        mediaId,
+      };
+      await api.post('/maps/addMediaToPoint', newMediaPoint).catch((error) => {
+        // eslint-disable-next-line no-console
+        console.log(error);
+      });
     });
     setTimeout(() => {
       onCloseBottomSheet();

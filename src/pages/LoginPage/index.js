@@ -47,6 +47,7 @@ const LoginPage = ({navigation}) => {
         dispatch(Actions.useDemonstrationMode());
       })
       .catch((error) => {
+        // eslint-disable-next-line no-console
         console.error(error);
       });
   };
