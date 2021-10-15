@@ -9,7 +9,7 @@ const DocumentPreview = ({item, handleShowMedia, DeleteMedia, hasDelete}) => {
     <MediaContainer bigger={hasDelete || null}>
       <MediaButton
         onPress={() => handleShowMedia(item.type, item.uri, item.duration)}
-        style={{borderWidth: 1, borderRadius: 7}}>
+        style={{borderWidth: 1, borderRadius: 7, padding: 5}}>
         <Icon size={normalize(40)} name="file-pdf" color="#2a3c46" />
         <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>PDF</Text>
         <Text

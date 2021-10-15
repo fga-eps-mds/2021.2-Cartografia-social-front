@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import normalize from 'react-native-normalize';
 import {FlatList} from 'components/UI';
 import ImagePreview from 'components/ImagePreview';
 import AudioPreview from 'components/AudioPreview';
@@ -65,6 +64,7 @@ const MediasList = ({
         data={medias}
         horizontal
         keyExtractor={(item) => item.uri}
+        horizontalScroll
         renderItem={renderItem}
       />
     </Container>

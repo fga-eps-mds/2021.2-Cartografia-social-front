@@ -30,6 +30,20 @@ const MarkerDetails = ({marker, sheetRef}) => {
     setModalShowMediaVisible(false);
   };
 
+  const sortMediasByImages = () => {
+    const medias = [...marker.multimedia];
+    medias.sort((a, b) => {
+      if (a.type === 'image/jpeg') {
+        return -1;
+      }
+      if (b.type === 'image/jpeg') {
+        return 1;
+      }
+      return 0;
+    });
+    return medias;
+  };
+
   useEffect(() => {
     if (Object.keys(mediaShowed).length !== 0) {
       setModalShowMediaVisible(true);
@@ -62,11 +76,11 @@ const MarkerDetails = ({marker, sheetRef}) => {
                     fontSize={theme.font.sizes.SM}
                     mb={3}
                     textAlign="right"
-                    flex={1}>
+                    flex={0.5}>
                     Visualizar todos
                   </Text>
                   <MediasList
-                    medias={marker.multimedia}
+                    medias={sortMediasByImages()}
                     setOpenedImage={setOpenedImage}
                     setIsVisibleImageModal={setIsVisibleImageModal}
                     handleShowMedia={handleShowMedia}
