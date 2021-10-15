@@ -1,4 +1,4 @@
-import React, {useRef, useMemo, useState} from 'react';
+import React, {useRef, useMemo, useState, useEffect} from 'react';
 import {Alert} from 'react-native';
 import Modal from 'react-native-modal';
 import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
@@ -16,17 +16,16 @@ import useDocumentPicker from 'services/useDocumentPicker';
 import FormData from 'form-data';
 import RecordAudioModalContent from 'components/RecordAudioModalContent';
 import SelectModal from 'components/SelectModal';
-import normalize from 'react-native-normalize';
+import ShowMediaModal from 'components/ShowMediaModal';
 import MediaModalContent from 'components/MediaModalContent';
+import ImageView from 'react-native-image-viewing';
 import UseCamera from '../../services/useCamera';
+import ImagePreview from '../ImagePreview';
+import AudioPreview from '../AudioPreview';
+import DocumentPreview from '../DocumentPreview';
+import VideoPreview from '../VideoPreview';
 
-import {
-  Container,
-  Icon,
-  Image,
-  MidiaContainer,
-  ImageBackground,
-} from './styles';
+import {Container, Icon} from './styles';
 
 const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
   UseCamera();
@@ -59,6 +58,10 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalCamVisible, setModalCamVisible] = useState(false);
   const [modalMediaVisible, setModalMediaVisible] = useState(false);
+  const [modalShowMediaVisible, setModalShowMediaVisible] = useState(false);
+  const [mediaShowed, setMediaShowed] = useState({});
+  const [visibleImageModal, setIsVisibleImageModal] = useState(false);
+  const [openedImage, setOpenedImage] = useState({});
 
   const selectPdf = async () => {
     const results = await useDocumentPicker();
@@ -194,51 +197,76 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
     setModalMediaVisible(!modalMediaVisible);
   };
 
+  const closeShowMediaModal = () => {
+    setMediaShowed({});
+    setModalShowMediaVisible(false);
+  };
+
+  const handleShowMedia = (fileType, fileUri, fileDuration) => {
+    const media = {
+      type: fileType,
+      uri: fileUri,
+      duration: fileDuration,
+    };
+    setMediaShowed(media);
+  };
+
   const setMediasList = (newMedia) => {
     setMedias([...medias, ...newMedia]);
   };
 
-  const getTime = (time) => {
-    return new Date(time).toISOString().slice(11, -1);
+  const DeleteMedia = (mediaPath) => {
+    const newMediasList = medias.filter((media) => media.uri !== mediaPath);
+
+    setMedias(newMediasList);
   };
+
+  useEffect(() => {
+    if (Object.keys(mediaShowed).length !== 0) {
+      setModalShowMediaVisible(true);
+    }
+  }, [mediaShowed]);
 
   const renderItem = ({item}) => {
     if (item.type === 'image/jpeg') {
-      return <Image source={{uri: item.uri}} />;
+      return (
+        <ImagePreview
+          item={item}
+          setOpenedImage={setOpenedImage}
+          setIsVisibleImageModal={setIsVisibleImageModal}
+          DeleteMedia={DeleteMedia}
+        />
+      );
     }
 
     if (item.type === 'audio/mpeg') {
       return (
-        <MidiaContainer>
-          <Icon size={normalize(40)} name="microphone" color="#2a3c46" />
-          <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>Áudio</Text>
-          <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>
-            {getTime(item.duration).split('.')[0]}
-          </Text>
-        </MidiaContainer>
+        <AudioPreview
+          item={item}
+          handleShowMedia={handleShowMedia}
+          audioCount={audioCount}
+          setAudioCount={setAudioCount}
+          DeleteMedia={DeleteMedia}
+        />
       );
     }
 
     if (item.type === 'application/pdf') {
       return (
-        <MidiaContainer>
-          <Icon size={normalize(40)} name="file-pdf" color="#2a3c46" />
-          <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>PDF</Text>
-          <Text
-            numberOfLines={1}
-            style={{fontSize: normalize(15), color: '#2a3c46'}}>
-            {item.fileName}
-          </Text>
-        </MidiaContainer>
+        <DocumentPreview
+          item={item}
+          handleShowMedia={handleShowMedia}
+          DeleteMedia={DeleteMedia}
+        />
       );
     }
 
     return (
-      <ImageBackground
-        source={{uri: item.thumb}}
-        imageStyle={{borderRadius: 7}}>
-        <Icon size={normalize(20)} name="play" color={theme.colors.primary} />
-      </ImageBackground>
+      <VideoPreview
+        item={item}
+        handleShowMedia={handleShowMedia}
+        DeleteMedia={DeleteMedia}
+      />
     );
   };
 
@@ -265,11 +293,11 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
                     Multimídia
                   </Text>
                   <FlatList
-                    mb={3}
+                    mb={1}
                     data={medias}
                     horizontal
-                    renderItem={renderItem}
                     keyExtractor={(item) => item.uri}
+                    renderItem={renderItem}
                   />
                 </View>
               ) : null}
@@ -326,6 +354,20 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
               setMedias={setMediasList}
             />
           </Modal>
+          <Modal
+            isVisible={modalShowMediaVisible}
+            style={{justifyContent: 'center', margin: 0}}>
+            <ShowMediaModal
+              media={mediaShowed}
+              closeModal={closeShowMediaModal}
+            />
+          </Modal>
+          <ImageView
+            images={[openedImage]}
+            imageIndex={0}
+            visible={visibleImageModal}
+            onRequestClose={() => setIsVisibleImageModal(false)}
+          />
         </View>
       </>
     );
