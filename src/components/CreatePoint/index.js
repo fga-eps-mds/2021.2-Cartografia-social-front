@@ -132,13 +132,14 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
 
     dispatch(Actions.createMarker(newMarker));
     if (user && user.id) {
-      try {
-        await api.post('/maps/point', newMarker).then((response) => {
+      await api
+        .post('/maps/point', newMarker)
+        .then((response) => {
           locationId = response.data;
+        })
+        .catch((error) => {
+          Alert.alert('Cartografia Social', error.message);
         });
-      } catch (error) {
-        Alert.alert('Cartografia Social', error.message);
-      }
     }
 
     sheetRef.current.close();
@@ -152,6 +153,7 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
         type: media.type,
         name: media.fileName,
       });
+
       await instance
         .post('midia/uploadMidia', formData, {
           headers: {
@@ -165,7 +167,7 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
           Alert.alert('erro ao salvar áudio: ', media.fileName);
         });
       const newMediaPoint = {
-        locationId,
+        locationId: locationId.id,
         mediaId,
       };
       await api.post('/maps/addMediaToPoint', newMediaPoint).catch((error) => {
