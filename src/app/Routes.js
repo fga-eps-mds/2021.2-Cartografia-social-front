@@ -134,9 +134,7 @@ const Routes = () => {
           barStyle="dark-content"
           backgroundColor={theme.colors.white}
         />
-        <NavigationContainer>
-          {AppRoutes()}
-        </NavigationContainer>
+        <NavigationContainer>{AppRoutes()}</NavigationContainer>
       </ThemeProvider>
     </>
   );
