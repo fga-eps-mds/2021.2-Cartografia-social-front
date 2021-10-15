@@ -4,11 +4,12 @@ import normalize from 'react-native-normalize';
 import {Text} from 'components/UI';
 import {MediaContainer, MediaButton, DeleteButton, Icon} from '../../styles';
 
-const DocumentPreview = ({item, handleShowMedia, DeleteMedia}) => {
+const DocumentPreview = ({item, handleShowMedia, DeleteMedia, hasDelete}) => {
   return (
-    <MediaContainer>
+    <MediaContainer bigger={hasDelete || null}>
       <MediaButton
-        onPress={() => handleShowMedia(item.type, item.uri, item.duration)}>
+        onPress={() => handleShowMedia(item.type, item.uri, item.duration)}
+        style={{borderWidth: 1, borderRadius: 7, padding: 5}}>
         <Icon size={normalize(40)} name="file-pdf" color="#2a3c46" />
         <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>PDF</Text>
         <Text
@@ -17,9 +18,11 @@ const DocumentPreview = ({item, handleShowMedia, DeleteMedia}) => {
           {item.fileName}
         </Text>
       </MediaButton>
-      <DeleteButton onPress={() => DeleteMedia(item.uri)}>
-        <Icon size={normalize(20)} name="trash" color="#FF0000" />
-      </DeleteButton>
+      {hasDelete ? (
+        <DeleteButton onPress={() => DeleteMedia(item.uri)}>
+          <Icon size={normalize(20)} name="trash" color="#FF0000" />
+        </DeleteButton>
+      ) : null}
     </MediaContainer>
   );
 };
@@ -33,12 +36,14 @@ DocumentPreview.propTypes = {
   }),
   handleShowMedia: PropTypes.func,
   DeleteMedia: PropTypes.func,
+  hasDelete: PropTypes.bool,
 };
 
 DocumentPreview.defaultProps = {
   item: {},
   handleShowMedia: () => null,
   DeleteMedia: () => null,
+  hasDelete: true,
 };
 
 export default DocumentPreview;

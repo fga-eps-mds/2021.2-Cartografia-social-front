@@ -18,8 +18,8 @@ export const MediaButton = styled.TouchableOpacity`
 `;
 
 export const MediaContainer = styled.View`
-  width: ${normalize(100)};
-  height: ${normalize(125)};
+  width: ${({bigger}) => (bigger ? normalize(100) : normalize(170))}px;
+  height: ${({bigger}) => (bigger ? normalize(125) : normalize(225))}px;
   margin-left: 5px;
   margin-right: 5px;
   margin-top: 5px;

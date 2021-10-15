@@ -36,6 +36,7 @@
     "react-native": "0.63.4",
     "react-native-android-location-enabler": "^1.2.2",
     "react-native-audio-recorder-player": "^3.2.0",
+    "react-native-blob-util": "^0.13.16",
     "react-native-camera": "^4.1.1",
     "react-native-config": "^1.4.4",
     "react-native-create-thumbnail": "^1.4.1",
