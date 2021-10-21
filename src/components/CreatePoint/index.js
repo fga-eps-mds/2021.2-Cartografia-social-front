@@ -116,6 +116,10 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
     let newMarker;
 
     if (isCreatingArea) {
+      if (area.coordinates.length < 3) {
+        Alert.alert('Atenção!', 'É Necessário marcar um polígono no mapa!');
+        return;
+      }
       newMarker = {
         coordinates: area.coordinates,
         title: title.value,
