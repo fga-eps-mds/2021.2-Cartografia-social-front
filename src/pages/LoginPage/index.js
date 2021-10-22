@@ -46,8 +46,9 @@ const LoginPage = ({navigation}) => {
         const userLogIn = {
           name: userCredentials.user.displayName,
           id: userCredentials.user.providerId,
-          token: userCredentials.user.getIdToken(),
+          token: await userCredentials.user.getIdToken(),
           demonstrationMode: true,
+          email: email.value,
         };
         const idTokenUser = await userCredentials.user.getIdToken();
 

@@ -1,9 +1,13 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import Input from 'components/UI/Input';
 import required from 'validators/required';
 import ScrollView from 'components/UI/ScrollView';
 import normalize from 'react-native-normalize';
+import api from 'services/api';
+import {useSelector} from 'react-redux';
+import {auth} from 'store/selectors';
 import Picker from '../../components/Picker';
+import Btn from '../../components/UI/Btn';
 import {
   Main,
   Container,
@@ -18,25 +22,96 @@ const CreateCommunity = () => {
   const [communityDescription, setCommunityDescription] = useState('');
   const [isModalPickerVisible, setIsModalPickerVisible] = useState(false);
   const [userSelected, setUserSelected] = useState('Selecione um usuário');
+  const user = useSelector(auth);
 
   const toggleModalPicker = () =>
     setIsModalPickerVisible(!isModalPickerVisible);
 
-  useEffect(() => {
-    console.log(communityName);
-    console.log(communityDescription);
-  }, [communityName, communityDescription]);
+  // Valida formulário
+  const formIsValid = (questions) => {
+    if (!userSelected.email) {
+      return false;
+    }
+    let isValid = true;
+    questions.some((item) => {
+      if (!item.isValid) {
+        isValid = false;
+        return true;
+      }
+      return false;
+    });
+    return isValid;
+  };
 
-  useEffect(() => {
-    // get users from api
-  }, []);
+  const onSave = async () => {
+    const communityDto = {
+      name: communityName.value,
+      description: communityDescription.value,
+    };
+
+    const userResponse = await api
+      .get(
+        'users/userByEmail',
+        {
+          params: {
+            email: userSelected.email ? userSelected.email : '',
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        },
+      )
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.log(error);
+      });
+    const userId = userResponse.data.id;
+    const response = await api
+      .post('community', communityDto, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      })
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.log(error);
+      });
+    const communityId = response.data.id;
+
+    const adminUserDto = {
+      userId,
+      communityId,
+    };
+    await api
+      .post('community/addUser', adminUserDto, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      })
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.log(error);
+      });
+    await api
+      .post('community/addAdminUser', adminUserDto, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      })
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.log(error);
+      });
+  };
 
   return (
     <Main>
       <Picker
         visible={isModalPickerVisible}
         toggle={toggleModalPicker}
-        setName={setUserSelected}
+        setUser={setUserSelected}
       />
       <ScrollView>
         <Container>
@@ -57,9 +132,17 @@ const CreateCommunity = () => {
           />
           <InputText>Selecione o administrador da comunidade</InputText>
           <PickerContainer onPress={() => setIsModalPickerVisible(true)}>
-            <PickerText selected>{userSelected}</PickerText>
+            <PickerText selected>
+              {userSelected.email ? userSelected.email : userSelected}
+            </PickerText>
             <Icon size={normalize(20)} name="angle-down" color="#a3a3a3" />
           </PickerContainer>
+          <Btn
+            title="Salvar"
+            color="#FFF"
+            onPress={onSave}
+            disabled={!formIsValid([communityName, communityDescription])}
+          />
         </Container>
       </ScrollView>
     </Main>

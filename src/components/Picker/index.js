@@ -1,11 +1,13 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Modal from 'react-native-modal';
 import normalize from 'react-native-normalize';
 import Input from 'components/UI/Input';
 import required from 'validators/required';
 import {FlatList} from 'components/UI';
+import api from 'services/api';
 import PropTypes from 'prop-types';
 import Btn from '../UI/Btn';
+
 import {
   ModalContainer,
   SearchBox,
@@ -13,31 +15,40 @@ import {
   UserItem,
   EmptyArea,
   Icon,
+  MessageText,
 } from './styles';
 
-const Picker = ({visible, toggle, setName}) => {
-  const users = [
-    {name: 'arthur', role: 'usuario_comum'},
-    {name: 'bruno', role: 'usuario_comum'},
-    {name: 'lucas', role: 'usuario_comum'},
-    {name: 'anderson', role: 'usuario_comum'},
-    {name: 'Aline', role: 'usuario_comum'},
-    {name: 'amanda', role: 'usuario_comum'},
-    {name: 'atila', role: 'usuario_comum'},
-  ];
-  const [itens, setItens] = useState([...users]);
-  const [auxItens, setAuxItens] = useState([...users]);
+const Picker = ({visible, toggle, setUser}) => {
+  const [itens, setItens] = useState([]);
+  const [auxItens, setAuxItens] = useState([]);
+
+  useEffect(() => {
+    async function getUsersWithoutACommunity() {
+      const response = await api
+        .get('community/getUsersWithoutACommunity')
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.log(error);
+        });
+
+      if (response) {
+        setItens([...response.data]);
+        setAuxItens([...response.data]);
+      }
+    }
+
+    getUsersWithoutACommunity();
+  }, []);
 
   const renderItem = (item) => (
     <UserItem
       onPress={() => {
-        setName(item.name);
+        setUser(item);
         toggle();
-        setItens([...users]);
-        setAuxItens([...users]);
+        setAuxItens([...itens]);
       }}>
       <Icon size={normalize(25)} name="user-circle" color="#a3a3a3" />
-      <ItemText>{item.name}</ItemText>
+      <ItemText>{item.email}</ItemText>
     </UserItem>
   );
 
@@ -56,22 +67,28 @@ const Picker = ({visible, toggle, setName}) => {
       onPress>
       <EmptyArea onPress={() => toggle()} />
       <ModalContainer>
-        <SearchBox>
-          <Input
-            label="Pesquisar..."
-            onChangeText={(text) => findResults(text)}
-            autoCapitalize="words"
-            rules={[required]}
-          />
-        </SearchBox>
-        <FlatList
-          keyboardShouldPersistTaps="handled"
-          mb={2}
-          verticalScroll
-          data={auxItens}
-          renderItem={({item}) => renderItem(item)}
-        />
-        <Btn title="Fechar" color="#FFF" onPress={toggle} />
+        {itens.length > 0 ? (
+          <>
+            <SearchBox>
+              <Input
+                label="Pesquisar..."
+                onChangeText={(text) => findResults(text)}
+                autoCapitalize="words"
+                rules={[required]}
+              />
+            </SearchBox>
+            <FlatList
+              keyboardShouldPersistTaps="handled"
+              mb={4}
+              verticalScroll
+              data={auxItens}
+              renderItem={({item}) => renderItem(item)}
+            />
+          </>
+        ) : (
+          <MessageText>Não existem usuários disponíveis!</MessageText>
+        )}
+        <Btn title="Fechar" background="#ccc" onPress={toggle} />
       </ModalContainer>
     </Modal>
   );
@@ -80,13 +97,13 @@ const Picker = ({visible, toggle, setName}) => {
 Picker.propTypes = {
   visible: PropTypes.bool,
   toggle: PropTypes.func,
-  setName: PropTypes.func,
+  setUser: PropTypes.func,
 };
 
 Picker.defaultProps = {
   visible: false,
   toggle: () => {},
-  setName: () => {},
+  setUser: () => {},
 };
 
 export default Picker;

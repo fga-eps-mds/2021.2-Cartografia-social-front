@@ -14,11 +14,13 @@ export const EmptyArea = styled.TouchableOpacity`
 `;
 
 export const ModalContainer = styled.View`
-  border-radius: 10px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
   width: 100%;
   height: 85%;
   background-color: #fff;
   padding: 12px;
+  justify-content: space-between;
 `;
 
 export const SearchContainer = styled.View`
@@ -62,4 +64,10 @@ export const Icon = styled(FontAwesomeIcon).attrs((props) => ({
   color: props.color ? props.color : theme.colors.black,
 }))`
   margin-left: 10px;
+`;
+
+export const MessageText = styled.Text`
+  font-size: ${normalize(18)};
+  margin-left: 10px;
+  margin 
 `;

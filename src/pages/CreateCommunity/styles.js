@@ -28,6 +28,7 @@ export const PickerContainer = styled.TouchableOpacity`
   justify-content: space-between;
   padding-left: 15px;
   padding-right: 15px;
+  margin-bottom: 30px;
 `;
 
 export const PickerText = styled.Text`
