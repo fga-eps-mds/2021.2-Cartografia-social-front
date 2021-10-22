@@ -57,7 +57,7 @@ const SupportForm = () => {
       sendFormList.push(dadoEnvio);
     }
     try {
-      await api.post('/community/sendAnswers', "{answers: sendFormList}");
+      await api.post('/community/sendAnswers', '{answers: sendFormList}');
     } catch (error) {
       Alert.alert('Cartografia Social', error.message);
     }

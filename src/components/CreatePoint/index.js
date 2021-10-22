@@ -11,7 +11,6 @@ import * as Actions from 'store/actions';
 import api from 'services/api';
 import Fabs from 'components/Fabs';
 import theme from 'theme/theme';
-import instance from 'services/api2';
 import useDocumentPicker from 'services/useDocumentPicker';
 import FormData from 'form-data';
 import RecordAudioModalContent from 'components/RecordAudioModalContent';
@@ -138,6 +137,7 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
     }
 
     dispatch(Actions.createMarker(newMarker));
+    sheetRef.current.close();
     if (user && user.id) {
       await api
         .post('/maps/point', newMarker)
@@ -147,45 +147,44 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
         .catch((error) => {
           Alert.alert('Cartografia Social', error.message);
         });
-    }
 
-    sheetRef.current.close();
+      medias.map(async (media) => {
+        let mediaId = '';
 
-    medias.map(async (media) => {
-      let mediaId = '';
-
-      const formData = new FormData();
-      formData.append('file', {
-        uri: media.uri,
-        type: media.type,
-        name: media.fileName,
-      });
-
-      await instance
-        .post('midia/uploadMidia', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-        .then((response) => {
-          mediaId = response.data;
-        })
-        .catch(() => {
-          Alert.alert('erro ao salvar áudio: ', media.fileName);
+        const formData = new FormData();
+        formData.append('file', {
+          uri: media.uri,
+          type: media.type,
+          name: media.fileName,
         });
-      const newMediaPoint = {
-        locationId: locationId.id,
-        mediaId,
-      };
-      await api.post('/maps/addMediaToPoint', newMediaPoint).catch((error) => {
-        // eslint-disable-next-line no-console
-        console.log(error);
+
+        await api
+          .post('midia/uploadMidia', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          })
+          .then((response) => {
+            mediaId = response.data;
+          })
+          .catch(() => {
+            Alert.alert('erro ao salvar áudio: ', media.fileName);
+          });
+        const newMediaPoint = {
+          locationId: locationId.id,
+          mediaId: mediaId.asset_id,
+        };
+        await api
+          .post('/maps/addMediaToPoint', newMediaPoint)
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.log(error);
+          });
       });
-    });
+    }
     setTimeout(() => {
       onCloseBottomSheet();
     }, 1000);
-    return locationSelected;
   };
 
   const pointName = () => (

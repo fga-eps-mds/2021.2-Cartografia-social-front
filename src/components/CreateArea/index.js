@@ -5,7 +5,6 @@ import {useSelector, useDispatch} from 'react-redux';
 import * as selectors from 'store/selectors';
 import * as Actions from 'store/actions';
 import {Point} from './styles';
-import { map } from 'lodash';
 
 const DEFAULT_STATE = {
   coordinates: [],
