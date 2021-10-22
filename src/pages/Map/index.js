@@ -80,7 +80,6 @@ const Map = () => {
     };
 
     if (isCreatingArea) {
-      mapOptions.scrollEnabled = false;
       mapOptions.onPress = (e) => onPressCreatingArea.current(e);
     }
 

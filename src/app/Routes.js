@@ -67,17 +67,43 @@ const Routes = () => {
     </Stack.Navigator>
   );
 
-  const DemonstrationMode = () => (
-    <Drawer.Navigator>
-      <Drawer.Screen
-        name="Map"
-        component={Map}
-        options={{header: () => null, title: 'Mapa'}}
-      />
-      <Drawer.Screen
+  const LoginRoutes = () => (
+    <Stack.Navigator>
+      <Stack.Screen
         name="LoginPage"
         component={LoginPage}
         options={{
+          title: '',
+          headerStyle: {
+            backgroundColor: `${theme.colors.primary}`,
+            elevation: 0,
+          },
+          headerTintColor: '#fff',
+        }}
+      />
+      <Stack.Screen
+        name="ForgotPasswordPage"
+        component={ForgotPasswordPage}
+        options={{
+          title: '',
+          headerStyle: {
+            backgroundColor: `${theme.colors.primary}`,
+            elevation: 0,
+          },
+          headerTintColor: '#fff',
+        }}
+      />
+    </Stack.Navigator>
+  );
+
+  const DemonstrationMode = () => (
+    <Drawer.Navigator initialRouteName="Map" drawerType="front">
+      <Drawer.Screen name="Map" component={Map} options={{title: 'Mapa'}} />
+      <Drawer.Screen
+        name="LoginPage"
+        component={LoginRoutes}
+        options={{
+          headerTitle: '',
           title: 'Fazer Login',
           headerStyle: {
             backgroundColor: `${theme.colors.primary}`,
