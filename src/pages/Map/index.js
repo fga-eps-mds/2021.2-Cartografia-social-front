@@ -36,8 +36,7 @@ const Map = () => {
       onPress: () => setShowPointCreation(true),
     },
   ];
-
-  useEffect(() => {
+  const moveToCurrentLocation = () => {
     if (location) {
       setRegion({
         latitude: location.latitude,
@@ -46,12 +45,16 @@ const Map = () => {
         longitudeDelta: 0.0421,
       });
     }
+  };
+
+  useEffect(() => {
+    moveToCurrentLocation();
   }, [location]);
 
   const alwaysOpenActions = [
     {
       icon: 'street-view',
-      onPress: () => {},
+      onPress: () => moveToCurrentLocation(),
     },
   ];
 

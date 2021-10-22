@@ -17,4 +17,3 @@ export const FirstInput = styled.View`
 export const InputView = styled.View`
   flex: 1;
 `;
-
