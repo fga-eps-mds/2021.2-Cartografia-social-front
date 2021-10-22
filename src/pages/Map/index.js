@@ -36,8 +36,7 @@ const Map = () => {
       onPress: () => setShowPointCreation(true),
     },
   ];
-
-  useEffect(() => {
+  const moveToCurrentLocation = () => {
     if (location) {
       setRegion({
         latitude: location.latitude,
@@ -46,24 +45,30 @@ const Map = () => {
         longitudeDelta: 0.0421,
       });
     }
+  };
+
+  useEffect(() => {
+    moveToCurrentLocation();
   }, [location]);
 
   const alwaysOpenActions = [
     {
       icon: 'street-view',
-      onPress: () => {},
+      onPress: () => moveToCurrentLocation(),
     },
   ];
 
   const onPressMarker = (marker) => {
     setSelectedMarker(marker);
     detailsRef.current.snapToIndex(0);
-    setRegion({
-      latitude: marker.latitude - 0.008,
-      longitude: marker.longitude,
-      latitudeDelta: 0.0122,
-      longitudeDelta: 0.02,
-    });
+    if (marker.latitude) {
+      setRegion({
+        latitude: marker.latitude - 0.008,
+        longitude: marker.longitude,
+        latitudeDelta: 0.0122,
+        longitudeDelta: 0.02,
+      });
+    }
   };
 
   const onCloseCreation = () => {
@@ -78,7 +83,6 @@ const Map = () => {
     };
 
     if (isCreatingArea) {
-      mapOptions.scrollEnabled = false;
       mapOptions.onPress = (e) => onPressCreatingArea.current(e);
     }
 
@@ -93,9 +97,11 @@ const Map = () => {
               <Polygon
                 key={index}
                 coordinates={marker.coordinates}
+                tappable
                 strokeColor="#000"
                 fillColor="rgba(255,0,0,0.5)"
                 strokeWidth={1}
+                onPress={() => onPressMarker(marker)}
               />
             ) : (
               <Marker key={index} marker={marker} onPress={onPressMarker} />

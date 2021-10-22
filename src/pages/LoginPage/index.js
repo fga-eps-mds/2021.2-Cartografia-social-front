@@ -7,6 +7,7 @@ import auth from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-community/async-storage';
 import * as Actions from 'store/actions';
 import {useDispatch} from 'react-redux';
+import {useFocusEffect} from '@react-navigation/native';
 import {Container, Header, HeaderText, InputText, TextBtn} from './styles';
 
 const LoginPage = ({navigation}) => {
@@ -29,6 +30,14 @@ const LoginPage = ({navigation}) => {
   const formIsValid = () => {
     return password.isValid && email.isValid;
   };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (navigation.getParent()) {
+        navigation.getParent().setOptions({headerShown: true});
+      }
+    }, []),
+  );
 
   const onPress = async () => {
     auth()

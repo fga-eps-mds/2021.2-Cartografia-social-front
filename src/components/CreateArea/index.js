@@ -1,9 +1,10 @@
 import React, {useRef, useEffect} from 'react';
 import PropTypes from 'prop-types';
-import {Polygon} from 'react-native-maps';
+import {Polygon, Marker} from 'react-native-maps';
 import {useSelector, useDispatch} from 'react-redux';
 import * as selectors from 'store/selectors';
 import * as Actions from 'store/actions';
+import {Point} from './styles';
 
 const DEFAULT_STATE = {
   coordinates: [],
@@ -42,6 +43,16 @@ const CreateArea = ({show, onPressCreatingArea, reset, index}) => {
   }, [newArea.coordinates.length]);
 
   if (show && newArea.coordinates.length) {
+    if (newArea.coordinates.length < 3) {
+      return newArea.coordinates.map((cordinate) => {
+        const {latitude, longitude} = cordinate;
+        return (
+          <Marker coordinate={{latitude, longitude}}>
+            <Point />
+          </Marker>
+        );
+      });
+    }
     return (
       <Polygon
         key={index}
