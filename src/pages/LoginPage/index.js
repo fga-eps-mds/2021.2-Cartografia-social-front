@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import ScrollView from 'components/UI/ScrollView';
 import Input from 'components/UI/Input';
 import required from 'validators/required';
+import api from 'services/api';
 import Btn from 'components/UI/Btn';
 import auth from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -16,7 +17,6 @@ const LoginPage = ({navigation}) => {
   const navigateToScreen = async (screen) => {
     navigation.navigate(screen);
   };
-
   const [password, setPassword] = useState({
     isValid: false,
     value: '',
@@ -40,7 +40,7 @@ const LoginPage = ({navigation}) => {
   );
 
   const onPress = async () => {
-    auth()
+    const response = await auth()
       .signInWithEmailAndPassword(email.value, password.value)
       .then(async (userCredentials) => {
         const userLogIn = {
@@ -51,15 +51,36 @@ const LoginPage = ({navigation}) => {
           email: email.value,
         };
         const idTokenUser = await userCredentials.user.getIdToken();
-
         await AsyncStorage.setItem('access_token', `Bearer ${idTokenUser}`);
         dispatch(Actions.login(userLogIn));
         dispatch(Actions.useDemonstrationMode());
+        return userLogIn;
       })
       .catch((error) => {
         // eslint-disable-next-line no-console
         console.error(error);
       });
+    const userResponse = await api
+      .get(
+        'users/userByEmail',
+        {
+          params: {
+            email: email.value,
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${response.token}`,
+          },
+        },
+      )
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.log(error);
+      });
+    const newUserObject = response;
+    newUserObject.userData = userResponse.data;
+    dispatch(Actions.login(newUserObject));
   };
 
   return (

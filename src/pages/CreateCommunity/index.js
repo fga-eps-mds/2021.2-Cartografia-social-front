@@ -23,7 +23,6 @@ const CreateCommunity = () => {
   const [isModalPickerVisible, setIsModalPickerVisible] = useState(false);
   const [userSelected, setUserSelected] = useState('Selecione um usuário');
   const user = useSelector(auth);
-
   const toggleModalPicker = () =>
     setIsModalPickerVisible(!isModalPickerVisible);
 

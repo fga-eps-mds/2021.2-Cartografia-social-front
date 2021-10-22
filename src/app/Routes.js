@@ -22,7 +22,6 @@ import CreateCommunity from 'pages/CreateCommunity';
 
 const Routes = () => {
   const user = useSelector(auth);
-
   const Stack = createStackNavigator();
   const Drawer = createDrawerNavigator();
 
@@ -139,15 +138,16 @@ const Routes = () => {
           headerTitleAlign: 'center',
         }}
       />
-
-      <Stack.Screen
-        name="CreateCommunity"
-        component={CreateCommunity}
-        options={{
-          title: 'Criar uma comunidade',
-          headerTitleAlign: 'center',
-        }}
-      />
+      {user.userData && user.userData.type === 'RESEARCHER' ? (
+        <Stack.Screen
+          name="CreateCommunity"
+          component={CreateCommunity}
+          options={{
+            title: 'Criar uma comunidade',
+            headerTitleAlign: 'center',
+          }}
+        />
+      ) : null}
     </Drawer.Navigator>
   );
 
