@@ -5,7 +5,7 @@ import {FlatList} from 'react-native-gesture-handler';
 
 export default styled(FlatList).attrs((props) => ({
   showsHorizontalScrollIndicator: !!props.horizontalScroll,
-  showsVerticalScrollIndicator: false,
+  showsVerticalScrollIndicator: !!props.verticalScroll,
   persistentScrollbar: true,
 }))`
   font-size: ${(props) =>
