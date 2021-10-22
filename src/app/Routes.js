@@ -18,6 +18,7 @@ import Map from 'pages/Map';
 import InitialPage from 'pages/InitialPage';
 
 import ForgotPasswordPage from 'pages/ForgotPasswordPage';
+import CreateCommunity from 'pages/CreateCommunity';
 
 const Routes = () => {
   const user = useSelector(auth);
@@ -129,16 +130,21 @@ const Routes = () => {
 
   const SignedIn = () => (
     <Drawer.Navigator>
-      <Drawer.Screen
-        name="Map"
-        component={Map}
-        options={{header: () => null, title: 'Mapa'}}
-      />
+      <Drawer.Screen name="Map" component={Map} options={{title: 'Mapa'}} />
       <Stack.Screen
         name="DynamicForm"
         component={DynamicForm}
         options={{
           title: 'Bem Vindo',
+          headerTitleAlign: 'center',
+        }}
+      />
+
+      <Stack.Screen
+        name="CreateCommunity"
+        component={CreateCommunity}
+        options={{
+          title: 'Criar uma comunidade',
           headerTitleAlign: 'center',
         }}
       />
