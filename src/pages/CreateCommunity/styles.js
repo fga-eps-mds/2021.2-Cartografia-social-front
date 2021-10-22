@@ -32,7 +32,7 @@ export const PickerContainer = styled.TouchableOpacity`
 
 export const PickerText = styled.Text`
   font-size: ${normalize(16.5)}px;
-  color: #a3a3a3;
+  color: ${(props) => (props.selected ? '#000' : '#a3a3a3')};
   padding-bottom: 3%;
   margin-top: 10px;
 `;

@@ -33,7 +33,11 @@ const CreateCommunity = () => {
 
   return (
     <Main>
-      <Picker visible={isModalPickerVisible} toggle={toggleModalPicker} />
+      <Picker
+        visible={isModalPickerVisible}
+        toggle={toggleModalPicker}
+        setName={setUserSelected}
+      />
       <ScrollView>
         <Container>
           <InputText>Nome da comunidade</InputText>
@@ -53,7 +57,7 @@ const CreateCommunity = () => {
           />
           <InputText>Selecione o administrador da comunidade</InputText>
           <PickerContainer onPress={() => setIsModalPickerVisible(true)}>
-            <PickerText>{userSelected}</PickerText>
+            <PickerText selected>{userSelected}</PickerText>
             <Icon size={normalize(20)} name="angle-down" color="#a3a3a3" />
           </PickerContainer>
         </Container>
