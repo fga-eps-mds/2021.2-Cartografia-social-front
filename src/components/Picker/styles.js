@@ -10,32 +10,32 @@ export const ModalContainerButton = styled.TouchableOpacity`
 export const EmptyArea = styled.TouchableOpacity`
   border-radius: 10px;
   width: 100%;
-  height: 30%;
+  height: 0%;
 `;
 
 export const ModalContainer = styled.View`
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   width: 100%;
-  height: 85%;
+  height: 100%;
   background-color: #fff;
   padding: 12px;
   justify-content: space-between;
 `;
 
-export const SearchContainer = styled.View`
-  justify-content: center;
-  border-radius: 10px;
-  width: 100%;
-  height: 15%;
-  padding-left: 10px;
+export const FlatListView = styled.View`
+  flex: 1;
+  /* background-color: #F00; */
 `;
 
 export const SearchBox = styled.View`
-  justify-content: center;
+  /* flex: .2; */
+  /* justify-content: center; */
   border-radius: 10px;
+  margin-top: 20px;
   width: 100%;
-  height: 30%;
+  height: ${normalize(65)};
+  /* background-color: #00F; */
 `;
 
 export const UserItem = styled.TouchableOpacity`

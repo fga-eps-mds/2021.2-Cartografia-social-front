@@ -16,6 +16,7 @@ import {
   EmptyArea,
   Icon,
   MessageText,
+  FlatListView,
 } from './styles';
 
 const Picker = ({visible, toggle, setUser}) => {
@@ -77,13 +78,16 @@ const Picker = ({visible, toggle, setUser}) => {
                 rules={[required]}
               />
             </SearchBox>
-            <FlatList
-              keyboardShouldPersistTaps="handled"
-              mb={4}
-              verticalScroll
-              data={auxItens}
-              renderItem={({item}) => renderItem(item)}
-            />
+            <FlatListView>
+              <FlatList
+                // style={{backgroundColor: '#00F'}}
+                keyboardShouldPersistTaps="handled"
+                // mb={4}
+                verticalScroll
+                data={auxItens}
+                renderItem={({item}) => renderItem(item)}
+              />
+            </FlatListView>
           </>
         ) : (
           <MessageText>Não existem usuários disponíveis!</MessageText>
