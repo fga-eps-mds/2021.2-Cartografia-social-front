@@ -78,9 +78,11 @@ const LoginPage = ({navigation}) => {
         // eslint-disable-next-line no-console
         console.log(error);
       });
-    const newUserObject = response;
-    newUserObject.userData = userResponse.data;
-    dispatch(Actions.login(newUserObject));
+    if (userResponse) {
+      const newUserObject = response;
+      newUserObject.userData = userResponse.data;
+      dispatch(Actions.login(newUserObject));
+    }
   };
 
   return (

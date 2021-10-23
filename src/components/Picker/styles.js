@@ -7,15 +7,7 @@ export const ModalContainerButton = styled.TouchableOpacity`
   flex: 1;
 `;
 
-export const EmptyArea = styled.TouchableOpacity`
-  border-radius: 10px;
-  width: 100%;
-  height: 0%;
-`;
-
 export const ModalContainer = styled.View`
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
   width: 100%;
   height: 100%;
   background-color: #fff;
@@ -25,17 +17,13 @@ export const ModalContainer = styled.View`
 
 export const FlatListView = styled.View`
   flex: 1;
-  /* background-color: #F00; */
 `;
 
 export const SearchBox = styled.View`
-  /* flex: .2; */
-  /* justify-content: center; */
   border-radius: 10px;
   margin-top: 20px;
   width: 100%;
   height: ${normalize(65)};
-  /* background-color: #00F; */
 `;
 
 export const UserItem = styled.TouchableOpacity`
@@ -69,5 +57,5 @@ export const Icon = styled(FontAwesomeIcon).attrs((props) => ({
 export const MessageText = styled.Text`
   font-size: ${normalize(18)};
   margin-left: 10px;
-  margin 
+  padding: 15px;
 `;
