@@ -50,6 +50,10 @@ const Picker = ({visible, toggle, setUser, update}) => {
       if (response) {
         await sleep(1000);
         const newItens = [...response.data];
+
+        newItens.sort((a, b) => {
+          return a.email > b.email ? 1 : -1;
+        });
         setItens(newItens);
         setAuxItens(newItens);
         setLoading(false);
