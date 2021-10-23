@@ -138,7 +138,7 @@ const Routes = () => {
           headerTitleAlign: 'center',
         }}
       />
-      {user.userData && user.userData.type === 'RESEARCHER' ? (
+      {user.data && user.data.type === 'RESEARCHER' ? (
         <Stack.Screen
           name="CreateCommunity"
           component={CreateCommunity}

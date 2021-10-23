@@ -9,11 +9,11 @@ import AsyncStorage from '@react-native-community/async-storage';
 import * as Actions from 'store/actions';
 import {useDispatch} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
+import {Alert} from 'react-native';
 import {Container, Header, HeaderText, InputText, TextBtn} from './styles';
 
 const LoginPage = ({navigation}) => {
   const dispatch = useDispatch();
-
   const navigateToScreen = async (screen) => {
     navigation.navigate(screen);
   };
@@ -39,27 +39,15 @@ const LoginPage = ({navigation}) => {
     }, []),
   );
 
-  const onPress = async () => {
-    const response = await auth()
-      .signInWithEmailAndPassword(email.value, password.value)
-      .then(async (userCredentials) => {
-        const userLogIn = {
-          name: userCredentials.user.displayName,
-          id: userCredentials.user.providerId,
-          token: await userCredentials.user.getIdToken(),
-          demonstrationMode: true,
-          email: email.value,
-        };
-        const idTokenUser = await userCredentials.user.getIdToken();
-        await AsyncStorage.setItem('access_token', `Bearer ${idTokenUser}`);
-        dispatch(Actions.login(userLogIn));
-        dispatch(Actions.useDemonstrationMode());
-        return userLogIn;
-      })
-      .catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error(error);
-      });
+  const setUser = async (userCredentials, token) => {
+    const userLogIn = {
+      name: userCredentials.user.displayName,
+      id: userCredentials.user.providerId,
+      token,
+      demonstrationMode: false,
+      email: email.value,
+      data: null,
+    };
     const userResponse = await api
       .get(
         'users/userByEmail',
@@ -70,18 +58,35 @@ const LoginPage = ({navigation}) => {
         },
         {
           headers: {
-            Authorization: `Bearer ${response.token}`,
+            Authorization: `Bearer ${token}`,
           },
         },
       )
-      .catch((error) => {
+      .catch(async (error) => {
+        Alert.alert('Atenção!', 'Erro ao pegar dados do usuário!');
         // eslint-disable-next-line no-console
-        console.log(error);
+        console.log(error.response);
+        await AsyncStorage.setItem('access_token', '');
       });
     if (userResponse) {
-      const newUserObject = response;
-      newUserObject.userData = userResponse.data;
-      dispatch(Actions.login(newUserObject));
+      userLogIn.data = userResponse.data;
+      dispatch(Actions.login(userLogIn));
+    }
+  };
+
+  const onPress = async () => {
+    try {
+      const userCredentials = await auth().signInWithEmailAndPassword(
+        email.value,
+        password.value,
+      );
+      const token = await userCredentials.user.getIdToken();
+      await AsyncStorage.setItem('access_token', `Bearer ${token}`);
+      await setUser(userCredentials, token);
+    } catch (error) {
+      Alert.alert('Atenção!', 'Erro na etapa de autenticação!');
+      // eslint-disable-next-line no-console
+      console.error(error);
     }
   };
 
