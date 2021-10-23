@@ -200,7 +200,7 @@ const CreateCommunity = ({navigation}) => {
           </PickerContainer>
           <Btn
             title="Salvar"
-            color="#FFF"
+            color="#fff"
             onPress={onSave}
             disabled={!formIsValid([communityName, communityDescription])}
           />

@@ -6,6 +6,7 @@ import Input from 'components/UI/Input';
 import {FlatList} from 'components/UI';
 import api from 'services/api';
 import PropTypes from 'prop-types';
+import theme from 'theme/theme';
 import Btn from '../UI/Btn';
 
 import {
@@ -48,8 +49,9 @@ const Picker = ({visible, toggle, setUser, update}) => {
         });
       if (response) {
         await sleep(1000);
-        setItens([...response.data]);
-        setAuxItens([...response.data]);
+        const newItens = [...response.data];
+        setItens(newItens);
+        setAuxItens(newItens);
         setLoading(false);
       }
     }
@@ -120,7 +122,11 @@ const Picker = ({visible, toggle, setUser, update}) => {
             </FlatListView>
           </>
         )}
-        <Btn title="Fechar" background="#ccc" onPress={onCloseModal} />
+        <Btn
+          title="Fechar"
+          background={theme.colors.grey}
+          onPress={onCloseModal}
+        />
       </ModalContainer>
     </Modal>
   );
