@@ -42,13 +42,8 @@ const CreateCommunity = () => {
     return isValid;
   };
 
-  const onSave = async () => {
-    const communityDto = {
-      name: communityName.value,
-      description: communityDescription.value,
-    };
-
-    const userResponse = await api
+  const getSelectedUserInfo = async () => {
+    const response = await api
       .get(
         'users/userByEmail',
         {
@@ -66,7 +61,14 @@ const CreateCommunity = () => {
         // eslint-disable-next-line no-console
         console.log(error);
       });
-    const userId = userResponse.data.id;
+    return response;
+  };
+
+  const postCommunity = async () => {
+    const communityDto = {
+      name: communityName.value,
+      description: communityDescription.value,
+    };
     const response = await api
       .post('community', communityDto, {
         headers: {
@@ -77,14 +79,13 @@ const CreateCommunity = () => {
         // eslint-disable-next-line no-console
         console.log(error);
       });
-    const communityId = response.data.id;
 
-    const adminUserDto = {
-      userId,
-      communityId,
-    };
+    return response;
+  };
+
+  const addUserToCommunity = async (userDto) => {
     await api
-      .post('community/addUser', adminUserDto, {
+      .post('community/addUser', userDto, {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
@@ -93,6 +94,9 @@ const CreateCommunity = () => {
         // eslint-disable-next-line no-console
         console.log(error);
       });
+  };
+
+  const addAdminUserToCommunity = async (adminUserDto) => {
     await api
       .post('community/addAdminUser', adminUserDto, {
         headers: {
@@ -103,6 +107,21 @@ const CreateCommunity = () => {
         // eslint-disable-next-line no-console
         console.log(error);
       });
+  };
+
+  const onSave = async () => {
+    const userResponse = getSelectedUserInfo();
+    const communityResponse = postCommunity();
+    const userId = userResponse.data.id;
+    const communityId = communityResponse.data.id;
+
+    const userDto = {
+      userId,
+      communityId,
+    };
+
+    addUserToCommunity(userDto);
+    addAdminUserToCommunity(userDto);
   };
 
   return (
