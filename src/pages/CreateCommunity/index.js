@@ -48,8 +48,14 @@ const CreateCommunity = ({navigation}) => {
     return isValid;
   };
 
+  const onError = (error) => {
+    works = false;
+    // eslint-disable-next-line no-console
+    console.log(error);
+  };
+
   const getSelectedUserInfo = async () => {
-    const response = await api
+    return api
       .get(
         'users/userByEmail',
         {
@@ -64,8 +70,7 @@ const CreateCommunity = ({navigation}) => {
         },
       )
       .catch((error) => {
-        // eslint-disable-next-line no-console
-        works = false;
+        onError(error);
         if (error.response.status === 401) {
           Alert.alert(
             'Atenção!',
@@ -74,7 +79,6 @@ const CreateCommunity = ({navigation}) => {
           dispatch(Actions.logout());
         }
       });
-    return response;
   };
 
   const postCommunity = async () => {
@@ -82,19 +86,13 @@ const CreateCommunity = ({navigation}) => {
       name: communityName.value,
       description: communityDescription.value,
     };
-    const response = await api
+    return api
       .post('community', communityDto, {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
       })
-      .catch((error) => {
-        works = false;
-        // eslint-disable-next-line no-console
-        console.log(error);
-      });
-
-    return response;
+      .catch(onError);
   };
 
   const addUserToCommunity = async (userDto) => {
@@ -104,11 +102,7 @@ const CreateCommunity = ({navigation}) => {
           Authorization: `Bearer ${user.token}`,
         },
       })
-      .catch((error) => {
-        works = false;
-        // eslint-disable-next-line no-console
-        console.log(error);
-      });
+      .catch(onError);
   };
 
   const addAdminUserToCommunity = async (adminUserDto) => {
@@ -118,11 +112,7 @@ const CreateCommunity = ({navigation}) => {
           Authorization: `Bearer ${user.token}`,
         },
       })
-      .catch((error) => {
-        works = false;
-        // eslint-disable-next-line no-console
-        console.log(error);
-      });
+      .catch(onError);
   };
 
   const onOpenModal = () => {

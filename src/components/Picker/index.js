@@ -145,8 +145,8 @@ Picker.propTypes = {
 
 Picker.defaultProps = {
   visible: false,
-  toggle: () => {},
-  setUser: () => {},
+  toggle: () => null,
+  setUser: () => null,
   update: false,
 };
 
