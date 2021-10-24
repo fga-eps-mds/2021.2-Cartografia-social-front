@@ -2,21 +2,21 @@ import React, {useState} from 'react';
 import ScrollView from 'components/UI/ScrollView';
 import Input from 'components/UI/Input';
 import required from 'validators/required';
+import api from 'services/api';
 import Btn from 'components/UI/Btn';
 import auth from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-community/async-storage';
 import * as Actions from 'store/actions';
 import {useDispatch} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
+import {Alert} from 'react-native';
 import {Container, Header, HeaderText, InputText, TextBtn} from './styles';
 
 const LoginPage = ({navigation}) => {
   const dispatch = useDispatch();
-
   const navigateToScreen = async (screen) => {
     navigation.navigate(screen);
   };
-
   const [password, setPassword] = useState({
     isValid: false,
     value: '',
@@ -39,26 +39,55 @@ const LoginPage = ({navigation}) => {
     }, []),
   );
 
-  const onPress = async () => {
-    auth()
-      .signInWithEmailAndPassword(email.value, password.value)
-      .then(async (userCredentials) => {
-        const userLogIn = {
-          name: userCredentials.user.displayName,
-          id: userCredentials.user.providerId,
-          token: userCredentials.user.getIdToken(),
-          demonstrationMode: true,
-        };
-        const idTokenUser = await userCredentials.user.getIdToken();
-
-        await AsyncStorage.setItem('access_token', `Bearer ${idTokenUser}`);
-        dispatch(Actions.login(userLogIn));
-        dispatch(Actions.useDemonstrationMode());
-      })
-      .catch((error) => {
+  const setUser = async (userCredentials, token) => {
+    const userLogIn = {
+      name: userCredentials.user.displayName,
+      id: userCredentials.user.providerId,
+      token,
+      demonstrationMode: false,
+      email: email.value,
+      data: null,
+    };
+    const userResponse = await api
+      .get(
+        'users/userByEmail',
+        {
+          params: {
+            email: email.value,
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
+      .catch(async (error) => {
+        Alert.alert('Atenção!', 'Erro ao pegar dados do usuário!');
         // eslint-disable-next-line no-console
-        console.error(error);
+        console.log(error);
+        await AsyncStorage.setItem('access_token', '');
       });
+    if (userResponse) {
+      userLogIn.data = userResponse.data;
+      dispatch(Actions.login(userLogIn));
+    }
+  };
+
+  const onPress = async () => {
+    try {
+      const userCredentials = await auth().signInWithEmailAndPassword(
+        email.value,
+        password.value,
+      );
+      const token = await userCredentials.user.getIdToken();
+      await AsyncStorage.setItem('access_token', `Bearer ${token}`);
+      await setUser(userCredentials, token);
+    } catch (error) {
+      Alert.alert('Atenção!', 'Erro na etapa de autenticação!');
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
   };
 
   return (
