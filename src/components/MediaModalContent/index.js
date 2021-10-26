@@ -83,23 +83,6 @@ const MediaModalContent = ({setMedias}) => {
           </TouchableOpacity>
           <Text>Video</Text>
         </Column>
-        <Column>
-          <TouchableOpacity
-            onPress={() => null}
-            style={{
-              width: 80,
-              height: 80,
-              borderRadius: 80,
-              margin: 5,
-              borderColor: theme.colors.primary,
-              borderWidth: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Icon name="microphone" />
-          </TouchableOpacity>
-          <Text>Audio</Text>
-        </Column>
       </Row>
     </Container>
   );
