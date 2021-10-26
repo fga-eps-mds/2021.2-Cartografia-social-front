@@ -51,23 +51,6 @@ const MediaModalContent = ({setMedias}) => {
       <Row>
         <Column>
           <TouchableOpacity
-            onPress={() => null}
-            style={{
-              width: 80,
-              height: 80,
-              borderRadius: 80,
-              margin: 5,
-              borderColor: theme.colors.primary,
-              borderWidth: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Icon name="file" />
-          </TouchableOpacity>
-          <Text>Documento</Text>
-        </Column>
-        <Column>
-          <TouchableOpacity
             onPress={() => handleOption('photo')}
             style={{
               width: 80,
