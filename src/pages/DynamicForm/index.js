@@ -1,11 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import ScrollView from 'components/UI/ScrollView';
 import Input from 'components/UI/Input';
 import required from 'validators/required';
 import Btn from 'components/UI/Btn';
 import api from 'services/api';
 import {FlatList, Alert} from 'react-native';
-import {Container, InputText, TextBtn} from './styles';
+import {Container, InputText} from './styles';
 
 const DynamicForm = () => {
   // Cria listas dos dados do form
@@ -84,26 +83,24 @@ const DynamicForm = () => {
     </>
   );
 
-  return (
-    <>
-      <ScrollView>
-        <Container>
-          <FlatList
-            data={questionsFormList}
-            renderItem={renderItem}
-            keyExtractor={(item) => item._id}
-          />
+  const renderButtom = () => (
+    <Btn
+      disabled={!formIsValid()}
+      style={{marginVertical: 50}}
+      title="Enviar Formulário"
+      onPress={onPress}
+    />
+  );
 
-          <TextBtn onPress={() => null}>Enviar Formulário</TextBtn>
-          <Btn
-            disabled={!formIsValid()}
-            style={{marginVertical: 50}}
-            title="Entrar"
-            onPress={onPress}
-          />
-        </Container>
-      </ScrollView>
-    </>
+  return (
+    <Container>
+      <FlatList
+        data={questionsFormList}
+        renderItem={renderItem}
+        key={(item) => item._id}
+        ListFooterComponent={renderButtom}
+      />
+    </Container>
   );
 };
 
