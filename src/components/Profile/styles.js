@@ -1,5 +1,6 @@
 import styled from 'styled-components/native';
 import theme from 'theme/theme';
+import ProfilePicture from 'react-native-profile-picture';
 
 export const Container = styled.View`
   padding: 15% 20px 0px 20px;
@@ -43,4 +44,23 @@ export const FirstInput = styled.View`
 
 export const InputView = styled.View`
   flex: 1;
+`;
+
+export const SideMenuProfileIcon = styled.View`
+  align-items: center;
+  width: 100;
+  height: 100;
+  border-radius: 50;
+  align-self: center;
+`;
+
+export const IconStyle = styled(ProfilePicture).attrs({
+  width: 100,
+  height: 100,
+})``;
+
+export const CustomItem = styled.View`
+  padding: 16;
+  flex-direction: row;
+  align-items: center;
 `;
