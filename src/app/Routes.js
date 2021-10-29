@@ -10,6 +10,7 @@ import {auth} from 'store/selectors';
 
 import theme from 'theme/theme';
 
+import Profile from 'components/Profile';
 import LoginPage from 'pages/LoginPage';
 import DynamicForm from 'pages/DynamicForm';
 import SupportForm from 'pages/SupportForm';
@@ -95,9 +96,38 @@ const Routes = () => {
       />
     </Stack.Navigator>
   );
+  const ProfileRoutes = () => (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          title: '',
+          headerStyle: {
+            backgroundColor: `${theme.colors.primary}`,
+            elevation: 0,
+          },
+          headerTintColor: '#fff',
+        }}
+      />
+    </Stack.Navigator>
+  );
 
   const DemonstrationMode = () => (
     <Drawer.Navigator initialRouteName="Map" drawerType="front">
+      <Drawer.Screen
+        name="Profile"
+        component={ProfileRoutes}
+        options={{
+          headerTitle: '',
+          title: 'Perfil',
+          headerStyle: {
+            backgroundColor: `${theme.colors.primary}`,
+            elevation: 0,
+          },
+          headerTintColor: '#fff',
+        }}
+      />
       <Drawer.Screen name="Map" component={Map} options={{title: 'Mapa'}} />
       <Drawer.Screen
         name="LoginPage"
