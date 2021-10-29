@@ -33,10 +33,10 @@ const MarkerDetails = ({marker, sheetRef}) => {
   const sortMediasByImages = () => {
     const medias = [...marker.multimedia];
     medias.sort((a, b) => {
-      if (a.type === 'image/jpeg') {
+      if (a.mediaType === 'image') {
         return -1;
       }
-      if (b.type === 'image/jpeg') {
+      if (b.mediaType === 'image') {
         return 1;
       }
       return 0;

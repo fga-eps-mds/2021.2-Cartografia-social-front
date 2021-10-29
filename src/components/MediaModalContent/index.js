@@ -11,8 +11,8 @@ const MediaModalContent = ({setMedias}) => {
     mediaType: 'photo',
     maxWidth: 1300,
     maxHeight: 1300,
-    quality: 0.9,
-    saveToPhotos: true,
+    // quality: 0.9,
+    // saveToPhotos: true,
     selectionLimit: 0,
   };
 
@@ -26,15 +26,21 @@ const MediaModalContent = ({setMedias}) => {
     launchImageLibrary(
       selected === 'photo' ? photoOptions : videoOptions,
       async (videoResponse) => {
+        const newType = videoResponse;
+        if (videoResponse.didCancel) {
+          return;
+        }
         if (selected === 'video') {
-          const newType = videoResponse;
           newType.assets[0].type = 'video/mp4';
+          newType.assets[0].mediaType = 'video';
 
           const thumb = await createThumbnail({
             url: videoResponse.assets[0].uri,
             timeStamp: 10000,
           });
           newType.assets[0].thumb = thumb.path;
+        } else {
+          newType.assets[0].mediaType = 'image';
         }
         if (videoResponse.assets && videoResponse.assets.length) {
           setMedias([...videoResponse.assets]);
