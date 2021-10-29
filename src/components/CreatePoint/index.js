@@ -108,7 +108,7 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
   };
 
   const onSave = async () => {
-    let locationId = '';
+    let locationId = null;
     setShowMarker(false);
     setTimeout(() => {
       setShowMarker(true);
@@ -121,6 +121,7 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
         title: title.value,
         description: description.value,
         multimedia: medias,
+        id: locationId,
       };
       dispatch(Actions.resetNewArea());
     } else {
@@ -130,10 +131,10 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
         title: title.value,
         description: description.value,
         multimedia: medias,
+        id: locationId,
       };
     }
 
-    dispatch(Actions.createMarker(newMarker));
     if (user && user.id) {
       await api
         .post('/maps/point', newMarker)
@@ -143,7 +144,9 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
         .catch((error) => {
           Alert.alert('Cartografia Social', error.message);
         });
+      newMarker.id = locationId;
     }
+    dispatch(Actions.createMarker(newMarker));
 
     sheetRef.current.close();
 
