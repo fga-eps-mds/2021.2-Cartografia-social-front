@@ -7,15 +7,16 @@ import api from 'services/api';
 import {FlatList, Alert} from 'react-native';
 import {Container, InputText, TextBtn} from './styles';
 
-const DynamicForm = () => {
+const DynamicForm = ({navigation}) => {
   // Cria listas dos dados do form
   const [questionsFormList, setQuestionsFormList] = useState([]); // Formato: { question: '', id: ''}
   const [questionsStateList, setQuestionsStateList] = useState([]); // Formato: { value: '', isValid: Bool}
 
   // Faz chama POST para obter dados do formulário
   const getQuestionsToCreateCommunity = () => {
-    api.get('/community/questionsToCreateCommunity').then(
-      (response) => {
+    api
+      .get('/community/questionsToCreateCommunity')
+      .then((response) => {
         const listQuestions = response.data;
         const inputList = listQuestions.map(() => ({
           isValid: false,
@@ -23,9 +24,21 @@ const DynamicForm = () => {
         }));
         setQuestionsStateList(inputList);
         setQuestionsFormList(listQuestions);
-      },
-      () => {},
-    );
+      })
+      .catch(() => {
+        Alert.alert(
+          'Erro ao gerar formulário!',
+          [
+            {
+              text: 'Voltar',
+              onPress: () => {
+                navigation.goBack();
+              },
+            },
+          ],
+          {cancelable: false},
+        );
+      });
   };
 
   // Primeira função a ser chamada
@@ -56,11 +69,14 @@ const DynamicForm = () => {
       };
       sendFormList.push(dadoEnvio);
     }
-    try {
-      await api.post('/community/sendAnswers', {answers: sendFormList});
-    } catch (error) {
-      Alert.alert('Cartografia Social', error.message);
-    }
+    await api
+      .post('/community/sendAnswers', {answers: sendFormList})
+      .catch(() => {
+        Alert.alert(
+          'Atenção',
+          'Erro ao criar salvar respostas. Tente novamente mais tarde!',
+        );
+      });
   };
 
   // Função chamada cada vez que um Item é alterado

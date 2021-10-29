@@ -9,11 +9,11 @@ export async function checkPermission(permission) {
     switch (result) {
       case RESULTS.UNAVAILABLE:
         Alert.alert(
-          'Permission Unavailable',
-          'This feature is not available (on this device / in this context).',
+          'Permissão indisponível',
+          'Aparelho não suporta essa funcionalidade.',
           [
             {
-              text: 'Close',
+              text: 'Fechar',
               style: 'cancel',
             },
           ],
@@ -26,14 +26,9 @@ export async function checkPermission(permission) {
             isPermissionGranted = true;
           } else {
             Alert.alert(
-              'Permission Denied',
-              'You need to allow permission to use this functionality.',
-              [
-                {
-                  text: 'Close',
-                  style: 'cancel',
-                },
-              ],
+              'Permissão negada!',
+              'Você precisa habilitar a permissão para usar essa funcionalidade.',
+
               {cancelable: false},
             );
           }
@@ -51,17 +46,17 @@ export async function checkPermission(permission) {
         }
 
         Alert.alert(
-          'Permission Request',
+          'Permissão requisitada',
           permissionRequestText,
           [
             {
-              text: 'Go to Settings',
+              text: 'Habilite em configurações',
               onPress: () => {
                 Linking.openSettings();
               },
             },
             {
-              text: 'Cancel',
+              text: 'Cancelar',
               style: 'cancel',
             },
           ],
