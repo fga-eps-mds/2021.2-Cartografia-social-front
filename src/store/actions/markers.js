@@ -7,6 +7,14 @@ export const createMarker = (newMarker) => {
   };
 };
 
+export const updateMarker = (marker, markerIndex) => {
+  return {
+    type: actionTypes.UPDATE_MARKER,
+    marker,
+    markerIndex,
+  };
+};
+
 export const updateArea = (newArea) => {
   return {
     type: actionTypes.UPDATE_NEW_AREA,

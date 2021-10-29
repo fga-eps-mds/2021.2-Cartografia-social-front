@@ -13,6 +13,9 @@ const reducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case actionTypes.ADD_MARKER:
       return {...state, list: [...state.list, action.newMarker]};
+    case actionTypes.UPDATE_MARKER:
+      state.list[action.markerIndex] = action.marker;
+      return {...state, list: [...state.list]};
     case actionTypes.UPDATE_NEW_AREA:
       return {...state, newArea: action.newArea};
     case actionTypes.RESET_NEW_AREA:
