@@ -96,38 +96,9 @@ const Routes = () => {
       />
     </Stack.Navigator>
   );
-  const ProfileRoutes = () => (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Profile"
-        component={Profile}
-        options={{
-          title: '',
-          headerStyle: {
-            backgroundColor: `${theme.colors.primary}`,
-            elevation: 0,
-          },
-          headerTintColor: '#fff',
-        }}
-      />
-    </Stack.Navigator>
-  );
 
   const DemonstrationMode = () => (
     <Drawer.Navigator initialRouteName="Map" drawerType="front">
-      <Drawer.Screen
-        name="Profile"
-        component={ProfileRoutes}
-        options={{
-          headerTitle: '',
-          title: 'Perfil',
-          headerStyle: {
-            backgroundColor: `${theme.colors.primary}`,
-            elevation: 0,
-          },
-          headerTintColor: '#fff',
-        }}
-      />
       <Drawer.Screen name="Map" component={Map} options={{title: 'Mapa'}} />
       <Drawer.Screen
         name="LoginPage"
@@ -158,9 +129,10 @@ const Routes = () => {
   );
 
   const SignedIn = () => (
-    <Drawer.Navigator>
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <Drawer.Navigator drawerContent={(props) => <Profile {...props} />}>
       <Drawer.Screen name="Map" component={Map} options={{title: 'Mapa'}} />
-      <Stack.Screen
+      <Drawer.Screen
         name="DynamicForm"
         component={DynamicForm}
         options={{
