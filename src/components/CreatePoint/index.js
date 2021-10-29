@@ -144,8 +144,8 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
         .then((response) => {
           locationId = response.data;
         })
-        .catch((error) => {
-          Alert.alert('Cartografia Social', error.message);
+        .catch(() => {
+          Alert.alert('Tente mais tarde', 'Não foi possível salvar o ponto.');
         });
 
       medias.map(async (media) => {
@@ -168,18 +168,21 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
             mediaId = response.data;
           })
           .catch(() => {
-            Alert.alert('erro ao salvar áudio: ', media.fileName);
+            Alert.alert(
+              'Tente mais tarde.',
+              `Erro ao salvar áudio: ${media.fileName}`,
+            );
           });
         const newMediaPoint = {
           locationId: locationId.id,
           mediaId: mediaId.asset_id,
         };
-        await api
-          .post('/maps/addMediaToPoint', newMediaPoint)
-          .catch((error) => {
-            // eslint-disable-next-line no-console
-            console.log(error);
-          });
+        await api.post('/maps/addMediaToPoint', newMediaPoint).catch(() => {
+          Alert.alert(
+            'Tente mais tarde.',
+            `Erro ao adicionar midia ao ponto: ${media.fileName}`,
+          );
+        });
       });
     }
     setTimeout(() => {
