@@ -72,12 +72,8 @@ const MarkerDetails = ({marker, sheetRef}) => {
                     justifyContent: 'flex-start',
                     height: '35%',
                   }}>
-                  <Text
-                    fontSize={theme.font.sizes.SM}
-                    mb={3}
-                    textAlign="right"
-                    flex={0.5}>
-                    Visualizar todos
+                  <Text fontWeight="bold" fontSize={theme.font.sizes.SM} mb={2}>
+                    Multimídia:
                   </Text>
                   <MediasList
                     medias={sortMediasByImages()}
@@ -89,8 +85,11 @@ const MarkerDetails = ({marker, sheetRef}) => {
                   />
                 </View>
               ) : null}
-              <View p={3}>
-                <Text>{marker.description}</Text>
+              <View>
+                  <Text fontWeight="bold" fontSize={theme.font.sizes.SM} mb={2}>
+                    Descrição:
+                  </Text>
+                <Text ml={3}>{marker.description}</Text>
               </View>
             </View>
           </>
