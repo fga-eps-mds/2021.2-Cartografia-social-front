@@ -10,6 +10,7 @@ import {auth} from 'store/selectors';
 
 import theme from 'theme/theme';
 
+import Profile from 'components/Profile';
 import LoginPage from 'pages/LoginPage';
 import DynamicForm from 'pages/DynamicForm';
 import SupportForm from 'pages/SupportForm';
@@ -128,9 +129,10 @@ const Routes = () => {
   );
 
   const SignedIn = () => (
-    <Drawer.Navigator>
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <Drawer.Navigator drawerContent={(props) => <Profile {...props} />}>
       <Drawer.Screen name="Map" component={Map} options={{title: 'Mapa'}} />
-      <Stack.Screen
+      <Drawer.Screen
         name="DynamicForm"
         component={DynamicForm}
         options={{
