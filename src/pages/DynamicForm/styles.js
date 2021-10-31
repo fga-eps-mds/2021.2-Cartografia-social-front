@@ -2,7 +2,7 @@ import styled from 'styled-components/native';
 import theme from 'theme/theme';
 
 export const Container = styled.View`
-  padding: 15% 20px 0px 20px;
+  padding: 10px 20px 0px 20px;
 `;
 
 export const Header = styled.View`
@@ -25,7 +25,7 @@ export const HeaderText = styled.Text`
 `;
 
 export const InputText = styled.Text`
-  color: ${theme.colors.primary};
+  color: ${theme.colors.black};
   padding-bottom: 3%;
   margin-top: 10px;
 `;
