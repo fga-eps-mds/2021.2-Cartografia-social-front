@@ -62,10 +62,9 @@ const LoginPage = ({navigation}) => {
           },
         },
       )
-      .catch(async (error) => {
+      .catch(async () => {
         Alert.alert('Atenção!', 'Erro ao pegar dados do usuário!');
         // eslint-disable-next-line no-console
-        console.log(error);
         await AsyncStorage.setItem('access_token', '');
       });
     if (userResponse) {

@@ -7,24 +7,42 @@ import {FlatList, Alert} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {Container, InputText} from './styles';
 
-const DynamicForm = () => {
+const DynamicForm = ({navigation}) => {
   // Cria listas dos dados do form
   const [questionsFormList, setQuestionsFormList] = useState([]); // Formato: { question: '', id: ''}
-  const [questionsStateList, setQuestionsStateList] = useState([]); // Formato: { value: '', isValid: Bool}
+  const [questionsStateList, setQuestionsStateList] = useState([]);
+  // fieldtype /formName / id / optional / placeholder/ question / validationRegex
+  // Formato: { value: '', isValid: Bool}
   const [isLoading, setIsLoading] = useState(true);
 
   // Faz chama POST para obter dados do formulário
-  const getQuestionsToCreateCommunity = async () => {
-    await api.get('/community/questionsToCreateCommunity').then((response) => {
-      const listQuestions = response.data;
-      const inputList = listQuestions.map(() => ({
-        isValid: false,
-        value: '',
-      }));
-      setQuestionsStateList(inputList);
-      setQuestionsFormList(listQuestions);
-      setIsLoading(false);
-    });
+  const getQuestionsToCreateCommunity = () => {
+    api
+      .get('/community/questionsToCreateCommunity')
+      .then((response) => {
+        const listQuestions = response.data;
+        const inputList = listQuestions.map(() => ({
+          isValid: false,
+          value: '',
+        }));
+        setQuestionsStateList(inputList);
+        setQuestionsFormList(listQuestions);
+        setIsLoading(false);
+      })
+      .catch(() => {
+        Alert.alert(
+          'Erro ao gerar formulário!',
+          [
+            {
+              text: 'Voltar',
+              onPress: () => {
+                navigation.goBack();
+              },
+            },
+          ],
+          {cancelable: false},
+        );
+      });
   };
 
   // Primeira função a ser chamada
@@ -51,16 +69,34 @@ const DynamicForm = () => {
     const sendFormList = [];
     for (let cont = 0; cont < questionsFormList.length; cont++) {
       const dadoEnvio = {
-        questionId: questionsFormList[cont]._id,
+        questionId: questionsFormList[cont].id,
         response: questionsStateList[cont].value,
       };
       sendFormList.push(dadoEnvio);
     }
-    try {
-      await api.post('/community/sendAnswers', {answers: sendFormList});
-    } catch (error) {
-      Alert.alert('Cartografia Social', error);
-    }
+    await api
+      .post('/community/sendAnswers', sendFormList)
+      .then(() => {
+        Alert.alert(
+          'Formulário Enviado! ',
+          'Aguarde e logo a cartografia social entrará em contato. Aproveite nosso modo demonstração enquanto isso.',
+          [
+            {
+              text: 'Voltar',
+              onPress: () => {
+                navigation.goBack();
+              },
+            },
+          ],
+          {cancelable: false},
+        );
+      })
+      .catch(() => {
+        Alert.alert(
+          'Atenção',
+          'Erro ao salvar respostas. Tente novamente mais tarde!',
+        );
+      });
   };
 
   // Função chamada cada vez que um Item é alterado
@@ -79,10 +115,17 @@ const DynamicForm = () => {
         {item.question}
       </InputText>
       <Input
-        label={`Insira ${item.question}`}
+        label={`${item.placeholder}`}
+        value={questionsStateList[index].value}
         onChange={(value) => onChangeQuestion(value, index)}
-        autoCapitalize="words"
-        rules={[required]}
+        errorMessage={
+          required(questionsFormList[index], questionsStateList[index].value)
+            .isValid
+        }
+        externalError={
+          required(questionsFormList[index], questionsStateList[index].value)
+            .errorText
+        }
       />
     </>
   );
@@ -104,8 +147,9 @@ const DynamicForm = () => {
         <FlatList
           data={questionsFormList}
           renderItem={renderItem}
-          key={(item) => item._id}
-          keyExtractor={(item) => item._id}
+          keyExtractor={(item) => {
+            return item.id;
+          }}
           ListFooterComponent={renderButtom}
         />
       )}

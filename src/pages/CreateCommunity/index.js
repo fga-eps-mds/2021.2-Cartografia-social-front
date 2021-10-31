@@ -48,10 +48,8 @@ const CreateCommunity = ({navigation}) => {
     return isValid;
   };
 
-  const onError = (error) => {
+  const onError = () => {
     works = false;
-    // eslint-disable-next-line no-console
-    console.log(error);
   };
 
   const getSelectedUserInfo = async () => {

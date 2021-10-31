@@ -25,14 +25,16 @@ const SelectModal = ({setMedias}) => {
     launchCamera(
       selected === 'photo' ? photoOptions : videoOptions,
       async (videoResponse) => {
+        const newType = videoResponse;
         if (selected === 'video' && !('didCancel' in videoResponse)) {
-          const newType = videoResponse;
           newType.assets[0].type = 'video/mp4';
           const thumb = await createThumbnail({
             url: videoResponse.assets[0].uri,
             timeStamp: 10000,
           });
           newType.assets[0].thumb = thumb.path;
+        } else {
+          newType.assets[0].mediaType = 'image';
         }
         if (
           videoResponse.assets &&

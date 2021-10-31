@@ -15,6 +15,8 @@ export const MediaButton = styled.TouchableOpacity`
   margin-top: 5px;
   justify-content: center;
   align-items: center;
+  border-width: ${normalize(3)}px;
+  border-radius: ${normalize(7)}px;
 `;
 
 export const MediaContainer = styled.View`
