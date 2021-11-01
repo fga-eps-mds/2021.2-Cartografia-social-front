@@ -86,9 +86,9 @@ const MarkerDetails = ({marker, sheetRef}) => {
                 </View>
               ) : null}
               <View>
-                  <Text fontWeight="bold" fontSize={theme.font.sizes.SM} mb={2}>
-                    Descrição:
-                  </Text>
+                <Text fontWeight="bold" fontSize={theme.font.sizes.SM} mb={2}>
+                  Descrição:
+                </Text>
                 <Text ml={3}>{marker.description}</Text>
               </View>
             </View>
