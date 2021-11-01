@@ -63,14 +63,30 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
   const [openedImage, setOpenedImage] = useState({});
 
   const selectPdf = async () => {
-    const results = await useDocumentPicker();
-
+    let results = await useDocumentPicker();
+    const filesBiggerThanSupported = [];
+    results = results.filter((result) => {
+      if (result.size < 10485760) {
+        return 1;
+      }
+      filesBiggerThanSupported.push(result);
+      return 0;
+    });
+    if (filesBiggerThanSupported.length > 0) {
+      let text = `${filesBiggerThanSupported.length} arquivo(s) excede(m) o tamanho máximo permitido de 10MB e portanto não pode(m) ser adicionado(s).\n\n`;
+      filesBiggerThanSupported.forEach((file) => {
+        text += `${file.name}\n`;
+      });
+      Alert.alert('Atenção!', text);
+    }
     if (results) {
-      const formattedResults = results.map((item) => ({
-        uri: item.uri,
-        fileName: item.name,
-        type: item.type,
-      }));
+      const formattedResults = results.map((item) => {
+        return {
+          uri: item.uri,
+          fileName: item.name,
+          type: item.type,
+        };
+      });
 
       setMedias([...medias, ...formattedResults]);
     }
@@ -170,19 +186,22 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
           .catch(() => {
             Alert.alert(
               'Tente mais tarde.',
-              `Erro ao salvar áudio: ${media.fileName}`,
+              `Erro ao salvar arquivo '${media.fileName}'`,
             );
           });
-        const newMediaPoint = {
-          locationId: locationId.id,
-          mediaId: mediaId.asset_id,
-        };
-        await api.post('/maps/addMediaToPoint', newMediaPoint).catch(() => {
-          Alert.alert(
-            'Tente mais tarde.',
-            `Erro ao adicionar midia ao ponto: ${media.fileName}`,
-          );
-        });
+
+        if (mediaId !== '') {
+          const newMediaPoint = {
+            locationId: locationId.id,
+            mediaId: mediaId.asset_id,
+          };
+          await api.post('/maps/addMediaToPoint', newMediaPoint).catch(() => {
+            Alert.alert(
+              'Tente mais tarde.',
+              `Erro ao adicionar midia ao ponto: ${media.fileName}`,
+            );
+          });
+        }
       });
     }
     setTimeout(() => {
