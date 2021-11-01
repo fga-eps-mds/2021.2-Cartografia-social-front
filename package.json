@@ -45,6 +45,7 @@
     "react-native-image-picker": "^4.0.6",
     "react-native-image-viewing": "^0.2.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.3",
+    "react-native-loading-spinner-overlay": "^2.0.0",
     "react-native-maps": "^0.29.3",
     "react-native-material-ripple": "^0.9.1",
     "react-native-modal": "^13.0.0",
