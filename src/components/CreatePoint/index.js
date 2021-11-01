@@ -74,9 +74,8 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
     });
     if (filesBiggerThanSupported.length > 0) {
       let text = `${filesBiggerThanSupported.length} arquivo(s) excede(m) o tamanho máximo permitido de 10MB e portanto não pode(m) ser adicionado(s).\n\n`;
-      filesBiggerThanSupported.map((file) => {
+      filesBiggerThanSupported.forEach((file) => {
         text += `${file.name}\n`;
-        return null;
       });
       Alert.alert('Atenção!', text);
     }

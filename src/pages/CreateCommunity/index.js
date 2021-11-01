@@ -68,7 +68,7 @@ const CreateCommunity = ({navigation}) => {
         },
       )
       .catch((error) => {
-        onError(error);
+        onError();
         if (error.response.status === 401) {
           Alert.alert(
             'Atenção!',
