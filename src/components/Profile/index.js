@@ -15,7 +15,6 @@ import {IconStyle} from './styles';
 
 function Profile(props) {
   const user = useSelector(auth);
-  console.log(user.data.name);
 
   return (
     <DrawerContentScrollView {...props}>
