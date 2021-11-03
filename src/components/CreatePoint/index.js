@@ -155,8 +155,8 @@ const CreatePoint = ({
       dispatch(Actions.resetNewArea());
     } else {
       newMarker = {
-        latitude: latitude.value,
-        longitude: longitude.value,
+        latitude: parseFloat(latitude.value),
+        longitude: parseFloat(longitude.value),
         title: title.value,
         description: description.value,
         multimedia: medias,
