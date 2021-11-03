@@ -520,6 +520,8 @@ CreatePoint.propTypes = {
   }),
   show: PropTypes.bool,
   onClose: PropTypes.func,
+  addPointToArea: PropTypes.func.isRequired,
+  setPoint: PropTypes.func.isRequired,
   isCreatingArea: PropTypes.bool,
 };
 
