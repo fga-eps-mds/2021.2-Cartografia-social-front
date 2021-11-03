@@ -127,6 +127,8 @@ const Map = () => {
           show={showPointCreation}
           onClose={onCloseCreation}
           area={newArea.current}
+          addPointToArea={onPressCreatingArea.current}
+          setPoint={setRegion}
         />
         <MarkerDetails marker={selectedMarker} sheetRef={detailsRef} />
       </View>
