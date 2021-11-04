@@ -3,6 +3,7 @@ import theme from 'theme/theme';
 
 export const Container = styled.View`
   padding: 10px 20px 0px 20px;
+  background: ${theme.colors.white};
 `;
 
 export const Header = styled.View`

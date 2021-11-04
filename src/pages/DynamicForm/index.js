@@ -3,7 +3,9 @@ import Input from 'components/UI/Input';
 import required from 'validators/required';
 import Btn from 'components/UI/Btn';
 import api from 'services/api';
+import theme from 'theme/theme';
 import {FlatList, Alert} from 'react-native';
+import {Text} from 'components/UI';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {Container, InputText} from './styles';
 
@@ -139,6 +141,26 @@ const DynamicForm = ({navigation}) => {
     />
   );
 
+  const textRender = () => (
+    <>
+      <Text
+        fontWeight="bold"
+        fontSize={theme.font.sizes.M}
+        color={theme.colors.primary}
+        mb={2}>
+        Quer cadastrar seu povo ou comunidade tradicional?
+      </Text>
+      <Text
+        fontWeight="bold"
+        fontSize={theme.font.sizes.SM}
+        color={theme.colors.primary}
+        mb={2}>
+        Preencha o formulário abaixo e a equipe da Nova Cartografia Social
+        entrará em contato!
+      </Text>
+    </>
+  );
+
   return (
     <Container>
       {isLoading ? (
@@ -150,6 +172,7 @@ const DynamicForm = ({navigation}) => {
           keyExtractor={(item) => {
             return item.id;
           }}
+          ListHeaderComponent={textRender}
           ListFooterComponent={renderButtom}
         />
       )}
