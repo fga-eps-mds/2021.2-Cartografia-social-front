@@ -32,6 +32,7 @@ const Input = ({
   onFocus,
   height,
   characterRestriction,
+  onBlur,
   ...props
 }) => {
   const inputEl = useRef(null);
@@ -102,6 +103,7 @@ const Input = ({
       minLength={minLength}
       onChangeText={inputChanged}
       onBlur={() => {
+        onBlur();
         setBlurredOnce(true);
       }}
       onFocus={onFocus}
@@ -146,6 +148,7 @@ Input.propTypes = {
   onFocus: PropTypes.func,
   height: PropTypes.number,
   characterRestriction: PropTypes.number,
+  onBlur: PropTypes.func,
 };
 
 Input.defaultProps = {
@@ -172,6 +175,7 @@ Input.defaultProps = {
   onFocus: () => {},
   height: 45,
   characterRestriction: null,
+  onBlur: () => {},
 };
 
 export default Input;
