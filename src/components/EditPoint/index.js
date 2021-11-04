@@ -27,15 +27,11 @@ const EditPoint = ({
   marker,
   editHandler,
   updateMarker,
-  locationSelected,
-  show,
-  onClose,
 }) => {
   UseCamera();
   const dispatch = useDispatch();
   const listMarkers = useSelector((state) => state.markers.list);
   const user = useSelector(auth);
-  const snapPoints = useMemo(() => [110, '50%', '95%'], []);
   const sheetRef = useRef(null);
 
   let namePlaceholder = 'Digite aqui o título do novo ponto';
@@ -60,7 +56,6 @@ const EditPoint = ({
 
   const [title, setTitle] = useState(DEFAULT_TITLE_STATE);
   const [description, setDescription] = useState(DEFAULT_DESCRIPTION_STATE);
-  const [showMarker, setShowMarker] = useState(true);
   const [audioCount, setAudioCount] = useState(0);
   const [medias, setMedias] = useState(marker.multimedia);
   const [modalVisible, setModalVisible] = useState(false);
@@ -126,7 +121,8 @@ const EditPoint = ({
 
   const onSave = async () => {
     let locationId = null;
-    const markerIndex = listMarkers.indexOf(marker);
+    let updatedMarker;
+    // const markerIndex = listMarkers.indexOf(marker);
     const mediasToRemove = [];
     const mediasToAdd = [];
 
@@ -255,8 +251,8 @@ const EditPoint = ({
     }
 
     // dispatch(Actions.updateMarker(updatedMarker, markerIndex));
-    // // updateMarker(updatedMarker);
-    // editHandler(false);
+    updateMarker(updatedMarker);
+    editHandler(false);
   };
 
   const formIsValid = () => {
@@ -438,19 +434,20 @@ const EditPoint = ({
   );
 };
 
-EditPoint.propTypes = {
-  locationSelected: PropTypes.shape({
-    latitude: PropTypes.number,
-    longitude: PropTypes.number,
-  }),
-  show: PropTypes.bool,
-  onClose: PropTypes.func,
-};
+// EditPoint.propTypes = {
+//   marker
+//   locationSelected: PropTypes.shape({
+//     latitude: PropTypes.number,
+//     longitude: PropTypes.number,
+//   }),
+//   show: PropTypes.bool,
+//   onClose: PropTypes.func,
+// };
 
-EditPoint.defaultProps = {
-  locationSelected: {},
-  show: false,
-  onClose: () => {},
-};
+// EditPoint.defaultProps = {
+//   locationSelected: {},
+//   show: false,
+//   onClose: () => {},
+// };
 
 export default EditPoint;
