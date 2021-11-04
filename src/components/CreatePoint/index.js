@@ -165,7 +165,7 @@ const CreatePoint = ({
     dispatch(Actions.createMarker(newMarker));
     sheetRef.current.close();
     if (user && user.id) {
-      const endpoint = isCreatingArea ? '/maps/area' : '/maps/point';
+      let endpoint = isCreatingArea ? '/maps/area' : '/maps/point';
       await api
         .post(endpoint, newMarker)
         .then((response) => {
@@ -221,7 +221,10 @@ const CreatePoint = ({
             locationId: locationId.id,
             mediaId: mediaId.public_id,
           };
-          await api.post('/maps/addMediaToPoint', newMediaPoint).catch(() => {
+          endpoint = isCreatingArea
+            ? '/maps/addMediaToArea'
+            : '/maps/addMediaToPoint';
+          await api.post(endpoint, newMediaPoint).catch(() => {
             Alert.alert(
               'Tente mais tarde.',
               `Erro ao adicionar midia à marcação: ${media.fileName}`,
