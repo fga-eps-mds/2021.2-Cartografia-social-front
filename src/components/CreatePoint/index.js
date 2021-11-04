@@ -11,7 +11,6 @@ import * as Actions from 'store/actions';
 import api from 'services/api';
 import Fabs from 'components/Fabs';
 import theme from 'theme/theme';
-import instance from 'services/api2';
 import useDocumentPicker from 'services/useDocumentPicker';
 import FormData from 'form-data';
 import RecordAudioModalContent from 'components/RecordAudioModalContent';
@@ -64,14 +63,30 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
   const [openedImage, setOpenedImage] = useState({});
 
   const selectPdf = async () => {
-    const results = await useDocumentPicker();
-
+    let results = await useDocumentPicker();
+    const filesBiggerThanSupported = [];
+    results = results.filter((result) => {
+      if (result.size < 10485760) {
+        return 1;
+      }
+      filesBiggerThanSupported.push(result);
+      return 0;
+    });
+    if (filesBiggerThanSupported.length > 0) {
+      let text = `${filesBiggerThanSupported.length} arquivo(s) excede(m) o tamanho máximo permitido de 10MB e portanto não pode(m) ser adicionado(s).\n\n`;
+      filesBiggerThanSupported.forEach((file) => {
+        text += `${file.name}\n`;
+      });
+      Alert.alert('Atenção!', text);
+    }
     if (results) {
-      const formattedResults = results.map((item) => ({
-        uri: item.uri,
-        fileName: item.name,
-        type: item.type,
-      }));
+      const formattedResults = results.map((item) => {
+        return {
+          uri: item.uri,
+          fileName: item.name,
+          type: item.type,
+        };
+      });
 
       setMedias([...medias, ...formattedResults]);
     }
@@ -116,6 +131,10 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
     let newMarker;
 
     if (isCreatingArea) {
+      if (area.coordinates.length < 3) {
+        Alert.alert('Atenção!', 'É Necessário marcar um polígono no mapa!');
+        return;
+      }
       newMarker = {
         coordinates: area.coordinates,
         title: title.value,
@@ -141,50 +160,57 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
         .then((response) => {
           locationId = response.data;
         })
-        .catch((error) => {
-          Alert.alert('Cartografia Social', error.message);
+        .catch(() => {
+          Alert.alert('Tente mais tarde', 'Não foi possível salvar o ponto.');
         });
       newMarker.id = locationId;
+
+      medias.map(async (media) => {
+        let mediaId = '';
+
+        const formData = new FormData();
+        formData.append('file', {
+          uri: media.uri,
+          type: media.type,
+          name: media.fileName,
+        });
+
+        await api
+          .post('midia/uploadMidia', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          })
+          .then((response) => {
+            mediaId = response.data;
+          })
+          .catch(() => {
+            Alert.alert(
+              'Tente mais tarde.',
+              `Erro ao salvar arquivo '${media.fileName}'`,
+            );
+          });
+
+        if (mediaId !== '') {
+          const newMediaPoint = {
+            locationId: locationId.id,
+            mediaId: mediaId.asset_id,
+          };
+          await api.post('/maps/addMediaToPoint', newMediaPoint).catch(() => {
+            Alert.alert(
+              'Tente mais tarde.',
+              `Erro ao adicionar midia ao ponto: ${media.fileName}`,
+            );
+          });
+        }
+      });
     }
     dispatch(Actions.createMarker(newMarker));
-
     sheetRef.current.close();
-
-    medias.map(async (media) => {
-      let mediaId = '';
-
-      const formData = new FormData();
-      formData.append('file', {
-        uri: media.uri,
-        type: media.type,
-        name: media.fileName,
-      });
-
-      await instance
-        .post('midia/uploadMidia', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-        .then((response) => {
-          mediaId = response.data;
-        })
-        .catch(() => {
-          Alert.alert('erro ao salvar áudio: ', media.fileName);
-        });
-      const newMediaPoint = {
-        locationId: locationId.id,
-        mediaId,
-      };
-      await api.post('/maps/addMediaToPoint', newMediaPoint).catch((error) => {
-        // eslint-disable-next-line no-console
-        console.log(error);
-      });
-    });
+    
     setTimeout(() => {
       onCloseBottomSheet();
     }, 1000);
-    return locationSelected;
   };
 
   const pointName = () => (
@@ -247,7 +273,7 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
   }, [mediaShowed]);
 
   const renderItem = ({item}) => {
-    if (item.type === 'image/jpeg') {
+    if (item.mediaType === 'image') {
       return (
         <ImagePreview
           item={item}

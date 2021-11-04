@@ -44,9 +44,8 @@ const Input = ({
 
     if (rules.length) {
       rules.forEach((rule) => {
-        const currentRule = rule(inputValue, errorMessage);
-        if (!currentRule.isValid && errorText === '') {
-          errorText = currentRule.errorText;
+        if (!inputValue.match(rule)) {
+          errorText = errorMessage;
         }
       });
     }
@@ -92,7 +91,7 @@ const Input = ({
       autoCapitalize={autoCapitalize}
       baseColor={baseColor}
       tintColor={tintColor}
-      errorColor={errorColor}
+      errorColor={tintColor}
       textColor={textColor}
       fontSize={PixelRatio.get() <= 1.5 ? 12 : 16}
       value={value}

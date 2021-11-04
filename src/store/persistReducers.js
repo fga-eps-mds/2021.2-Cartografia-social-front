@@ -6,7 +6,7 @@ export default (reducers) => {
     {
       storage: AsyncStorage,
       key: 'cartografia',
-      whitelist: ['loader', 'markers'],
+      blacklist: ['loader'],
     },
     reducers,
   );

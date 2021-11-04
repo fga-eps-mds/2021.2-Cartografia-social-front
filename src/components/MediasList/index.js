@@ -16,7 +16,7 @@ const MediasList = ({
   setAudioCount,
 }) => {
   const renderItem = ({item}) => {
-    if (item.type === 'image/jpeg') {
+    if (item.mediaType === 'image') {
       return (
         <ImagePreview
           item={item}

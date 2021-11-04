@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import ScrollView from 'components/UI/ScrollView';
 import Input from 'components/UI/Input';
 import required from 'validators/required';
@@ -7,7 +7,7 @@ import auth from '@react-native-firebase/auth';
 import {Alert} from 'react-native';
 import {Container, Header, HeaderText, InputText, Text} from './styles';
 
-const ForgotPasswordPage = () => {
+const ForgotPasswordPage = ({navigation}) => {
   const [email, setEmail] = useState({
     isValid: false,
     value: '',
@@ -25,8 +25,14 @@ const ForgotPasswordPage = () => {
         .sendPasswordResetEmail(email.value)
         .catch(() => {})
         .finally(() => setSucess(true));
-    else Alert.alert('Deu ruim meu chapa', 'É sério');
+    else Alert.alert('Atenção!', 'Preencha o email');
   };
+
+  useEffect(() => {
+    if (navigation.getParent()) {
+      navigation.getParent().setOptions({headerShown: false});
+    }
+  }, [navigation]);
 
   return (
     <>

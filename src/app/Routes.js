@@ -10,6 +10,7 @@ import {auth} from 'store/selectors';
 
 import theme from 'theme/theme';
 
+import Profile from 'components/Profile';
 import LoginPage from 'pages/LoginPage';
 import DynamicForm from 'pages/DynamicForm';
 import SupportForm from 'pages/SupportForm';
@@ -18,10 +19,10 @@ import Map from 'pages/Map';
 import InitialPage from 'pages/InitialPage';
 
 import ForgotPasswordPage from 'pages/ForgotPasswordPage';
+import CreateCommunity from 'pages/CreateCommunity';
 
 const Routes = () => {
   const user = useSelector(auth);
-
   const Stack = createStackNavigator();
   const Drawer = createDrawerNavigator();
 
@@ -67,17 +68,43 @@ const Routes = () => {
     </Stack.Navigator>
   );
 
-  const DemonstrationMode = () => (
-    <Drawer.Navigator>
-      <Drawer.Screen
-        name="Map"
-        component={Map}
-        options={{header: () => null, title: 'Mapa'}}
-      />
-      <Drawer.Screen
+  const LoginRoutes = () => (
+    <Stack.Navigator>
+      <Stack.Screen
         name="LoginPage"
         component={LoginPage}
         options={{
+          title: '',
+          headerStyle: {
+            backgroundColor: `${theme.colors.primary}`,
+            elevation: 0,
+          },
+          headerTintColor: '#fff',
+        }}
+      />
+      <Stack.Screen
+        name="ForgotPasswordPage"
+        component={ForgotPasswordPage}
+        options={{
+          title: '',
+          headerStyle: {
+            backgroundColor: `${theme.colors.primary}`,
+            elevation: 0,
+          },
+          headerTintColor: '#fff',
+        }}
+      />
+    </Stack.Navigator>
+  );
+
+  const DemonstrationMode = () => (
+    <Drawer.Navigator initialRouteName="Map" drawerType="front">
+      <Drawer.Screen name="Map" component={Map} options={{title: 'Mapa'}} />
+      <Drawer.Screen
+        name="LoginPage"
+        component={LoginRoutes}
+        options={{
+          headerTitle: '',
           title: 'Fazer Login',
           headerStyle: {
             backgroundColor: `${theme.colors.primary}`,
@@ -102,13 +129,10 @@ const Routes = () => {
   );
 
   const SignedIn = () => (
-    <Drawer.Navigator>
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <Drawer.Navigator drawerContent={(props) => <Profile {...props} />}>
+      <Drawer.Screen name="Map" component={Map} options={{title: 'Mapa'}} />
       <Drawer.Screen
-        name="Map"
-        component={Map}
-        options={{header: () => null, title: 'Mapa'}}
-      />
-      <Stack.Screen
         name="DynamicForm"
         component={DynamicForm}
         options={{
@@ -116,6 +140,16 @@ const Routes = () => {
           headerTitleAlign: 'center',
         }}
       />
+      {user.data && user.data.type === 'RESEARCHER' ? (
+        <Stack.Screen
+          name="CreateCommunity"
+          component={CreateCommunity}
+          options={{
+            title: 'Criar uma comunidade',
+            headerTitleAlign: 'center',
+          }}
+        />
+      ) : null}
     </Drawer.Navigator>
   );
 

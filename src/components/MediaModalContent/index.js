@@ -11,8 +11,8 @@ const MediaModalContent = ({setMedias}) => {
     mediaType: 'photo',
     maxWidth: 1300,
     maxHeight: 1300,
-    quality: 0.9,
-    saveToPhotos: true,
+    // quality: 0.9,
+    // saveToPhotos: true,
     selectionLimit: 0,
   };
 
@@ -26,16 +26,27 @@ const MediaModalContent = ({setMedias}) => {
     launchImageLibrary(
       selected === 'photo' ? photoOptions : videoOptions,
       async (videoResponse) => {
-        if (selected === 'video') {
-          const newType = videoResponse;
-          newType.assets[0].type = 'video/mp4';
-
-          const thumb = await createThumbnail({
-            url: videoResponse.assets[0].uri,
-            timeStamp: 10000,
-          });
-          newType.assets[0].thumb = thumb.path;
+        if (videoResponse.didCancel) {
+          return;
         }
+
+        videoResponse.assets.map(async (media) => {
+          const newType = media;
+          if (selected === 'video') {
+            newType.type = 'video/mp4';
+            newType.mediaType = 'video';
+
+            const thumb = await createThumbnail({
+              url: videoResponse.assets[0].uri,
+              timeStamp: 10000,
+            });
+            newType.thumb = thumb.path;
+          } else {
+            newType.mediaType = 'image';
+          }
+
+          return null;
+        });
         if (videoResponse.assets && videoResponse.assets.length) {
           setMedias([...videoResponse.assets]);
         }
@@ -51,29 +62,12 @@ const MediaModalContent = ({setMedias}) => {
       <Row>
         <Column>
           <TouchableOpacity
-            onPress={() => null}
-            style={{
-              width: 80,
-              height: 80,
-              borderRadius: 80,
-              margin: 5,
-              borderColor: theme.colors.primary,
-              borderWidth: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Icon name="file" />
-          </TouchableOpacity>
-          <Text>Documento</Text>
-        </Column>
-        <Column>
-          <TouchableOpacity
             onPress={() => handleOption('photo')}
             style={{
               width: 80,
               height: 80,
               borderRadius: 80,
-              margin: 5,
+              margin: 30,
               borderColor: theme.colors.primary,
               borderWidth: 1,
               justifyContent: 'center',
@@ -90,7 +84,7 @@ const MediaModalContent = ({setMedias}) => {
               width: 80,
               height: 80,
               borderRadius: 80,
-              margin: 5,
+              margin: 30,
               borderColor: theme.colors.primary,
               borderWidth: 1,
               justifyContent: 'center',
@@ -99,23 +93,6 @@ const MediaModalContent = ({setMedias}) => {
             <Icon name="video" />
           </TouchableOpacity>
           <Text>Video</Text>
-        </Column>
-        <Column>
-          <TouchableOpacity
-            onPress={() => null}
-            style={{
-              width: 80,
-              height: 80,
-              borderRadius: 80,
-              margin: 5,
-              borderColor: theme.colors.primary,
-              borderWidth: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Icon name="microphone" />
-          </TouchableOpacity>
-          <Text>Audio</Text>
         </Column>
       </Row>
     </Container>

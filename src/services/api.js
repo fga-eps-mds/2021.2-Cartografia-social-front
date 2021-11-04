@@ -2,6 +2,9 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 import auth from '@react-native-firebase/auth';
 
+const DEFAULT_TIMEOUT = 30000;
+axios.defaults.timeout = DEFAULT_TIMEOUT;
+
 const instance = axios.create({
   // baseURL: Config.API,
   baseURL: 'http://143.244.155.117:8000/',

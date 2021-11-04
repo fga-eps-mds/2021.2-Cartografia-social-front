@@ -30,13 +30,20 @@ import {Container, Icon} from './styles';
 const EditPoint = ({marker, editHandler, locationSelected, show, onClose}) => {
   UseCamera();
   const dispatch = useDispatch();
-  const listMarkers = useSelector(state => state.markers.list)
   const user = useSelector(auth);
+  // const area = useSelector(newArea);
+  const snapPoints = useMemo(() => [110, '50%', '95%'], []);
   const sheetRef = useRef(null);
 
   let namePlaceholder = 'Digite aqui o título do novo ponto';
   let descriptionPlaceholder = 'Digite aqui a descrição do novo ponto';
   let buttonName = 'Salvar ponto';
+
+  // if (isEditingArea) {
+  //   namePlaceholder = 'Digite aqui o título da nova área';
+  //   descriptionPlaceholder = 'Digite aqui a descrição da nova área';
+  //   buttonName = 'Salvar área';
+  // }
 
   const DEFAULT_TITLE_STATE = {
     isValid: true,
@@ -50,6 +57,7 @@ const EditPoint = ({marker, editHandler, locationSelected, show, onClose}) => {
 
   const [title, setTitle] = useState(DEFAULT_TITLE_STATE);
   const [description, setDescription] = useState(DEFAULT_DESCRIPTION_STATE);
+  const [showMarker, setShowMarker] = useState(true);
   const [audioCount, setAudioCount] = useState(0);
   const [medias, setMedias] = useState(marker.multimedia);
   const [modalVisible, setModalVisible] = useState(false);
@@ -61,14 +69,30 @@ const EditPoint = ({marker, editHandler, locationSelected, show, onClose}) => {
   const [openedImage, setOpenedImage] = useState({});
 
   const selectPdf = async () => {
-    const results = await useDocumentPicker();
-
+    let results = await useDocumentPicker();
+    const filesBiggerThanSupported = [];
+    results = results.filter((result) => {
+      if (result.size < 10485760) {
+        return 1;
+      }
+      filesBiggerThanSupported.push(result);
+      return 0;
+    });
+    if (filesBiggerThanSupported.length > 0) {
+      let text = `${filesBiggerThanSupported.length} arquivo(s) excede(m) o tamanho máximo permitido de 10MB e portanto não pode(m) ser adicionado(s).\n\n`;
+      filesBiggerThanSupported.forEach((file) => {
+        text += `${file.name}\n`;
+      });
+      Alert.alert('Atenção!', text);
+    }
     if (results) {
-      const formattedResults = results.map((item) => ({
-        uri: item.uri,
-        fileName: item.name,
-        type: item.type,
-      }));
+      const formattedResults = results.map((item) => {
+        return {
+          uri: item.uri,
+          fileName: item.name,
+          type: item.type,
+        };
+      });
 
       setMedias([...medias, ...formattedResults]);
     }
@@ -96,6 +120,13 @@ const EditPoint = ({marker, editHandler, locationSelected, show, onClose}) => {
       },
     },
   ];
+
+  // const onCloseBottomSheet = () => {
+  //   onClose();
+  //   setTitle(DEFAULT_STATE);
+  //   setDescription(DEFAULT_STATE);
+  //   setMedias([]);
+  // };
 
   const onSave = async () => {
     var markerIndex = listMarkers.indexOf(marker);
@@ -210,7 +241,7 @@ const EditPoint = ({marker, editHandler, locationSelected, show, onClose}) => {
   }, [mediaShowed]);
 
   const renderItem = ({item}) => {
-    if (item.type === 'image/jpeg') {
+    if (item.mediaType === 'image') {
       return (
         <ImagePreview
           item={item}
@@ -256,14 +287,14 @@ const EditPoint = ({marker, editHandler, locationSelected, show, onClose}) => {
     <>
       <View px={3}>
         <View my={2}>
-          <Input
+        {/* <Input
             label={namePlaceholder}
             onChange={(value) => setTitle(value)}
             value={title.value}
             autoCapitalize="words"
             onFocus={() => sheetRef.current.snapToIndex(2)}
             rules={[required]}
-          />
+          /> */}
         </View>
         {medias.length ? (
           <View>

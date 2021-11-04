@@ -1,8 +1,9 @@
 import styled from 'styled-components/native';
 import theme from 'theme/theme';
+import ProfilePicture from 'react-native-profile-picture';
 
 export const Container = styled.View`
-  padding: 10px 20px 0px 20px;
+  padding: 15% 20px 0px 20px;
 `;
 
 export const Header = styled.View`
@@ -25,9 +26,8 @@ export const HeaderText = styled.Text`
 `;
 
 export const InputText = styled.Text`
-  color: ${theme.colors.black};
+  color: ${theme.colors.primary};
   padding-bottom: 3%;
-  margin-top: 10px;
 `;
 
 export const TextBtn = styled.Text`
@@ -44,4 +44,23 @@ export const FirstInput = styled.View`
 
 export const InputView = styled.View`
   flex: 1;
+`;
+
+export const SideMenuProfileIcon = styled.View`
+  align-items: center;
+  width: 100;
+  height: 100;
+  border-radius: 50;
+  align-self: center;
+`;
+
+export const IconStyle = styled(ProfilePicture).attrs({
+  width: 100,
+  height: 100,
+})``;
+
+export const CustomItem = styled.View`
+  padding: 16;
+  flex-direction: row;
+  align-items: center;
 `;

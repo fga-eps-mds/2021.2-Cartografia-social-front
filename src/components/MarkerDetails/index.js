@@ -25,7 +25,6 @@ const MarkerDetails = ({marker, sheetRef}) => {
   const [mediaShowed, setMediaShowed] = useState({});
   const [modalShowMediaVisible, setModalShowMediaVisible] = useState(false);
   const [editing, setEdit] = useState(false);
-  console.log(marker);
 
   const handleShowMedia = (fileType, fileUri, fileDuration) => {
     const media = {
@@ -44,10 +43,10 @@ const MarkerDetails = ({marker, sheetRef}) => {
   const sortMediasByImages = () => {
     const medias = [...marker.multimedia];
     medias.sort((a, b) => {
-      if (a.type === 'image/jpeg') {
+      if (a.mediaType === 'image') {
         return -1;
       }
-      if (b.type === 'image/jpeg') {
+      if (b.mediaType === 'image') {
         return 1;
       }
       return 0;
@@ -134,41 +133,40 @@ const MarkerDetails = ({marker, sheetRef}) => {
           <>
             {marker && marker.title ? (
               <>
-                <TouchableOpacity style={{backgroundColor: '#AAAA'}} onPress={() => setEdit(true)}>
-                  <Text fontWeight="bold" textAlign="right" mr={3}>Editar</Text>
-                </TouchableOpacity>
-                <View mt={0} m={3} style={{height: '5%'}}>
-                  <Text fontWeight="bold">{marker.title}</Text>
-                  <Divisor my={2} />
-                </View>
-                <View px={3} style={{height: '100%'}}>
-                  {marker.multimedia.length ? (
-                    <View
-                      style={{
-                        justifyContent: 'flex-start',
-                        height: '35%',
-                      }}>
-                      <Text
-                        fontSize={theme.font.sizes.SM}
-                        mb={3}
-                        textAlign="right"
-                        flex={0.5}>
-                        Visualizar todos
-                      </Text>
-                      <MediasList
-                        medias={sortMediasByImages()}
-                        setOpenedImage={setOpenedImage}
-                        setIsVisibleImageModal={setIsVisibleImageModal}
-                        handleShowMedia={handleShowMedia}
-                        audioCount={audioCount}
-                        setAudioCount={setAudioCount}
-                      />
-                    </View>
-                  ) : null}
-                  <View p={3}>
-                    <Text>{marker.description}</Text>
+              <TouchableOpacity style={{backgroundColor: '#AAAA'}} onPress={() => setEdit(true)}>
+                <Text fontWeight="bold" textAlign="right" mr={3}>Editar</Text>
+              </TouchableOpacity>
+              <View m={3} style={{height: '5%'}}>
+                <Text fontWeight="bold">{marker.title}</Text>
+                <Divisor my={2} />
+              </View>
+              <View px={3} style={{height: '100%'}}>
+                {marker.multimedia.length ? (
+                  <View
+                    style={{
+                      justifyContent: 'flex-start',
+                      height: '35%',
+                    }}>
+                    <Text fontWeight="bold" fontSize={theme.font.sizes.SM} mb={2}>
+                      Multimídia:
+                    </Text>
+                    <MediasList
+                      medias={sortMediasByImages()}
+                      setOpenedImage={setOpenedImage}
+                      setIsVisibleImageModal={setIsVisibleImageModal}
+                      handleShowMedia={handleShowMedia}
+                      audioCount={audioCount}
+                      setAudioCount={setAudioCount}
+                    />
                   </View>
+                ) : null}
+                <View>
+                  <Text fontWeight="bold" fontSize={theme.font.sizes.SM} mb={2}>
+                    Descrição:
+                  </Text>
+                  <Text ml={3}>{marker.description}</Text>
                 </View>
+              </View>
               </>
             ) : (
               <View />
