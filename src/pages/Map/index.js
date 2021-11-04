@@ -11,6 +11,7 @@ import Marker from 'components/Marker';
 import MarkerDetails from 'components/MarkerDetails';
 import CreateArea from 'components/CreateArea';
 import {Polygon} from 'react-native-maps';
+import api from 'services/api';
 import {MapView} from './styles';
 
 const Map = () => {
@@ -25,6 +26,23 @@ const Map = () => {
   const resetArea = useRef(() => {});
 
   const markers = useSelector(selectors.markers);
+  const user = useSelector(selectors.auth);
+
+  const getPointsAndAreas = async () => {
+    try {
+      if (user.id) {
+        const response = await api.get(
+          `/maps/communityDataByUserEmail/${user.email}`,
+        );
+      }
+    } catch (error) {
+      Alert.alert(error.title, error.message);
+    }
+  };
+
+  useEffect(() => {
+    getPointsAndAreas();
+  }, []);
 
   const actions = [
     {
