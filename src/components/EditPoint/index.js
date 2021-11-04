@@ -27,7 +27,7 @@ import VideoPreview from '../VideoPreview';
 
 import {Container, Icon} from './styles';
 
-const EditPoint = ({marker, locationSelected, show, onClose}) => {
+const EditPoint = ({marker, editHandler, locationSelected, show, onClose}) => {
   UseCamera();
   const dispatch = useDispatch();
   const listMarkers = useSelector(state => state.markers.list)
@@ -152,6 +152,8 @@ const EditPoint = ({marker, locationSelected, show, onClose}) => {
 
     
     dispatch(Actions.updateMarker(updatedMarker, markerIndex));
+    editHandler(false);
+    return updatedMarker;
 
     // // sheetRef.current.close();
 

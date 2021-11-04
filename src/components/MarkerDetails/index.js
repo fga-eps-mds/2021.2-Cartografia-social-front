@@ -25,11 +25,7 @@ const MarkerDetails = ({marker, sheetRef}) => {
   const [mediaShowed, setMediaShowed] = useState({});
   const [modalShowMediaVisible, setModalShowMediaVisible] = useState(false);
   const [editing, setEdit] = useState(false);
-  const [, setMedias] = useState([]);
-
-  let namePlaceholder = 'Digite aqui o título do novo ponto';
-  let descriptionPlaceholder = 'Digite aqui a descrição do novo ponto';
-  let buttonName = 'Salvar ponto';
+  console.log(marker);
 
   const handleShowMedia = (fileType, fileUri, fileDuration) => {
     const media = {
@@ -129,7 +125,10 @@ const MarkerDetails = ({marker, sheetRef}) => {
           <TouchableOpacity style={{backgroundColor: '#AAAA'}} onPress={() => setEdit(false)}>
             <Text fontWeight="bold" textAlign="right" mr={3}>Cancelar</Text>
           </TouchableOpacity>
-          <EditPoint marker={marker}></EditPoint>
+          <EditPoint 
+            marker={marker}
+            editHandler={setEdit}>
+          </EditPoint>
           </>
         ) : (
           <>
