@@ -1,7 +1,6 @@
 import React, {useRef, useMemo, useState, useEffect} from 'react';
 import {Alert} from 'react-native';
 import Modal from 'react-native-modal';
-import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import PropTypes from 'prop-types';
 import {Btn, Input, View, FlatList, Text} from 'components/UI';
 import required from 'validators/required';
@@ -11,7 +10,6 @@ import * as Actions from 'store/actions';
 import api from 'services/api';
 import Fabs from 'components/Fabs';
 import theme from 'theme/theme';
-import instance from 'services/api2';
 import useDocumentPicker from 'services/useDocumentPicker';
 import FormData from 'form-data';
 import RecordAudioModalContent from 'components/RecordAudioModalContent';
@@ -25,12 +23,17 @@ import AudioPreview from '../AudioPreview';
 import DocumentPreview from '../DocumentPreview';
 import VideoPreview from '../VideoPreview';
 
-import {Container, Icon} from './styles';
-
-const EditPoint = ({marker, editHandler, updateMarker, locationSelected, show, onClose}) => {
+const EditPoint = ({
+  marker,
+  editHandler,
+  updateMarker,
+  locationSelected,
+  show,
+  onClose,
+}) => {
   UseCamera();
   const dispatch = useDispatch();
-  const listMarkers = useSelector(state => state.markers.list)
+  const listMarkers = useSelector((state) => state.markers.list);
   const user = useSelector(auth);
   const snapPoints = useMemo(() => [110, '50%', '95%'], []);
   const sheetRef = useRef(null);
@@ -123,7 +126,7 @@ const EditPoint = ({marker, editHandler, updateMarker, locationSelected, show, o
 
   const onSave = async () => {
     let locationId = null;
-    var markerIndex = listMarkers.indexOf(marker);
+    const markerIndex = listMarkers.indexOf(marker);
     const mediasToRemove = [];
     const mediasToAdd = [];
 
@@ -144,21 +147,20 @@ const EditPoint = ({marker, editHandler, updateMarker, locationSelected, show, o
         description: description.value,
         multimedia: medias,
         id: marker.id,
-      }
+      };
     }
 
-    marker.multimedia.map(m => {
-      if(!updatedMarker.multimedia.includes(m)){
-        mediasToRemove.push(m);  
+    marker.multimedia.map((m) => {
+      if (!updatedMarker.multimedia.includes(m)) {
+        mediasToRemove.push(m);
       }
     });
-    updatedMarker.multimedia.map(m => {
-      if(!marker.multimedia.includes(m)){
-        mediasToAdd.push(m);  
+    updatedMarker.multimedia.map((m) => {
+      if (!marker.multimedia.includes(m)) {
+        mediasToAdd.push(m);
       }
     });
 
-    
     if (user && user.id) {
       await api
         .put('/maps/point', updatedMarker)
@@ -200,14 +202,15 @@ const EditPoint = ({marker, editHandler, updateMarker, locationSelected, show, o
             locationId: locationId.id,
             mediaId: mediaId.asset_id,
           };
-          await api.delete('/maps/removeMediaFromPoint', mediaPoint).catch(() => {
-            Alert.alert(
-              'Tente mais tarde.',
-              `Erro ao excluir midia do ponto: ${media.fileName}`,
-            );
-          });
+          await api
+            .delete('/maps/removeMediaFromPoint', mediaPoint)
+            .catch(() => {
+              Alert.alert(
+                'Tente mais tarde.',
+                `Erro ao excluir midia do ponto: ${media.fileName}`,
+              );
+            });
         }
-
       });
 
       mediasToAdd.map(async (media) => {
@@ -250,7 +253,7 @@ const EditPoint = ({marker, editHandler, updateMarker, locationSelected, show, o
         }
       });
     }
-    
+
     // dispatch(Actions.updateMarker(updatedMarker, markerIndex));
     // // updateMarker(updatedMarker);
     // editHandler(false);
@@ -349,14 +352,14 @@ const EditPoint = ({marker, editHandler, updateMarker, locationSelected, show, o
     <>
       <View px={3}>
         <View my={2}>
-        <Input
-          label={namePlaceholder}
-          onChange={(value) => setTitle(value)}
-          // value={title.value}
-          autoCapitalize="words"
-          onFocus={() => sheetRef.current.snapToIndex(2)}
-          rules={[required]}
-        />
+          <Input
+            label={namePlaceholder}
+            onChange={(value) => setTitle(value)}
+            // value={title.value}
+            autoCapitalize="words"
+            onFocus={() => sheetRef.current.snapToIndex(2)}
+            rules={[required]}
+          />
         </View>
         {medias.length ? (
           <View>
@@ -383,11 +386,7 @@ const EditPoint = ({marker, editHandler, updateMarker, locationSelected, show, o
             multiline
           />
         </View>
-        <Btn
-          onPress={onSave}
-          disabled={!formIsValid()}
-          title={buttonName}
-        />
+        <Btn onPress={onSave} disabled={!formIsValid()} title={buttonName} />
       </View>
       <Fabs actions={actions} />
       <View>
@@ -408,10 +407,7 @@ const EditPoint = ({marker, editHandler, updateMarker, locationSelected, show, o
           onSwipeComplete={toggleCamModal}
           swipeDirection={['down']}
           style={{justifyContent: 'flex-end', margin: 0}}>
-          <SelectModal
-            toggleModal={toggleCamModal}
-            setMedias={setMediasList}
-          />
+          <SelectModal toggleModal={toggleCamModal} setMedias={setMediasList} />
         </Modal>
         <Modal
           isVisible={modalMediaVisible}

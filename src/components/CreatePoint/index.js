@@ -208,7 +208,7 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
     }
     dispatch(Actions.createMarker(newMarker));
     sheetRef.current.close();
-    
+
     setTimeout(() => {
       onCloseBottomSheet();
     }, 1000);

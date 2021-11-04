@@ -1,25 +1,16 @@
 /* eslint-disable react/prop-types */
 import React, {useEffect, useState} from 'react';
 import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
-import {Btn, View, Text, Divisor, Input, FlatList} from 'components/UI';
+import {View, Text, Divisor} from 'components/UI';
 import theme from 'theme/theme';
 import ImageView from 'react-native-image-viewing';
 import Modal from 'react-native-modal';
 import ShowMediaModal from 'components/ShowMediaModal';
-import MediasList from '../MediasList';
-import { TouchableOpacity } from 'react-native';
-import required from 'validators/required';
-import ImagePreview from '../ImagePreview';
-import AudioPreview from '../AudioPreview';
-import DocumentPreview from '../DocumentPreview';
-import VideoPreview from '../VideoPreview';
+import {TouchableOpacity} from 'react-native';
 import EditPoint from 'components/EditPoint';
-
-import {Container, Icon} from './styles';
-import { update } from 'lodash';
+import MediasList from '../MediasList';
 
 const MarkerDetails = ({marker, sheetRef}) => {
-  [updatedMarker, updateMarker] = useState(marker);
   const snapPoints = [400, '95%'];
   const [visibleImageModal, setIsVisibleImageModal] = useState(false);
   const [openedImage, setOpenedImage] = useState({});
@@ -27,8 +18,9 @@ const MarkerDetails = ({marker, sheetRef}) => {
   const [mediaShowed, setMediaShowed] = useState({});
   const [modalShowMediaVisible, setModalShowMediaVisible] = useState(false);
   const [editing, setEdit] = useState(false);
+  const [updatedMarker, updateMarker] = useState(marker);
 
-  if( updatedMarker != marker){
+  if (updatedMarker !== marker) {
     updateMarker(marker);
   }
 
@@ -60,12 +52,6 @@ const MarkerDetails = ({marker, sheetRef}) => {
     return medias;
   };
 
-  const DeleteMedia = (mediaPath) => {
-    const newMediasList = marker.multimedia.filter((media) => media.uri !== mediaPath);
-    marker.multimedia = newMediasList;
-    useState();
-  };
-
   const onCloseBottomSheet = () => {
     setEdit(false);
   };
@@ -75,49 +61,6 @@ const MarkerDetails = ({marker, sheetRef}) => {
       setModalShowMediaVisible(true);
     }
   }, [mediaShowed]);
-
-  const renderItem = ({item}) => {
-    if (item.type === 'image/jpeg') {
-      return (
-        <ImagePreview
-          item={item}
-          setOpenedImage={setOpenedImage}
-          setIsVisibleImageModal={setIsVisibleImageModal}
-          DeleteMedia={DeleteMedia}
-        />
-      );
-    }
-
-    if (item.type === 'audio/mpeg') {
-      return (
-        <AudioPreview
-          item={item}
-          handleShowMedia={handleShowMedia}
-          audioCount={audioCount}
-          setAudioCount={setAudioCount}
-          DeleteMedia={DeleteMedia}
-        />
-      );
-    }
-
-    if (item.type === 'application/pdf') {
-      return (
-        <DocumentPreview
-          item={item}
-          handleShowMedia={handleShowMedia}
-          DeleteMedia={DeleteMedia}
-        />
-      );
-    }
-
-    return (
-      <VideoPreview
-        item={item}
-        handleShowMedia={handleShowMedia}
-        DeleteMedia={DeleteMedia}
-      />
-    );
-  };
 
   return (
     <BottomSheet
@@ -131,53 +74,67 @@ const MarkerDetails = ({marker, sheetRef}) => {
         contentContainerStyle={{height: '100%'}}>
         {editing ? (
           <>
-          <TouchableOpacity style={{backgroundColor: '#AAAA'}} onPress={() => setEdit(false)}>
-            <Text fontWeight="bold" textAlign="right" mr={3}>Cancelar</Text>
-          </TouchableOpacity>
-          <EditPoint 
-            marker={marker}
-            editHandler={setEdit}
-            updateMarker={updateMarker}>
-          </EditPoint>
+            <TouchableOpacity
+              style={{backgroundColor: '#AAAA'}}
+              onPress={() => setEdit(false)}>
+              <Text fontWeight="bold" textAlign="right" mr={3}>
+                Cancelar
+              </Text>
+            </TouchableOpacity>
+            <EditPoint
+              marker={marker}
+              editHandler={setEdit}
+              updateMarker={updateMarker}
+            />
           </>
         ) : (
           <>
             {marker && marker.title ? (
               <>
-              <TouchableOpacity style={{backgroundColor: '#AAAA'}} onPress={() => setEdit(true)}>
-                <Text fontWeight="bold" textAlign="right" mr={3}>Editar</Text>
-              </TouchableOpacity>
-              <View m={3} style={{height: '5%'}}>
-                <Text fontWeight="bold">{marker.title}</Text>
-                <Divisor my={2} />
-              </View>
-              <View px={3} style={{height: '100%'}}>
-                {marker.multimedia.length ? (
-                  <View
-                    style={{
-                      justifyContent: 'flex-start',
-                      height: '35%',
-                    }}>
-                    <Text fontWeight="bold" fontSize={theme.font.sizes.SM} mb={2}>
-                      Multimídia:
-                    </Text>
-                    <MediasList
-                      medias={sortMediasByImages()}
-                      setOpenedImage={setOpenedImage}
-                      setIsVisibleImageModal={setIsVisibleImageModal}
-                      handleShowMedia={handleShowMedia}
-                      audioCount={audioCount}
-                      setAudioCount={setAudioCount}
-                    />
-                  </View>
-                ) : null}
-                <View>
-                  <Text fontWeight="bold" fontSize={theme.font.sizes.SM} mb={2}>
-                    Descrição:
+                <TouchableOpacity
+                  style={{backgroundColor: '#AAAA'}}
+                  onPress={() => setEdit(true)}>
+                  <Text fontWeight="bold" textAlign="right" mr={3}>
+                    Editar
                   </Text>
-                  <Text ml={3}>{marker.description}</Text>
+                </TouchableOpacity>
+                <View m={3} style={{height: '5%'}}>
+                  <Text fontWeight="bold">{marker.title}</Text>
+                  <Divisor my={2} />
                 </View>
-              </View>
+                <View px={3} style={{height: '100%'}}>
+                  {marker.multimedia.length ? (
+                    <View
+                      style={{
+                        justifyContent: 'flex-start',
+                        height: '35%',
+                      }}>
+                      <Text
+                        fontWeight="bold"
+                        fontSize={theme.font.sizes.SM}
+                        mb={2}>
+                        Multimídia:
+                      </Text>
+                      <MediasList
+                        medias={sortMediasByImages()}
+                        setOpenedImage={setOpenedImage}
+                        setIsVisibleImageModal={setIsVisibleImageModal}
+                        handleShowMedia={handleShowMedia}
+                        audioCount={audioCount}
+                        setAudioCount={setAudioCount}
+                      />
+                    </View>
+                  ) : null}
+                  <View>
+                    <Text
+                      fontWeight="bold"
+                      fontSize={theme.font.sizes.SM}
+                      mb={2}>
+                      Descrição:
+                    </Text>
+                    <Text ml={3}>{marker.description}</Text>
+                  </View>
+                </View>
               </>
             ) : (
               <View />
