@@ -166,8 +166,9 @@ const CreatePoint = ({
     dispatch(Actions.createMarker(newMarker));
     sheetRef.current.close();
     if (user && user.id) {
+      const endpoint = isCreatingArea ? '/maps/area' : '/maps/point';
       await api
-        .post('/maps/point', newMarker)
+        .post(endpoint, newMarker)
         .then((response) => {
           locationId = response.data;
         })
@@ -210,6 +211,19 @@ const CreatePoint = ({
             Alert.alert(
               'Tente mais tarde.',
               `Erro ao adicionar midia ao ponto: ${media.fileName}`,
+            );
+          });
+        }
+
+        if (locationId.id && user.data.email) {
+          const CommunityPoint = {
+            locationId: locationId.id,
+            userEmail: user.data.email,
+          };
+          await api.post('/maps/addToCommunity', CommunityPoint).catch(() => {
+            Alert.alert(
+              'Tente mais tarde.',
+              `Erro ao adicionar ponto à comunidade`,
             );
           });
         }
