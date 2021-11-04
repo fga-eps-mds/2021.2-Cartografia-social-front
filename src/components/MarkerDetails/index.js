@@ -16,8 +16,10 @@ import VideoPreview from '../VideoPreview';
 import EditPoint from 'components/EditPoint';
 
 import {Container, Icon} from './styles';
+import { update } from 'lodash';
 
 const MarkerDetails = ({marker, sheetRef}) => {
+  [updatedMarker, updateMarker] = useState(marker);
   const snapPoints = [400, '95%'];
   const [visibleImageModal, setIsVisibleImageModal] = useState(false);
   const [openedImage, setOpenedImage] = useState({});
@@ -25,6 +27,10 @@ const MarkerDetails = ({marker, sheetRef}) => {
   const [mediaShowed, setMediaShowed] = useState({});
   const [modalShowMediaVisible, setModalShowMediaVisible] = useState(false);
   const [editing, setEdit] = useState(false);
+
+  if( updatedMarker != marker){
+    updateMarker(marker);
+  }
 
   const handleShowMedia = (fileType, fileUri, fileDuration) => {
     const media = {
@@ -60,8 +66,11 @@ const MarkerDetails = ({marker, sheetRef}) => {
     useState();
   };
 
-  useEffect(() => {
+  const onCloseBottomSheet = () => {
     setEdit(false);
+  };
+
+  useEffect(() => {
     if (Object.keys(mediaShowed).length !== 0) {
       setModalShowMediaVisible(true);
     }
@@ -115,6 +124,7 @@ const MarkerDetails = ({marker, sheetRef}) => {
       enablePanDownToClose
       ref={sheetRef}
       index={-1}
+      onClose={onCloseBottomSheet}
       snapPoints={snapPoints}>
       <BottomSheetScrollView
         keyboardShouldPersistTaps="handled"
@@ -126,7 +136,8 @@ const MarkerDetails = ({marker, sheetRef}) => {
           </TouchableOpacity>
           <EditPoint 
             marker={marker}
-            editHandler={setEdit}>
+            editHandler={setEdit}
+            updateMarker={updateMarker}>
           </EditPoint>
           </>
         ) : (

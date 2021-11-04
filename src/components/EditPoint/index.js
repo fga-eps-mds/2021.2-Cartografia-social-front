@@ -27,11 +27,11 @@ import VideoPreview from '../VideoPreview';
 
 import {Container, Icon} from './styles';
 
-const EditPoint = ({marker, editHandler, locationSelected, show, onClose}) => {
+const EditPoint = ({marker, editHandler, updateMarker, locationSelected, show, onClose}) => {
   UseCamera();
   const dispatch = useDispatch();
+  const listMarkers = useSelector(state => state.markers.list)
   const user = useSelector(auth);
-  // const area = useSelector(newArea);
   const snapPoints = useMemo(() => [110, '50%', '95%'], []);
   const sheetRef = useRef(null);
 
@@ -39,11 +39,11 @@ const EditPoint = ({marker, editHandler, locationSelected, show, onClose}) => {
   let descriptionPlaceholder = 'Digite aqui a descrição do novo ponto';
   let buttonName = 'Salvar ponto';
 
-  // if (isEditingArea) {
-  //   namePlaceholder = 'Digite aqui o título da nova área';
-  //   descriptionPlaceholder = 'Digite aqui a descrição da nova área';
-  //   buttonName = 'Salvar área';
-  // }
+  if (marker.coordinates) {
+    namePlaceholder = 'Digite aqui o título da nova área';
+    descriptionPlaceholder = 'Digite aqui a descrição da nova área';
+    buttonName = 'Salvar área';
+  }
 
   const DEFAULT_TITLE_STATE = {
     isValid: true,
@@ -121,77 +121,139 @@ const EditPoint = ({marker, editHandler, locationSelected, show, onClose}) => {
     },
   ];
 
-  // const onCloseBottomSheet = () => {
-  //   onClose();
-  //   setTitle(DEFAULT_STATE);
-  //   setDescription(DEFAULT_STATE);
-  //   setMedias([]);
-  // };
-
   const onSave = async () => {
+    let locationId = null;
     var markerIndex = listMarkers.indexOf(marker);
+    const mediasToRemove = [];
+    const mediasToAdd = [];
 
-    updatedMarker = {
-      latitude: marker.latitude,
-      longitude: marker.longitude,
-      title: title.value,
-      description: description.value,
-      multimedia: medias,
-      id: marker.id,
-    }
-    
-    if (user && user.id) {
-      await api
-        .put('/maps/point', marker)
-        .catch((error) => {
-          Alert.alert('Cartografia Social', error.message);
-        });
-    }
-
-    medias.map(async (media) => {
-      let mediaId = '';
-
-      const formData = new FormData();
-      formData.append('file', {
-        uri: media.uri,
-        type: media.type,
-        name: media.fileName,
-      });
-
-      await instance
-        .post('midia/uploadMidia', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-        .then((response) => {
-          mediaId = response.data;
-        })
-        .catch(() => {
-          Alert.alert('erro ao salvar áudio: ', media.fileName);
-        });
-      
-      const newMediaPoint = {
-        locationId: marker.id,
-        mediaId,
+    if (marker.coordinates) {
+      updatedMarker = {
+        coordinates: marker.coordinates,
+        title: title.value,
+        description: description.value,
+        multimedia: medias,
+        id: marker.id,
       };
-      await api.post('/maps/addMediaToPoint', newMediaPoint).catch((error) => {
-        // eslint-disable-next-line no-console
-        console.log(error);
-      });
+      dispatch(Actions.resetNewArea());
+    } else {
+      updatedMarker = {
+        latitude: marker.latitude,
+        longitude: marker.longitude,
+        title: title.value,
+        description: description.value,
+        multimedia: medias,
+        id: marker.id,
+      }
+    }
+
+    marker.multimedia.map(m => {
+      if(!updatedMarker.multimedia.includes(m)){
+        mediasToRemove.push(m);  
+      }
+    });
+    updatedMarker.multimedia.map(m => {
+      if(!marker.multimedia.includes(m)){
+        mediasToAdd.push(m);  
+      }
     });
 
     
-    dispatch(Actions.updateMarker(updatedMarker, markerIndex));
-    editHandler(false);
-    return updatedMarker;
+    if (user && user.id) {
+      await api
+        .put('/maps/point', updatedMarker)
+        .then((response) => {
+          locationId = response.data;
+        })
+        .catch(() => {
+          Alert.alert('Tente mais tarde', 'Não foi editar o ponto.');
+        });
 
-    // // sheetRef.current.close();
+      mediasToRemove.map(async (media) => {
+        let mediaId = '';
 
-    // setTimeout(() => {
-    //   onCloseBottomSheet();
-    // }, 1000);
-    // return locationSelected;
+        const formData = new FormData();
+        formData.append('file', {
+          uri: media.uri,
+          type: media.type,
+          name: media.fileName,
+        });
+
+        await api
+          .delete('midia/removeMidia', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          })
+          .then((response) => {
+            mediaId = response.data;
+          })
+          .catch(() => {
+            Alert.alert(
+              'Tente mais tarde.',
+              `Erro ao excluir arquivo '${media.fileName}'`,
+            );
+          });
+
+        if (mediaId !== '') {
+          const mediaPoint = {
+            locationId: locationId.id,
+            mediaId: mediaId.asset_id,
+          };
+          await api.delete('/maps/removeMediaFromPoint', mediaPoint).catch(() => {
+            Alert.alert(
+              'Tente mais tarde.',
+              `Erro ao excluir midia do ponto: ${media.fileName}`,
+            );
+          });
+        }
+
+      });
+
+      mediasToAdd.map(async (media) => {
+        let mediaId = '';
+
+        const formData = new FormData();
+        formData.append('file', {
+          uri: media.uri,
+          type: media.type,
+          name: media.fileName,
+        });
+
+        await api
+          .post('midia/uploadMidia', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          })
+          .then((response) => {
+            mediaId = response.data;
+          })
+          .catch(() => {
+            Alert.alert(
+              'Tente mais tarde.',
+              `Erro ao salvar arquivo '${media.fileName}'`,
+            );
+          });
+
+        if (mediaId !== '') {
+          const newMediaPoint = {
+            locationId: locationId.id,
+            mediaId: mediaId.asset_id,
+          };
+          await api.post('/maps/addMediaToPoint', newMediaPoint).catch(() => {
+            Alert.alert(
+              'Tente mais tarde.',
+              `Erro ao adicionar midia ao ponto: ${media.fileName}`,
+            );
+          });
+        }
+      });
+    }
+    
+    // dispatch(Actions.updateMarker(updatedMarker, markerIndex));
+    // // updateMarker(updatedMarker);
+    // editHandler(false);
   };
 
   const formIsValid = () => {
@@ -287,14 +349,14 @@ const EditPoint = ({marker, editHandler, locationSelected, show, onClose}) => {
     <>
       <View px={3}>
         <View my={2}>
-        {/* <Input
-            label={namePlaceholder}
-            onChange={(value) => setTitle(value)}
-            value={title.value}
-            autoCapitalize="words"
-            onFocus={() => sheetRef.current.snapToIndex(2)}
-            rules={[required]}
-          /> */}
+        <Input
+          label={namePlaceholder}
+          onChange={(value) => setTitle(value)}
+          // value={title.value}
+          autoCapitalize="words"
+          onFocus={() => sheetRef.current.snapToIndex(2)}
+          rules={[required]}
+        />
         </View>
         {medias.length ? (
           <View>

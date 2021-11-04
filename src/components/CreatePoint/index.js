@@ -163,7 +163,8 @@ const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
         .catch(() => {
           Alert.alert('Tente mais tarde', 'Não foi possível salvar o ponto.');
         });
-      newMarker.id = locationId;
+
+      newMarker.id = locationId.id;
 
       medias.map(async (media) => {
         let mediaId = '';
