@@ -401,6 +401,28 @@ const CreatePoint = ({
                   />
                 </View>
               ) : null}
+              {isCreatingArea && area && area.coordinates.length ? (
+                <View>
+                  <View row>
+                    <Text m={2} flex={0.4}>
+                      Latitude
+                    </Text>
+                    <Text m={2} flex={0.5}>
+                      Longitude
+                    </Text>
+                  </View>
+                  {area.coordinates.map((item) => (
+                    <View row>
+                      <Text m={2} flex={0.4}>
+                        {item.latitude}
+                      </Text>
+                      <Text m={2} flex={0.5}>
+                        {item.longitude}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              ) : null}
               <View row>
                 <View flex={isCreatingArea ? 0.4 : 0.5}>
                   <Input
@@ -452,6 +474,7 @@ const CreatePoint = ({
               <Btn
                 onPress={onSave}
                 disabled={!formIsValid()}
+                style={{marginBottom: 20}}
                 title={buttonName}
               />
             </View>
