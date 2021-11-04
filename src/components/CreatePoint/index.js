@@ -40,7 +40,6 @@ const CreatePoint = ({
   const area = useSelector(newArea);
   const snapPoints = useMemo(() => [110, '50%', '95%'], []);
   const sheetRef = useRef(null);
-
   let namePlaceholder = 'Digite aqui o título do novo ponto';
   let descriptionPlaceholder = 'Digite aqui a descrição do novo ponto';
   let buttonName = 'Salvar ponto';
@@ -173,8 +172,23 @@ const CreatePoint = ({
           locationId = response.data;
         })
         .catch(() => {
-          Alert.alert('Tente mais tarde', 'Não foi possível salvar o ponto.');
+          Alert.alert(
+            'Tente mais tarde',
+            'Não foi possível salvar a marcação.',
+          );
         });
+      if (locationId.id !== '' && user.data.email) {
+        const CommunityMarking = {
+          locationId: locationId.id,
+          userEmail: user.data.email,
+        };
+        await api.post('/maps/addToCommunity', CommunityMarking).catch(() => {
+          Alert.alert(
+            'Tente mais tarde.',
+            `Erro ao adicionar ponto à comunidade`,
+          );
+        });
+      }
 
       medias.map(async (media) => {
         let mediaId = '';
@@ -205,25 +219,12 @@ const CreatePoint = ({
         if (mediaId !== '') {
           const newMediaPoint = {
             locationId: locationId.id,
-            mediaId: mediaId.asset_id,
+            mediaId: mediaId.public_id,
           };
           await api.post('/maps/addMediaToPoint', newMediaPoint).catch(() => {
             Alert.alert(
               'Tente mais tarde.',
-              `Erro ao adicionar midia ao ponto: ${media.fileName}`,
-            );
-          });
-        }
-
-        if (locationId.id && user.data.email) {
-          const CommunityPoint = {
-            locationId: locationId.id,
-            userEmail: user.data.email,
-          };
-          await api.post('/maps/addToCommunity', CommunityPoint).catch(() => {
-            Alert.alert(
-              'Tente mais tarde.',
-              `Erro ao adicionar ponto à comunidade`,
+              `Erro ao adicionar midia à marcação: ${media.fileName}`,
             );
           });
         }
