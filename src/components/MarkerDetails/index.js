@@ -6,12 +6,15 @@ import theme from 'theme/theme';
 import ImageView from 'react-native-image-viewing';
 import Modal from 'react-native-modal';
 import ShowMediaModal from 'components/ShowMediaModal';
-import {TouchableOpacity} from 'react-native';
+import {Alert, TouchableOpacity} from 'react-native';
 import EditPoint from 'components/EditPoint';
 import api from 'services/api';
+import {useSelector} from 'react-redux';
+import {auth} from 'store/selectors';
 import MediasList from '../MediasList';
+const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
+  const user = useSelector(auth);
 
-const MarkerDetails = ({marker, setSelectedMarker, sheetRef}) => {
   const snapPoints = [400, '95%'];
   const [visibleImageModal, setIsVisibleImageModal] = useState(false);
   const [markerDetails, setMarkerMedias] = useState(null);
@@ -33,6 +36,22 @@ const MarkerDetails = ({marker, setSelectedMarker, sheetRef}) => {
   const closeShowMediaModal = () => {
     setMediaShowed({});
     setModalShowMediaVisible(false);
+  };
+
+  const eraseMarker = async () => {
+    let endpoint = 'maps/point/';
+    if (marker.coordinates) {
+      endpoint = 'maps/area/';
+    }
+    try {
+      await api.delete(`${endpoint}${marker.id}`);
+      close();
+    } catch (error) {
+      Alert.alert(
+        'Erro',
+        'Erro ao se comunicar com o servidor. Tente novamente',
+      );
+    }
   };
 
   const sortMediasByImages = () => {
@@ -122,17 +141,19 @@ const MarkerDetails = ({marker, setSelectedMarker, sheetRef}) => {
                     flexDirection: 'row',
                     backgroundColor: '#FFF',
                   }}>
-                  <TouchableOpacity
-                    style={{
-                      width: '25%',
-                      backgroundColor: '#FFF',
-                      alignItems: 'center',
-                    }}
-                    onPress={() => {}}>
-                    <Text fontWeight="bold" color="#FF0000">
-                      Excluir
-                    </Text>
-                  </TouchableOpacity>
+                  {user.id ? (
+                    <TouchableOpacity
+                      style={{
+                        width: '25%',
+                        backgroundColor: '#FFF',
+                        alignItems: 'center',
+                      }}
+                      onPress={eraseMarker}>
+                      <Text fontWeight="bold" color="#FF0000">
+                        Excluir
+                      </Text>
+                    </TouchableOpacity>
+                  ) : null}
                   <TouchableOpacity
                     style={{
                       width: '25%',
