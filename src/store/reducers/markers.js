@@ -10,6 +10,8 @@ const INITIAL_STATE = {
 };
 
 const reducer = (state = INITIAL_STATE, action) => {
+  let formattedPoints = [];
+  let formattedAreas = [];
   switch (action.type) {
     case actionTypes.ADD_MARKER:
       return {...state, list: [...state.list, action.newMarker]};
@@ -17,6 +19,28 @@ const reducer = (state = INITIAL_STATE, action) => {
       return {...state, newArea: action.newArea};
     case actionTypes.RESET_NEW_AREA:
       return {...state, newArea: AREA_INITAL_STATE};
+    case actionTypes.POPULATE_MARKERS:
+      formattedPoints = action.points.map((item) => ({
+        latitude: item.coordinates[1],
+        longitude: item.coordinates[0],
+        title: item.title,
+        description: item.description,
+        multimedia: [],
+        multimediaInitialized: false,
+      }));
+
+      formattedAreas = action.areas.map((item) => ({
+        title: item.title,
+        description: item.description,
+        multimedia: [],
+        multimediaInitialized: false,
+        coordinates: item.coordinates[0].map((coordinate) => ({
+          latitude: coordinate[1],
+          longitude: coordinate[0],
+        })),
+      }));
+
+      return {...state, list: [...formattedPoints, ...formattedAreas]};
     case actionTypes.LOGOUT:
       return INITIAL_STATE;
     default:
