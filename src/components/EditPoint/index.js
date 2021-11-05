@@ -53,7 +53,7 @@ const EditPoint = ({marker, editHandler, updateMarker}) => {
   const [title, setTitle] = useState(DEFAULT_TITLE_STATE);
   const [description, setDescription] = useState(DEFAULT_DESCRIPTION_STATE);
   const [audioCount, setAudioCount] = useState(0);
-  const [medias, setMedias] = useState(marker.multimedia);
+  const [medias, setMedias] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalCamVisible, setModalCamVisible] = useState(false);
   const [modalMediaVisible, setModalMediaVisible] = useState(false);
@@ -61,7 +61,10 @@ const EditPoint = ({marker, editHandler, updateMarker}) => {
   const [mediaShowed, setMediaShowed] = useState({});
   const [visibleImageModal, setIsVisibleImageModal] = useState(false);
   const [openedImage, setOpenedImage] = useState({});
-
+  useEffect(() => {
+    setMedias([...marker.multimedia]);
+  }, []);
+  
   const selectPdf = async () => {
     let results = await useDocumentPicker();
     const filesBiggerThanSupported = [];
@@ -122,8 +125,10 @@ const EditPoint = ({marker, editHandler, updateMarker}) => {
     const mediasToAdd = [];
 
     const markerIndex = listMarkers.indexOf(marker);
+    let isCreatingArea;
+    marker.coordinates ? isCreatingArea = true : isCreatingArea = false; 
 
-    if (marker.coordinates) {
+    if (isCreatingArea) {
       updatedMarker = {
         coordinates: marker.coordinates,
         title: title.value,
@@ -131,7 +136,6 @@ const EditPoint = ({marker, editHandler, updateMarker}) => {
         multimedia: medias,
         id: marker.id,
       };
-      // dispatch(Actions.resetNewArea());
     } else {
       updatedMarker = {
         latitude: marker.latitude,
@@ -157,33 +161,28 @@ const EditPoint = ({marker, editHandler, updateMarker}) => {
     });
 
     if (user && user.id) {
+      let endpoint = isCreatingArea ? '/maps/area' : '/maps/point';
       await api
-        .put('/maps/point', updatedMarker)
+        .put(endpoint, updatedMarker)
         .then((response) => {
           locationId = response.data;
         })
         .catch(() => {
-          Alert.alert('Tente mais tarde', 'Não foi possivel editar o ponto.');
+          Alert.alert('Tente mais tarde', 'Não foi possivel editar a marcação.');
         });
 
       mediasToRemove.map(async (media) => {
-        let mediaId = '';
-
-        const formData = new FormData();
-        formData.append('file', {
-          uri: media.uri,
-          type: media.type,
-          name: media.fileName,
-        });
-
+        console.log('\n\n\n\n', media, '\n\n\n\n');
+        let mediaId = media.mediaId;
+        console.log(mediaId);
+        const removeMidiaDto = {
+          id: mediaId,
+        };
         await api
-          .delete('midia/removeMidia', formData, {
+          .delete('midia/removeMidia', removeMidiaDto, {
             headers: {
               'Content-Type': 'multipart/form-data',
             },
-          })
-          .then((response) => {
-            mediaId = response.data;
           })
           .catch(() => {
             Alert.alert(
@@ -195,11 +194,12 @@ const EditPoint = ({marker, editHandler, updateMarker}) => {
         if (mediaId !== '') {
           const mediaPoint = {
             locationId: locationId.id,
-            mediaId: mediaId.asset_id,
+            mediaId: mediaId,
           };
-          await api
-            .delete('/maps/removeMediaFromPoint', mediaPoint)
-            .catch(() => {
+          endpoint = isCreatingArea
+            ? '/maps/removeMediaFromArea'
+            : '/maps/removeMediaFromPoint';
+          await api.delete(endpoint, mediaPoint).catch(() => {
               Alert.alert(
                 'Tente mais tarde.',
                 `Erro ao excluir midia do ponto: ${media.fileName}`,
@@ -233,16 +233,19 @@ const EditPoint = ({marker, editHandler, updateMarker}) => {
               `Erro ao salvar arquivo '${media.fileName}'`,
             );
           });
-
+        
         if (mediaId !== '') {
           const newMediaPoint = {
             locationId: locationId.id,
-            mediaId: mediaId.asset_id,
+            mediaId: mediaId.public_id,
           };
-          await api.post('/maps/addMediaToPoint', newMediaPoint).catch(() => {
+          endpoint = isCreatingArea
+            ? '/maps/addMediaToArea'
+            : '/maps/addMediaToPoint';
+          await api.post(endpoint, newMediaPoint).catch(() => {
             Alert.alert(
               'Tente mais tarde.',
-              `Erro ao adicionar midia ao ponto: ${media.fileName}`,
+              `Erro ao adicionar midia à marcação: ${media.fileName}`,
             );
           });
         }
@@ -301,7 +304,12 @@ const EditPoint = ({marker, editHandler, updateMarker}) => {
   }, [mediaShowed]);
 
   const renderItem = ({item}) => {
-    if (item.mediaType === 'image') {
+    if (
+      item.mediaType === 'image' ||
+      (item.url && item.url.includes('.jpeg')) ||
+      (item.url && item.url.includes('.png')) ||
+      (item.url && item.url.includes('.jpg'))
+    ) {
       return (
         <ImagePreview
           item={item}
@@ -324,7 +332,10 @@ const EditPoint = ({marker, editHandler, updateMarker}) => {
       );
     }
 
-    if (item.type === 'application/pdf') {
+    if (
+      item.type === 'application/pdf' ||
+      (item.url && item.url.includes('.pdf'))
+    ) {
       return (
         <DocumentPreview
           item={item}
@@ -350,10 +361,10 @@ const EditPoint = ({marker, editHandler, updateMarker}) => {
           <Input
             label={namePlaceholder}
             onChange={(value) => setTitle(value)}
-            // value={title.value}
+            value={title.value}
             autoCapitalize="words"
-            onFocus={() => sheetRef.current.snapToIndex(2)}
-            rules={[required]}
+            // onFocus={() => sheetRef.current.snapToIndex(2)}
+            // rules={[required]}
           />
         </View>
         {medias.length ? (

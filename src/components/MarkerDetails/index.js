@@ -21,6 +21,7 @@ const MarkerDetails = ({marker, sheetRef}) => {
   const [modalShowMediaVisible, setModalShowMediaVisible] = useState(false);
   const [editing, setEdit] = useState(false);
   const [updatedMarker, updateMarker] = useState(marker);
+  let markerWithMedias = marker;
 
   if (updatedMarker !== marker) {
     updateMarker(marker);
@@ -70,6 +71,8 @@ const MarkerDetails = ({marker, sheetRef}) => {
       const response = await api.get(`maps/midiaFromPoint/${marker.id}`);
       if (response.data.length) {
         setMarkerMedias(response.data);
+        markerWithMedias.multimedia = response.data;
+        
       }
     } catch (error) {
       // nothing
@@ -102,7 +105,7 @@ const MarkerDetails = ({marker, sheetRef}) => {
               </Text>
             </TouchableOpacity>
             <EditPoint
-              marker={marker}
+              marker={markerWithMedias}
               editHandler={setEdit}
               updateMarker={updateMarker}
             />
