@@ -22,7 +22,7 @@ import AudioPreview from '../AudioPreview';
 import DocumentPreview from '../DocumentPreview';
 import VideoPreview from '../VideoPreview';
 
-const EditPoint = ({marker, editHandler, updateMarker}) => {
+const EditPoint = ({marker, markerDetails, editHandler}) => {
   UseCamera();
   const dispatch = useDispatch();
   const listMarkers = useSelector((state) => state.markers.list);
@@ -60,9 +60,9 @@ const EditPoint = ({marker, editHandler, updateMarker}) => {
   const [visibleImageModal, setIsVisibleImageModal] = useState(false);
   const [openedImage, setOpenedImage] = useState({});
   useEffect(() => {
-    setMedias([...marker.multimedia]);
+    setMedias([...markerDetails]);
   }, []);
-  
+
   const selectPdf = async () => {
     let results = await useDocumentPicker();
     const filesBiggerThanSupported = [];
@@ -122,11 +122,10 @@ const EditPoint = ({marker, editHandler, updateMarker}) => {
     const mediasToRemove = [];
     const mediasToAdd = [];
 
+    const isEditingArea = "coordinates" in marker; 
     const markerIndex = listMarkers.indexOf(marker);
-    let isCreatingArea;
-    marker.coordinates ? isCreatingArea = true : isCreatingArea = false; 
 
-    if (isCreatingArea) {
+    if (isEditingArea) {
       updatedMarker = {
         coordinates: marker.coordinates,
         title: title.value,
@@ -145,59 +144,56 @@ const EditPoint = ({marker, editHandler, updateMarker}) => {
       };
     }
 
-    marker.multimedia.map((m) => {
+    markerDetails.map((m) => {
       if (!updatedMarker.multimedia.includes(m)) {
         mediasToRemove.push(m);
       }
       return m;
     });
     updatedMarker.multimedia.map((m) => {
-      if (!marker.multimedia.includes(m)) {
+      if (!markerDetails.includes(m)) {
         mediasToAdd.push(m);
       }
       return m;
     });
 
     if (user && user.id) {
-      let endpoint = isCreatingArea ? '/maps/area' : '/maps/point';
+      let endpoint = isEditingArea ? '/maps/area' : '/maps/point';
       await api
         .put(endpoint, updatedMarker)
         .then((response) => {
           locationId = response.data;
         })
         .catch(() => {
-          Alert.alert('Tente mais tarde', 'Não foi possivel editar a marcação.');
+          Alert.alert(
+          'Tente mais tarde', 
+          'Não foi possivel editar a marcação.'
+          );
         });
 
       mediasToRemove.map(async (media) => {
-        console.log('\n\n\n\n', media, '\n\n\n\n');
         let mediaId = media.mediaId;
-        console.log(mediaId);
         const removeMidiaDto = {
           id: mediaId,
         };
         await api
-          .delete('midia/removeMidia', removeMidiaDto, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          })
+          .delete('midia/removeMidia', {data: removeMidiaDto})
           .catch(() => {
             Alert.alert(
               'Tente mais tarde.',
-              `Erro ao excluir arquivo '${media.fileName}'`,
+              `Erro ao excluir arquivo`,
             );
           });
 
-        if (mediaId !== '') {
+        if (mediaId !== null) {
           const mediaPoint = {
             locationId: locationId.id,
             mediaId: mediaId,
           };
-          endpoint = isCreatingArea
+          endpoint = isEditingArea
             ? '/maps/removeMediaFromArea'
             : '/maps/removeMediaFromPoint';
-          await api.delete(endpoint, mediaPoint).catch(() => {
+          await api.delete(endpoint, {data: mediaPoint}).catch(() => {
               Alert.alert(
                 'Tente mais tarde.',
                 `Erro ao excluir midia do ponto: ${media.fileName}`,
@@ -237,7 +233,7 @@ const EditPoint = ({marker, editHandler, updateMarker}) => {
             locationId: locationId.id,
             mediaId: mediaId.public_id,
           };
-          endpoint = isCreatingArea
+          endpoint = isEditingArea
             ? '/maps/addMediaToArea'
             : '/maps/addMediaToPoint';
           await api.post(endpoint, newMediaPoint).catch(() => {
@@ -251,7 +247,7 @@ const EditPoint = ({marker, editHandler, updateMarker}) => {
     }
 
     dispatch(Actions.updateMarker(updatedMarker, markerIndex));
-    updateMarker(updatedMarker);
+    // updateMarker(updatedMarker);
     editHandler(false);
   };
 
@@ -290,7 +286,7 @@ const EditPoint = ({marker, editHandler, updateMarker}) => {
   };
 
   const DeleteMedia = (mediaPath) => {
-    const newMediasList = medias.filter((media) => media.uri !== mediaPath);
+    const newMediasList = medias.filter((media) => media !== mediaPath);
 
     setMedias(newMediasList);
   };
@@ -450,14 +446,16 @@ EditPoint.propTypes = {
     multimedia: [],
     id: PropTypes.string,
   }),
+  markerDetails: [],
   editHandler: PropTypes.func,
-  updateMarker: PropTypes.func,
+  // updateMarker: PropTypes.func,
 };
 
 EditPoint.defaultProps = {
   marker: {},
+  markerDetails: [],
   editHandler: null,
-  updateMarker: null,
+  // updateMarker: null,
 };
 
 export default EditPoint;
