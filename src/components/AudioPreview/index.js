@@ -20,7 +20,9 @@ const AudioPreview = ({
   return (
     <MediaContainer bigger={hasDelete || null}>
       <MediaButton
-        onPress={() => handleShowMedia(item.type, item.uri, item.duration)}>
+        onPress={() =>
+          handleShowMedia(item.type, item.uri || item.url, item.duration)
+        }>
         <AudioContainer>
           <Icon size={normalize(20)} name="microphone" color="#2a3c46" />
           <Text style={{fontSize: normalize(15), color: '#2a3c46'}}>
@@ -44,6 +46,7 @@ const AudioPreview = ({
 AudioPreview.propTypes = {
   item: PropTypes.shape({
     uri: PropTypes.string,
+    url: PropTypes.string,
     type: PropTypes.string,
     duration: PropTypes.number,
   }),

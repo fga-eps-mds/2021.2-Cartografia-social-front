@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import theme from 'theme/theme';
@@ -132,7 +133,8 @@ const ShowMediaModal = ({media, closeModal}) => {
 
   return (
     <Container>
-      {media.type === 'video/mp4' ? (
+      {media.type === 'video/mp4' ||
+      (media.uri && media.uri.includes('.mp4')) ? (
         <VideoPlayer
           source={{uri: media.uri}}
           showOnStart={false}

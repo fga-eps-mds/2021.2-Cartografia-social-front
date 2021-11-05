@@ -40,7 +40,6 @@ const CreatePoint = ({
   const area = useSelector(newArea);
   const snapPoints = useMemo(() => [110, '50%', '95%'], []);
   const sheetRef = useRef(null);
-
   let namePlaceholder = 'Digite aqui o título do novo ponto';
   let descriptionPlaceholder = 'Digite aqui a descrição do novo ponto';
   let buttonName = 'Salvar ponto';
@@ -57,6 +56,14 @@ const CreatePoint = ({
     isValid: false,
     value: '',
   };
+
+  function isNumeric(str) {
+    if (typeof str === 'number') return true;
+    return (
+      !Number.isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+      !Number.isNaN(parseFloat(str))
+    ); // ...and ensure strings of whitespace fail
+  }
 
   const [title, setTitle] = useState(DEFAULT_STATE);
   const [description, setDescription] = useState(DEFAULT_STATE);
@@ -153,7 +160,7 @@ const CreatePoint = ({
         multimedia: medias,
       };
       dispatch(Actions.resetNewArea());
-    } else {
+    } else if (isNumeric(latitude.value) && isNumeric(longitude.value)) {
       newMarker = {
         latitude: parseFloat(latitude.value),
         longitude: parseFloat(longitude.value),
@@ -161,19 +168,38 @@ const CreatePoint = ({
         description: description.value,
         multimedia: medias,
       };
+    } else {
+      Alert.alert('Atenção!', 'Digite corretamente as coordenadas!');
+      return;
     }
 
     dispatch(Actions.createMarker(newMarker));
     sheetRef.current.close();
     if (user && user.id) {
+      let endpoint = isCreatingArea ? '/maps/area' : '/maps/point';
       await api
-        .post('/maps/point', newMarker)
+        .post(endpoint, newMarker)
         .then((response) => {
           locationId = response.data;
         })
         .catch(() => {
-          Alert.alert('Tente mais tarde', 'Não foi possível salvar o ponto.');
+          Alert.alert(
+            'Tente mais tarde',
+            'Não foi possível salvar a marcação.',
+          );
         });
+      if (locationId.id !== '' && user.data.email) {
+        const CommunityMarking = {
+          locationId: locationId.id,
+          userEmail: user.data.email,
+        };
+        await api.post('/maps/addToCommunity', CommunityMarking).catch(() => {
+          Alert.alert(
+            'Tente mais tarde.',
+            `Erro ao adicionar ponto à comunidade`,
+          );
+        });
+      }
 
       medias.map(async (media) => {
         let mediaId = '';
@@ -204,12 +230,15 @@ const CreatePoint = ({
         if (mediaId !== '') {
           const newMediaPoint = {
             locationId: locationId.id,
-            mediaId: mediaId.asset_id,
+            mediaId: mediaId.public_id,
           };
-          await api.post('/maps/addMediaToPoint', newMediaPoint).catch(() => {
+          endpoint = isCreatingArea
+            ? '/maps/addMediaToArea'
+            : '/maps/addMediaToPoint';
+          await api.post(endpoint, newMediaPoint).catch(() => {
             Alert.alert(
               'Tente mais tarde.',
-              `Erro ao adicionar midia ao ponto: ${media.fileName}`,
+              `Erro ao adicionar midia à marcação: ${media.fileName}`,
             );
           });
         }
@@ -295,7 +324,12 @@ const CreatePoint = ({
   }, [locationSelected]);
 
   const onSavePoint = () => {
-    if (latitude.value && longitude.value) {
+    if (
+      latitude.value &&
+      longitude.value &&
+      isNumeric(latitude.value) &&
+      isNumeric(longitude.value)
+    ) {
       const event = {
         nativeEvent: {
           coordinate: {
@@ -308,6 +342,8 @@ const CreatePoint = ({
       addPointToArea(event);
       setLatitude(DEFAULT_STATE);
       setLongitude(DEFAULT_STATE);
+    } else {
+      Alert.alert('Atenção!', 'Digite corretamente as coordenadas');
     }
   };
 
