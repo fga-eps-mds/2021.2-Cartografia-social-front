@@ -33,7 +33,7 @@ const AudioPreview = ({
       {hasDelete ? (
         <DeleteButton
           onPress={() => {
-            DeleteMedia(item.uri);
+            DeleteMedia(item);
             setAudioCount(audioCount - 1);
           }}>
           <Icon size={normalize(20)} name="trash" color="#FF0000" />

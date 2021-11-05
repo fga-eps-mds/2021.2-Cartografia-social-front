@@ -155,7 +155,11 @@ const Map = () => {
           addPointToArea={onPressCreatingArea.current}
           setPoint={setRegion}
         />
-        <MarkerDetails marker={selectedMarker} sheetRef={detailsRef} />
+        <MarkerDetails
+          marker={selectedMarker}
+          setSelectedMarker={setSelectedMarker}
+          sheetRef={detailsRef}
+        />
       </View>
     );
   }

@@ -5,4 +5,5 @@ export {
   updateArea,
   resetNewArea,
   populateMarkers,
+  updateMarker,
 } from './markers';

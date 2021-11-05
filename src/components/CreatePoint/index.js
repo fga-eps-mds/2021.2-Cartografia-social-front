@@ -141,7 +141,7 @@ const CreatePoint = ({
   };
 
   const onSave = async () => {
-    let locationId = '';
+    let locationId = null;
     setShowMarker(false);
     setTimeout(() => {
       setShowMarker(true);
@@ -158,6 +158,7 @@ const CreatePoint = ({
         title: title.value,
         description: description.value,
         multimedia: medias,
+        id: locationId,
       };
       dispatch(Actions.resetNewArea());
     } else if (isNumeric(latitude.value) && isNumeric(longitude.value)) {
@@ -167,14 +168,13 @@ const CreatePoint = ({
         title: title.value,
         description: description.value,
         multimedia: medias,
+        id: locationId,
       };
     } else {
       Alert.alert('Atenção!', 'Digite corretamente as coordenadas!');
       return;
     }
 
-    dispatch(Actions.createMarker(newMarker));
-    sheetRef.current.close();
     if (user && user.id) {
       let endpoint = isCreatingArea ? '/maps/area' : '/maps/point';
       await api
@@ -200,6 +200,8 @@ const CreatePoint = ({
           );
         });
       }
+
+      newMarker.id = locationId.id;
 
       medias.map(async (media) => {
         let mediaId = '';
@@ -244,6 +246,9 @@ const CreatePoint = ({
         }
       });
     }
+    dispatch(Actions.createMarker(newMarker));
+    sheetRef.current.close();
+
     setTimeout(() => {
       onCloseBottomSheet();
     }, 1000);
@@ -301,7 +306,7 @@ const CreatePoint = ({
   };
 
   const DeleteMedia = (mediaPath) => {
-    const newMediasList = medias.filter((media) => media.uri !== mediaPath);
+    const newMediasList = medias.filter((media) => media !== mediaPath);
 
     setMedias(newMediasList);
   };

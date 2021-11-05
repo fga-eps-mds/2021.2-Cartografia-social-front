@@ -6,10 +6,12 @@ import theme from 'theme/theme';
 import ImageView from 'react-native-image-viewing';
 import Modal from 'react-native-modal';
 import ShowMediaModal from 'components/ShowMediaModal';
+import {TouchableOpacity} from 'react-native';
+import EditPoint from 'components/EditPoint';
 import api from 'services/api';
 import MediasList from '../MediasList';
 
-const MarkerDetails = ({marker, sheetRef}) => {
+const MarkerDetails = ({marker, setSelectedMarker, sheetRef}) => {
   const snapPoints = [400, '95%'];
   const [visibleImageModal, setIsVisibleImageModal] = useState(false);
   const [markerDetails, setMarkerMedias] = useState(null);
@@ -17,6 +19,7 @@ const MarkerDetails = ({marker, sheetRef}) => {
   const [audioCount, setAudioCount] = useState(0);
   const [mediaShowed, setMediaShowed] = useState({});
   const [modalShowMediaVisible, setModalShowMediaVisible] = useState(false);
+  const [editing, setEdit] = useState(false);
 
   const handleShowMedia = (fileType, fileUri, fileDuration) => {
     const media = {
@@ -47,6 +50,10 @@ const MarkerDetails = ({marker, sheetRef}) => {
     return medias;
   };
 
+  const onCloseBottomSheet = () => {
+    setEdit(false);
+  };
+
   useEffect(() => {
     if (Object.keys(mediaShowed).length !== 0) {
       setModalShowMediaVisible(true);
@@ -58,6 +65,8 @@ const MarkerDetails = ({marker, sheetRef}) => {
       const response = await api.get(`maps/midiaFromPoint/${marker.id}`);
       if (response.data.length) {
         setMarkerMedias(response.data);
+      } else {
+        setMarkerMedias(null);
       }
     } catch (error) {
       // nothing
@@ -68,53 +77,116 @@ const MarkerDetails = ({marker, sheetRef}) => {
     if (marker && marker.id) {
       fetchMarker();
     }
-  }, [marker]);
+  }, [marker, editing]);
 
   return (
     <BottomSheet
       enablePanDownToClose
       ref={sheetRef}
       index={-1}
+      onClose={onCloseBottomSheet}
       snapPoints={snapPoints}>
       <BottomSheetScrollView
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={{height: '100%'}}>
-        {marker && marker.title ? (
+        {editing ? (
           <>
-            <View m={3} style={{height: '5%'}}>
-              <Text fontWeight="bold">{marker.title}</Text>
-              <Divisor my={2} />
-            </View>
-            <View px={3} style={{height: '100%'}}>
-              {marker.multimedia.length || markerDetails ? (
-                <View
-                  style={{
-                    justifyContent: 'flex-start',
-                    height: '35%',
-                  }}>
-                  <Text fontWeight="bold" fontSize={theme.font.sizes.SM} mb={2}>
-                    Multimídia:
-                  </Text>
-                  <MediasList
-                    medias={sortMediasByImages()}
-                    setOpenedImage={setOpenedImage}
-                    setIsVisibleImageModal={setIsVisibleImageModal}
-                    handleShowMedia={handleShowMedia}
-                    audioCount={audioCount}
-                    setAudioCount={setAudioCount}
-                  />
-                </View>
-              ) : null}
-              <View>
-                <Text fontWeight="bold" fontSize={theme.font.sizes.SM} mb={2}>
-                  Descrição:
-                </Text>
-                <Text ml={3}>{marker.description}</Text>
-              </View>
-            </View>
+            <TouchableOpacity
+              style={{
+                width: '25%',
+                height: '5%',
+                backgroundColor: '#FFF',
+                alignSelf: 'flex-end',
+              }}
+              onPress={() => setEdit(false)}>
+              <Text fontWeight="bold" textAlign="right" mr={3}>
+                Cancelar
+              </Text>
+            </TouchableOpacity>
+            <EditPoint
+              marker={marker}
+              markerDetails={markerDetails}
+              editHandler={setEdit}
+              setSelectedMarker={setSelectedMarker}
+            />
           </>
         ) : (
-          <View />
+          <>
+            {marker && marker.title ? (
+              <>
+                <View
+                  style={{
+                    width: '100%',
+                    height: '5%',
+                    justifyContent: 'space-between',
+                    flexDirection: 'row',
+                    backgroundColor: '#FFF',
+                  }}>
+                  <TouchableOpacity
+                    style={{
+                      width: '25%',
+                      backgroundColor: '#FFF',
+                      alignItems: 'center',
+                    }}
+                    onPress={() => {}}>
+                    <Text fontWeight="bold" color="#FF0000">
+                      Excluir
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{
+                      width: '25%',
+                      backgroundColor: '#FFF',
+                      alignItems: 'center',
+                    }}
+                    onPress={() => setEdit(true)}>
+                    <Text fontWeight="bold" color="#000">
+                      Editar
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <View m={3} style={{height: '5%'}}>
+                  <Text fontWeight="bold">{marker.title}</Text>
+                  <Divisor my={2} />
+                </View>
+                <View px={3} style={{height: '100%'}}>
+                  {marker.multimedia.length || markerDetails ? (
+                    <View
+                      style={{
+                        justifyContent: 'flex-start',
+                        height: '35%',
+                      }}>
+                      <Text
+                        fontWeight="bold"
+                        fontSize={theme.font.sizes.SM}
+                        mb={2}>
+                        Multimídia:
+                      </Text>
+                      <MediasList
+                        medias={sortMediasByImages()}
+                        setOpenedImage={setOpenedImage}
+                        setIsVisibleImageModal={setIsVisibleImageModal}
+                        handleShowMedia={handleShowMedia}
+                        audioCount={audioCount}
+                        setAudioCount={setAudioCount}
+                      />
+                    </View>
+                  ) : null}
+                  <View>
+                    <Text
+                      fontWeight="bold"
+                      fontSize={theme.font.sizes.SM}
+                      mb={2}>
+                      Descrição:
+                    </Text>
+                    <Text ml={3}>{marker.description}</Text>
+                  </View>
+                </View>
+              </>
+            ) : (
+              <View />
+            )}
+          </>
         )}
         <ImageView
           images={[{uri: openedImage.uri || openedImage.url}]}
