@@ -1,4 +1,4 @@
-import React, {useRef, useMemo, useState, useEffect} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {Alert} from 'react-native';
 import Modal from 'react-native-modal';
 import PropTypes from 'prop-types';
@@ -23,11 +23,7 @@ import AudioPreview from '../AudioPreview';
 import DocumentPreview from '../DocumentPreview';
 import VideoPreview from '../VideoPreview';
 
-const EditPoint = ({
-  marker,
-  editHandler,
-  updateMarker,
-}) => {
+const EditPoint = ({marker, editHandler, updateMarker}) => {
   UseCamera();
   const dispatch = useDispatch();
   const listMarkers = useSelector((state) => state.markers.list);
@@ -122,9 +118,10 @@ const EditPoint = ({
   const onSave = async () => {
     let locationId = null;
     let updatedMarker;
-    // const markerIndex = listMarkers.indexOf(marker);
     const mediasToRemove = [];
     const mediasToAdd = [];
+
+    const markerIndex = listMarkers.indexOf(marker);
 
     if (marker.coordinates) {
       updatedMarker = {
@@ -134,7 +131,7 @@ const EditPoint = ({
         multimedia: medias,
         id: marker.id,
       };
-      dispatch(Actions.resetNewArea());
+      // dispatch(Actions.resetNewArea());
     } else {
       updatedMarker = {
         latitude: marker.latitude,
@@ -150,11 +147,13 @@ const EditPoint = ({
       if (!updatedMarker.multimedia.includes(m)) {
         mediasToRemove.push(m);
       }
+      return m;
     });
     updatedMarker.multimedia.map((m) => {
       if (!marker.multimedia.includes(m)) {
         mediasToAdd.push(m);
       }
+      return m;
     });
 
     if (user && user.id) {
@@ -164,7 +163,7 @@ const EditPoint = ({
           locationId = response.data;
         })
         .catch(() => {
-          Alert.alert('Tente mais tarde', 'Não foi editar o ponto.');
+          Alert.alert('Tente mais tarde', 'Não foi possivel editar o ponto.');
         });
 
       mediasToRemove.map(async (media) => {
@@ -250,7 +249,7 @@ const EditPoint = ({
       });
     }
 
-    // dispatch(Actions.updateMarker(updatedMarker, markerIndex));
+    dispatch(Actions.updateMarker(updatedMarker, markerIndex));
     updateMarker(updatedMarker);
     editHandler(false);
   };
@@ -434,20 +433,24 @@ const EditPoint = ({
   );
 };
 
-// EditPoint.propTypes = {
-//   marker
-//   locationSelected: PropTypes.shape({
-//     latitude: PropTypes.number,
-//     longitude: PropTypes.number,
-//   }),
-//   show: PropTypes.bool,
-//   onClose: PropTypes.func,
-// };
+EditPoint.propTypes = {
+  marker: PropTypes.shape({
+    coordinates: [],
+    latitude: PropTypes.number,
+    longitude: PropTypes.number,
+    title: PropTypes.string,
+    description: PropTypes.string,
+    multimedia: [],
+    id: PropTypes.string,
+  }),
+  editHandler: PropTypes.func,
+  updateMarker: PropTypes.func,
+};
 
-// EditPoint.defaultProps = {
-//   locationSelected: {},
-//   show: false,
-//   onClose: () => {},
-// };
+EditPoint.defaultProps = {
+  marker: {},
+  editHandler: null,
+  updateMarker: null,
+};
 
 export default EditPoint;
