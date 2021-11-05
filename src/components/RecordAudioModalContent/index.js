@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import AudioRecorderPlayer, {
   AudioEncoderAndroidType,
   AudioSourceAndroidType,
-  OutputFormatAndroidType,
 } from 'react-native-audio-recorder-player';
 import useRecordAudio from 'services/useRecordAudio';
 import RNFetchBlob from 'rn-fetch-blob';
