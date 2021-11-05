@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 import React, {useState, useEffect} from 'react';
 import {Alert} from 'react-native';
 import Modal from 'react-native-modal';
@@ -21,7 +22,6 @@ import ImagePreview from '../ImagePreview';
 import AudioPreview from '../AudioPreview';
 import DocumentPreview from '../DocumentPreview';
 import VideoPreview from '../VideoPreview';
-import required from 'validators/required';
 
 const EditPoint = ({marker, markerDetails, editHandler, setSelectedMarker}) => {
   UseCamera();
@@ -121,7 +121,7 @@ const EditPoint = ({marker, markerDetails, editHandler, setSelectedMarker}) => {
   ];
 
   const onSave = async () => {
-    if(!title.value){
+    if (!title.value) {
       Alert.alert('atenção!', 'o nome não pode ser vazio');
       return;
     }
@@ -160,12 +160,12 @@ const EditPoint = ({marker, markerDetails, editHandler, setSelectedMarker}) => {
         return m;
       });
     }
-      updatedMarker.multimedia.map((m) => {
-        if (!markerDetails || !markerDetails.includes(m)) {
-          mediasToAdd.push(m);
-        }
-        return m;
-      });
+    updatedMarker.multimedia.map((m) => {
+      if (!markerDetails || !markerDetails.includes(m)) {
+        mediasToAdd.push(m);
+      }
+      return m;
+    });
 
     if (user && user.id) {
       let endpoint = isEditingArea ? '/maps/area' : '/maps/point';
@@ -183,7 +183,7 @@ const EditPoint = ({marker, markerDetails, editHandler, setSelectedMarker}) => {
 
       for (let index = 0; index < mediasToRemove.length; index++) {
         const media = mediasToRemove[index];
-        
+
         const {mediaId} = media;
         const removeMidiaDto = {
           id: mediaId,
