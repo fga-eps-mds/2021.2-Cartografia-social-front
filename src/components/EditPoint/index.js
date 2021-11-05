@@ -59,9 +59,12 @@ const EditPoint = ({marker, markerDetails, editHandler}) => {
   const [mediaShowed, setMediaShowed] = useState({});
   const [visibleImageModal, setIsVisibleImageModal] = useState(false);
   const [openedImage, setOpenedImage] = useState({});
+
   useEffect(() => {
-    setMedias([...markerDetails]);
-  }, []);
+    if (markerDetails) {
+      setMedias([...markerDetails]);
+    }
+  }, [markerDetails]);
 
   const selectPdf = async () => {
     let results = await useDocumentPicker();
@@ -144,18 +147,20 @@ const EditPoint = ({marker, markerDetails, editHandler}) => {
       };
     }
 
-    markerDetails.map((m) => {
-      if (!updatedMarker.multimedia.includes(m)) {
-        mediasToRemove.push(m);
-      }
-      return m;
-    });
-    updatedMarker.multimedia.map((m) => {
-      if (!markerDetails.includes(m)) {
-        mediasToAdd.push(m);
-      }
-      return m;
-    });
+    if (markerDetails) {
+      markerDetails.map((m) => {
+        if (!updatedMarker.multimedia.includes(m)) {
+          mediasToRemove.push(m);
+        }
+        return m;
+      });
+      updatedMarker.multimedia.map((m) => {
+        if (!markerDetails.includes(m)) {
+          mediasToAdd.push(m);
+        }
+        return m;
+      });
+    }
 
     if (user && user.id) {
       let endpoint = isEditingArea ? '/maps/area' : '/maps/point';
@@ -246,7 +251,7 @@ const EditPoint = ({marker, markerDetails, editHandler}) => {
       });
     }
 
-    dispatch(Actions.updateMarker(updatedMarker, markerIndex));
+    // dispatch(Actions.updateMarker(updatedMarker, markerIndex));
     // updateMarker(updatedMarker);
     editHandler(false);
   };

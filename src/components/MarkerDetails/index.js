@@ -65,6 +65,8 @@ const MarkerDetails = ({marker, sheetRef}) => {
       const response = await api.get(`maps/midiaFromPoint/${marker.id}`);
       if (response.data.length) {
         setMarkerMedias(response.data);
+      } else {
+        setMarkerMedias(null);
       }
     } catch (error) {
       //nothing
@@ -75,7 +77,7 @@ const MarkerDetails = ({marker, sheetRef}) => {
     if (marker && marker.id) {
       fetchMarker();
     }
-  }, [marker]);
+  }, [marker, editing]);
 
   return (
     <BottomSheet
