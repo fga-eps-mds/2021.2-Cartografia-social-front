@@ -95,7 +95,7 @@ const MarkerDetails = ({marker, sheetRef}) => {
         {editing ? (
           <>
             <TouchableOpacity
-              style={{backgroundColor: '#AAAA'}}
+              style={{width: '25%', height: '5%', backgroundColor: '#FFF', alignSelf: 'flex-end'}}
               onPress={() => setEdit(false)}>
               <Text fontWeight="bold" textAlign="right" mr={3}>
                 Cancelar
@@ -111,13 +111,22 @@ const MarkerDetails = ({marker, sheetRef}) => {
           <>
             {marker && marker.title ? (
               <>
-                <TouchableOpacity
-                  style={{backgroundColor: '#AAAA'}}
-                  onPress={() => setEdit(true)}>
-                  <Text fontWeight="bold" textAlign="right" mr={3}>
-                    Editar
-                  </Text>
-                </TouchableOpacity>
+                <View style={{width: '100%', height: '5%', justifyContent: 'space-between', flexDirection: 'row', backgroundColor: '#FFF'}}>
+                  <TouchableOpacity
+                    style={{width: '25%', backgroundColor: '#FFF', alignItems: 'center'}}
+                    onPress={() => {}}>
+                    <Text fontWeight="bold" color="#FF0000">
+                      Excluir
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{width: '25%', backgroundColor: '#FFF', alignItems: 'center'}}
+                    onPress={() => setEdit(true)}>
+                    <Text fontWeight="bold" color="#000">
+                      Editar
+                    </Text>
+                  </TouchableOpacity>
+                </View>
                 <View m={3} style={{height: '5%'}}>
                   <Text fontWeight="bold">{marker.title}</Text>
                   <Divisor my={2} />
