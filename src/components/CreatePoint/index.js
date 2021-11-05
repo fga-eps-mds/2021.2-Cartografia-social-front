@@ -57,6 +57,14 @@ const CreatePoint = ({
     value: '',
   };
 
+  function isNumeric(str) {
+    if (typeof str === 'number') return true;
+    return (
+      !Number.isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+      !Number.isNaN(parseFloat(str))
+    ); // ...and ensure strings of whitespace fail
+  }
+
   const [title, setTitle] = useState(DEFAULT_STATE);
   const [description, setDescription] = useState(DEFAULT_STATE);
   const [latitude, setLatitude] = useState(DEFAULT_STATE);
@@ -152,7 +160,7 @@ const CreatePoint = ({
         multimedia: medias,
       };
       dispatch(Actions.resetNewArea());
-    } else {
+    } else if (isNumeric(latitude.value) && isNumeric(longitude.value)) {
       newMarker = {
         latitude: parseFloat(latitude.value),
         longitude: parseFloat(longitude.value),
@@ -160,6 +168,9 @@ const CreatePoint = ({
         description: description.value,
         multimedia: medias,
       };
+    } else {
+      Alert.alert('Atenção!', 'Digite corretamente as coordenadas!');
+      return
     }
 
     dispatch(Actions.createMarker(newMarker));
@@ -313,7 +324,12 @@ const CreatePoint = ({
   }, [locationSelected]);
 
   const onSavePoint = () => {
-    if (latitude.value && longitude.value) {
+    if (
+      latitude.value &&
+      longitude.value &&
+      isNumeric(latitude.value) &&
+      isNumeric(longitude.value)
+    ) {
       const event = {
         nativeEvent: {
           coordinate: {
@@ -326,6 +342,8 @@ const CreatePoint = ({
       addPointToArea(event);
       setLatitude(DEFAULT_STATE);
       setLongitude(DEFAULT_STATE);
+    } else {
+      Alert.alert('Atenção!', 'Digite corretamente as coordenadas');
     }
   };
 

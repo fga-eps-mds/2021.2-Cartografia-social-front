@@ -19,8 +19,8 @@ const MediasList = ({
     if (
       item.mediaType === 'image' ||
       (item.url && item.url.includes('.jpeg')) ||
-      item.url.includes('.png') ||
-      item.url.includes('.jpg')
+      (item.url && item.url.includes('.png')) ||
+      (item.url && item.url.includes('.jpg'))
     ) {
       return (
         <ImagePreview
