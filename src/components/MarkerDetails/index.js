@@ -8,6 +8,7 @@ import Modal from 'react-native-modal';
 import ShowMediaModal from 'components/ShowMediaModal';
 import {TouchableOpacity} from 'react-native';
 import EditPoint from 'components/EditPoint';
+import api from 'services/api';
 import MediasList from '../MediasList';
 
 const MarkerDetails = ({marker, sheetRef}) => {
@@ -128,7 +129,10 @@ const MarkerDetails = ({marker, sheetRef}) => {
                         justifyContent: 'flex-start',
                         height: '35%',
                       }}>
-                      <Text fontWeight="bold" fontSize={theme.font.sizes.SM} mb={2}>
+                      <Text
+                        fontWeight="bold"
+                        fontSize={theme.font.sizes.SM}
+                        mb={2}>
                         Multimídia:
                       </Text>
                       <MediasList
