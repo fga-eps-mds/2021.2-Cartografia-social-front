@@ -22,7 +22,7 @@ import AudioPreview from '../AudioPreview';
 import DocumentPreview from '../DocumentPreview';
 import VideoPreview from '../VideoPreview';
 
-const EditPoint = ({marker, markerDetails, editHandler, updateMarker}) => {
+const EditPoint = ({marker, markerDetails, editHandler, setSelectedMarker}) => {
   UseCamera();
   const dispatch = useDispatch();
   const listMarkers = useSelector((state) => state.markers.list);
@@ -249,7 +249,7 @@ const EditPoint = ({marker, markerDetails, editHandler, updateMarker}) => {
     }
 
     dispatch(Actions.updateMarker(updatedMarker, markerIndex));
-    updateMarker(updatedMarker);
+    setSelectedMarker(updatedMarker);
     editHandler(false);
   };
 
@@ -450,14 +450,14 @@ EditPoint.propTypes = {
   }),
   markerDetails: [],
   editHandler: PropTypes.func,
-  updateMarker: PropTypes.func,
+  setSelectedMarker: PropTypes.func,
 };
 
 EditPoint.defaultProps = {
   marker: {},
   markerDetails: [],
   editHandler: null,
-  updateMarker: null,
+  setSelectedMarker: () => {},
 };
 
 export default EditPoint;

@@ -11,7 +11,7 @@ import EditPoint from 'components/EditPoint';
 import api from 'services/api';
 import MediasList from '../MediasList';
 
-const MarkerDetails = ({marker, sheetRef}) => {
+const MarkerDetails = ({marker, setSelectedMarker, sheetRef}) => {
   const snapPoints = [400, '95%'];
   const [visibleImageModal, setIsVisibleImageModal] = useState(false);
   const [markerDetails, setMarkerMedias] = useState(null);
@@ -107,7 +107,7 @@ const MarkerDetails = ({marker, sheetRef}) => {
               marker={marker}
               markerDetails={markerDetails}
               editHandler={setEdit}
-              // updateMarker={updateMarker}
+              setSelectedMarker={setSelectedMarker}
             />
           </>
         ) : (
