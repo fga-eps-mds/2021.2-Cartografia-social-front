@@ -159,6 +159,7 @@ const Map = () => {
           marker={selectedMarker}
           setSelectedMarker={setSelectedMarker}
           sheetRef={detailsRef}
+          close={() => detailsRef.current.snapToIndex(0)}
         />
       </View>
     );
