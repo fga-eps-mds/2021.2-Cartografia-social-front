@@ -16,7 +16,12 @@ const MediasList = ({
   setAudioCount,
 }) => {
   const renderItem = ({item}) => {
-    if (item.mediaType === 'image') {
+    if (
+      item.mediaType === 'image' ||
+      item.url?.includes('.jpeg') ||
+      item.url?.includes('.png') ||
+      item.url?.includes('.jpg')
+    ) {
       return (
         <ImagePreview
           item={item}
@@ -39,7 +44,7 @@ const MediasList = ({
       );
     }
 
-    if (item.type === 'application/pdf') {
+    if (item.type === 'application/pdf' || item.url?.includes('.pdf')) {
       return (
         <DocumentPreview
           item={item}
