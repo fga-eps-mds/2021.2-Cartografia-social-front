@@ -1,9 +1,8 @@
-import React, {useRef, useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Alert} from 'react-native';
 import Modal from 'react-native-modal';
 import PropTypes from 'prop-types';
 import {Btn, Input, View, FlatList, Text} from 'components/UI';
-import required from 'validators/required';
 import {useDispatch, useSelector} from 'react-redux';
 import {auth} from 'store/selectors';
 import * as Actions from 'store/actions';
@@ -28,7 +27,6 @@ const EditPoint = ({marker, editHandler, updateMarker}) => {
   const dispatch = useDispatch();
   const listMarkers = useSelector((state) => state.markers.list);
   const user = useSelector(auth);
-  const sheetRef = useRef(null);
 
   let namePlaceholder = 'Digite aqui o título do novo ponto';
   let descriptionPlaceholder = 'Digite aqui a descrição do novo ponto';
@@ -363,8 +361,6 @@ const EditPoint = ({marker, editHandler, updateMarker}) => {
             onChange={(value) => setTitle(value)}
             value={title.value}
             autoCapitalize="words"
-            // onFocus={() => sheetRef.current.snapToIndex(2)}
-            // rules={[required]}
           />
         </View>
         {medias.length ? (
