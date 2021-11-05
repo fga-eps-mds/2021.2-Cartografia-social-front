@@ -76,8 +76,8 @@ const LoginPage = ({navigation}) => {
   const onPress = async () => {
     try {
       const userCredentials = await auth().signInWithEmailAndPassword(
-        email.value,
-        password.value,
+        email.value.trim(),
+        password.value.trim(),
       );
       const token = await userCredentials.user.getIdToken();
       await AsyncStorage.setItem('access_token', `Bearer ${token}`);
