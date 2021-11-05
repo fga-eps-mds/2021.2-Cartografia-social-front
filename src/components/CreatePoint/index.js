@@ -170,7 +170,7 @@ const CreatePoint = ({
       };
     } else {
       Alert.alert('Atenção!', 'Digite corretamente as coordenadas!');
-      return
+      return;
     }
 
     dispatch(Actions.createMarker(newMarker));

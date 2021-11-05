@@ -130,7 +130,7 @@ const ShowMediaModal = ({media, closeModal}) => {
     }
     return displayDocument(path);
   };
- 
+
   return (
     <Container>
       {media.type === 'video/mp4' ||
