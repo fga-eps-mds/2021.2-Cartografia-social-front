@@ -12,23 +12,14 @@ import api from 'services/api';
 import MediasList from '../MediasList';
 
 const MarkerDetails = ({marker, sheetRef}) => {
-  console.log('==================== MARKER ====================\n',marker,'\n====================');
   const snapPoints = [400, '95%'];
   const [visibleImageModal, setIsVisibleImageModal] = useState(false);
-  // const [markerDetails, setMarkerMedias] = useState(null);
+  const [markerDetails, setMarkerMedias] = useState(null);
   const [openedImage, setOpenedImage] = useState({});
   const [audioCount, setAudioCount] = useState(0);
   const [mediaShowed, setMediaShowed] = useState({});
   const [modalShowMediaVisible, setModalShowMediaVisible] = useState(false);
   const [editing, setEdit] = useState(false);
-  const [updatedMarker, updateMarker] = useState(marker);
-  // let markerWithMedias = marker;
-
-  //colocar isso em um useEffect????
-  if (updatedMarker !== marker) {
-    updateMarker(marker);
-  }
-  console.log('==================== UPDATED MARKER ====================\n',updatedMarker,'\n====================');
 
   const handleShowMedia = (fileType, fileUri, fileDuration) => {
     const media = {
@@ -45,7 +36,7 @@ const MarkerDetails = ({marker, sheetRef}) => {
   };
 
   const sortMediasByImages = () => {
-    const medias = [...marker.multimedia];
+    const medias = markerDetails || [...marker.multimedia];
     medias.sort((a, b) => {
       if (a.mediaType === 'image') {
         return -1;
@@ -69,23 +60,22 @@ const MarkerDetails = ({marker, sheetRef}) => {
     }
   }, [mediaShowed]);
 
-  // const fetchMarker = async () => {
-  //   try {
-  //     const response = await api.get(`maps/midiaFromPoint/${marker.id}`);
-  //     if (response.data.length) {
-  //       // setMarkerMedias(response.data);
-  //       // marker.multimedia = response.data;
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const fetchMarker = async () => {
+    try {
+      const response = await api.get(`maps/midiaFromPoint/${marker.id}`);
+      if (response.data.length) {
+        setMarkerMedias(response.data);
+      }
+    } catch (error) {
+      //nothing
+    }
+  };
 
-  // useEffect(() => {
-  //   if (marker && marker.id) {
-  //     fetchMarker();
-  //   }
-  // }, [marker]);
+  useEffect(() => {
+    if (marker && marker.id) {
+      fetchMarker();
+    }
+  }, [marker]);
 
   return (
     <BottomSheet
@@ -108,6 +98,7 @@ const MarkerDetails = ({marker, sheetRef}) => {
             </TouchableOpacity>
             <EditPoint
               marker={marker}
+              markerDetails={markerDetails}
               editHandler={setEdit}
               // updateMarker={updateMarker}
             />
@@ -137,7 +128,7 @@ const MarkerDetails = ({marker, sheetRef}) => {
                   <Divisor my={2} />
                 </View>
                 <View px={3} style={{height: '100%'}}>
-                  {marker.multimedia.length ? (
+                  {marker.multimedia.length || markerDetails ? (
                     <View
                       style={{
                         justifyContent: 'flex-start',

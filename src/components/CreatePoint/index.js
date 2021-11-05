@@ -306,7 +306,7 @@ const CreatePoint = ({
   };
 
   const DeleteMedia = (mediaPath) => {
-    const newMediasList = medias.filter((media) => media.uri !== mediaPath);
+    const newMediasList = medias.filter((media) => media !== mediaPath);
 
     setMedias(newMediasList);
   };
