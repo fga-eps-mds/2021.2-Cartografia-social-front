@@ -22,7 +22,7 @@ const ImagePreview = ({
         <Image source={{uri: item.uri || item.url}} />
       </MediaButton>
       {hasDelete ? (
-        <DeleteButton onPress={() => DeleteMedia(item.uri)}>
+        <DeleteButton onPress={() => DeleteMedia(item)}>
           <Icon size={normalize(20)} name="trash" color="#FF0000" />
         </DeleteButton>
 

@@ -22,7 +22,7 @@ const DocumentPreview = ({item, handleShowMedia, DeleteMedia, hasDelete}) => {
         </Text>
       </MediaButton>
       {hasDelete ? (
-        <DeleteButton onPress={() => DeleteMedia(item.uri || item.id)}>
+        <DeleteButton onPress={() => DeleteMedia(item)}>
           <Icon size={normalize(20)} name="trash" color="#FF0000" />
         </DeleteButton>
       ) : null}
