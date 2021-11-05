@@ -49,7 +49,7 @@ const Map = () => {
 
   useEffect(() => {
     getPointsAndAreas();
-  }, []);
+  }, [markers.length]);
 
   const actions = [
     {
