@@ -40,9 +40,9 @@ const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
   };
 
   const eraseMarker = async () => {
-    let endpoint = 'maps/point/';
+    let endpoint = '/maps/point/';
     if (marker.coordinates) {
-      endpoint = 'maps/area/';
+      endpoint = '/maps/area/';
     }
     try {
       await api.delete(`${endpoint}${marker.id}`);

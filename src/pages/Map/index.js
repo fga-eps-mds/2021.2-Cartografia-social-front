@@ -158,8 +158,13 @@ const Map = () => {
         <MarkerDetails
           marker={selectedMarker}
           setSelectedMarker={setSelectedMarker}
-          sheetRef={detailsRef}
-          close={() => detailsRef.current.snapToIndex(-1)}
+          sheetRef={(ref) => {
+            detailsRef.current = ref;
+          }}
+          close={() => {
+            detailsRef.current.close();
+            getPointsAndAreas();
+          }}
         />
       </View>
     );
