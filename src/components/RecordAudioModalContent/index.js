@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import AudioRecorderPlayer, {
   AudioEncoderAndroidType,
   AudioSourceAndroidType,
+  OutputFormatAndroidType,
 } from 'react-native-audio-recorder-player';
 import useRecordAudio from 'services/useRecordAudio';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -47,7 +48,7 @@ const RecordAudioModalContent = ({
 
   const path = Platform.select({
     ios: 'hello.m4a',
-    android: `${dirs.CacheDir}/sound${value}.mp4`,
+    android: `${dirs.CacheDir}/sound${value}.mp3`,
   });
 
   // função para começar a gravar
@@ -119,7 +120,7 @@ const RecordAudioModalContent = ({
 
   const onSave = async () => {
     const objAudio = {
-      fileName: `sound${value}.mp4`,
+      fileName: `sound${value}.mp3`,
       type: 'audio/mpeg',
       uri: audioPath,
       duration: audioDuration,
