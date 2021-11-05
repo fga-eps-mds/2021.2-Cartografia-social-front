@@ -12,6 +12,7 @@ import api from 'services/api';
 import {useSelector} from 'react-redux';
 import {auth} from 'store/selectors';
 import MediasList from '../MediasList';
+
 const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
   const user = useSelector(auth);
 
