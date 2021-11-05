@@ -69,7 +69,7 @@ const MarkerDetails = ({marker, sheetRef}) => {
         setMarkerMedias(null);
       }
     } catch (error) {
-      //nothing
+      // nothing
     }
   };
 
@@ -92,7 +92,12 @@ const MarkerDetails = ({marker, sheetRef}) => {
         {editing ? (
           <>
             <TouchableOpacity
-              style={{width: '25%', height: '5%', backgroundColor: '#FFF', alignSelf: 'flex-end'}}
+              style={{
+                width: '25%',
+                height: '5%',
+                backgroundColor: '#FFF',
+                alignSelf: 'flex-end',
+              }}
               onPress={() => setEdit(false)}>
               <Text fontWeight="bold" textAlign="right" mr={3}>
                 Cancelar
@@ -109,16 +114,31 @@ const MarkerDetails = ({marker, sheetRef}) => {
           <>
             {marker && marker.title ? (
               <>
-                <View style={{width: '100%', height: '5%', justifyContent: 'space-between', flexDirection: 'row', backgroundColor: '#FFF'}}>
+                <View
+                  style={{
+                    width: '100%',
+                    height: '5%',
+                    justifyContent: 'space-between',
+                    flexDirection: 'row',
+                    backgroundColor: '#FFF',
+                  }}>
                   <TouchableOpacity
-                    style={{width: '25%', backgroundColor: '#FFF', alignItems: 'center'}}
+                    style={{
+                      width: '25%',
+                      backgroundColor: '#FFF',
+                      alignItems: 'center',
+                    }}
                     onPress={() => {}}>
                     <Text fontWeight="bold" color="#FF0000">
                       Excluir
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    style={{width: '25%', backgroundColor: '#FFF', alignItems: 'center'}}
+                    style={{
+                      width: '25%',
+                      backgroundColor: '#FFF',
+                      alignItems: 'center',
+                    }}
                     onPress={() => setEdit(true)}>
                     <Text fontWeight="bold" color="#000">
                       Editar

@@ -22,7 +22,7 @@ import AudioPreview from '../AudioPreview';
 import DocumentPreview from '../DocumentPreview';
 import VideoPreview from '../VideoPreview';
 
-const EditPoint = ({marker, markerDetails, editHandler}) => {
+const EditPoint = ({marker, markerDetails, editHandler, updateMarker}) => {
   UseCamera();
   const dispatch = useDispatch();
   const listMarkers = useSelector((state) => state.markers.list);
@@ -125,7 +125,7 @@ const EditPoint = ({marker, markerDetails, editHandler}) => {
     const mediasToRemove = [];
     const mediasToAdd = [];
 
-    const isEditingArea = "coordinates" in marker; 
+    const isEditingArea = 'coordinates' in marker;
     const markerIndex = listMarkers.indexOf(marker);
 
     if (isEditingArea) {
@@ -171,39 +171,36 @@ const EditPoint = ({marker, markerDetails, editHandler}) => {
         })
         .catch(() => {
           Alert.alert(
-          'Tente mais tarde', 
-          'Não foi possivel editar a marcação.'
+            'Tente mais tarde',
+            'Não foi possivel editar a marcação.',
           );
         });
 
       mediasToRemove.map(async (media) => {
-        let mediaId = media.mediaId;
+        const {mediaId} = media;
         const removeMidiaDto = {
           id: mediaId,
         };
         await api
           .delete('midia/removeMidia', {data: removeMidiaDto})
           .catch(() => {
-            Alert.alert(
-              'Tente mais tarde.',
-              `Erro ao excluir arquivo`,
-            );
+            Alert.alert('Tente mais tarde.', `Erro ao excluir arquivo`);
           });
 
         if (mediaId !== null) {
           const mediaPoint = {
             locationId: locationId.id,
-            mediaId: mediaId,
+            mediaId,
           };
           endpoint = isEditingArea
             ? '/maps/removeMediaFromArea'
             : '/maps/removeMediaFromPoint';
           await api.delete(endpoint, {data: mediaPoint}).catch(() => {
-              Alert.alert(
-                'Tente mais tarde.',
-                `Erro ao excluir midia do ponto: ${media.fileName}`,
-              );
-            });
+            Alert.alert(
+              'Tente mais tarde.',
+              `Erro ao excluir midia do ponto: ${media.fileName}`,
+            );
+          });
         }
       });
 
@@ -232,7 +229,7 @@ const EditPoint = ({marker, markerDetails, editHandler}) => {
               `Erro ao salvar arquivo '${media.fileName}'`,
             );
           });
-        
+
         if (mediaId !== '') {
           const newMediaPoint = {
             locationId: locationId.id,
@@ -251,8 +248,8 @@ const EditPoint = ({marker, markerDetails, editHandler}) => {
       });
     }
 
-    // dispatch(Actions.updateMarker(updatedMarker, markerIndex));
-    // updateMarker(updatedMarker);
+    dispatch(Actions.updateMarker(updatedMarker, markerIndex));
+    updateMarker(updatedMarker);
     editHandler(false);
   };
 
@@ -453,14 +450,14 @@ EditPoint.propTypes = {
   }),
   markerDetails: [],
   editHandler: PropTypes.func,
-  // updateMarker: PropTypes.func,
+  updateMarker: PropTypes.func,
 };
 
 EditPoint.defaultProps = {
   marker: {},
   markerDetails: [],
   editHandler: null,
-  // updateMarker: null,
+  updateMarker: null,
 };
 
 export default EditPoint;
