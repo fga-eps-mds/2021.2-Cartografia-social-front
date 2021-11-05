@@ -6,8 +6,8 @@ import theme from 'theme/theme';
 import ImageView from 'react-native-image-viewing';
 import Modal from 'react-native-modal';
 import ShowMediaModal from 'components/ShowMediaModal';
-import MediasList from '../MediasList';
 import api from 'services/api';
+import MediasList from '../MediasList';
 
 const MarkerDetails = ({marker, sheetRef}) => {
   const snapPoints = [400, '95%'];

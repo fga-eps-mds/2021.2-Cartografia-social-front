@@ -10,7 +10,8 @@ import {ImageBackground} from './styles';
 const VideoPreview = ({item, handleShowMedia, DeleteMedia, hasDelete}) => {
   return (
     <MediaContainer bigger={hasDelete || null}>
-      <MediaButton onPress={() => handleShowMedia(item.type, item.uri || item.url)}>
+      <MediaButton
+        onPress={() => handleShowMedia(item.type, item.uri || item.url)}>
         <ImageBackground
           source={{uri: item.thumb}}
           imageStyle={{borderRadius: 7}}>

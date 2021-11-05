@@ -18,9 +18,9 @@ const MediasList = ({
   const renderItem = ({item}) => {
     if (
       item.mediaType === 'image' ||
-      item.url?.includes('.jpeg') ||
-      item.url?.includes('.png') ||
-      item.url?.includes('.jpg')
+      (item.url && item.url.includes('.jpeg')) ||
+      item.url.includes('.png') ||
+      item.url.includes('.jpg')
     ) {
       return (
         <ImagePreview
@@ -44,7 +44,10 @@ const MediasList = ({
       );
     }
 
-    if (item.type === 'application/pdf' || item.url?.includes('.pdf')) {
+    if (
+      item.type === 'application/pdf' ||
+      (item.url && item.url.includes('.pdf'))
+    ) {
       return (
         <DocumentPreview
           item={item}
