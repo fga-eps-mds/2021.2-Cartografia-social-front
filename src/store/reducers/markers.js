@@ -25,6 +25,7 @@ const reducer = (state = INITIAL_STATE, action) => {
         longitude: item.coordinates[0],
         title: item.title,
         description: item.description,
+        id: item.id,
         multimedia: [],
         multimediaInitialized: false,
       }));
@@ -32,6 +33,7 @@ const reducer = (state = INITIAL_STATE, action) => {
       formattedAreas = action.areas.map((item) => ({
         title: item.title,
         description: item.description,
+        id: item.id,
         multimedia: [],
         multimediaInitialized: false,
         coordinates: item.coordinates[0].map((coordinate) => ({
