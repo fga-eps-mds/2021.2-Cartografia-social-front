@@ -2,18 +2,22 @@
 /* eslint-disable react/no-array-index-key */
 import React, {useState, useEffect, useRef} from 'react';
 import {View} from 'components/UI';
+import {Alert} from 'react-native';
 import useLocation from 'services/useLocation';
 import Fabs from 'components/Fabs';
 import CreatePoint from 'components/CreatePoint';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import * as selectors from 'store/selectors';
+import * as Actions from 'store/actions';
 import Marker from 'components/Marker';
 import MarkerDetails from 'components/MarkerDetails';
 import CreateArea from 'components/CreateArea';
 import {Polygon} from 'react-native-maps';
+import api from 'services/api';
 import {MapView} from './styles';
 
 const Map = () => {
+  const dispatch = useDispatch();
   const {location} = useLocation();
   const [showPointCreation, setShowPointCreation] = useState(false);
   const [region, setRegion] = useState(null);
@@ -25,6 +29,27 @@ const Map = () => {
   const resetArea = useRef(() => {});
 
   const markers = useSelector(selectors.markers);
+  const user = useSelector(selectors.auth);
+
+  const getPointsAndAreas = async () => {
+    try {
+      if (user.id) {
+        const response = await api.get(
+          `/maps/communityDataByUserEmail/${user.email}`,
+        );
+        const {data} = response;
+        if (data && data.points && data.areas) {
+          dispatch(Actions.populateMarkers(data.points, data.areas));
+        }
+      }
+    } catch (error) {
+      Alert.alert(error.title, error.message);
+    }
+  };
+
+  useEffect(() => {
+    getPointsAndAreas();
+  }, [markers.length]);
 
   const actions = [
     {
@@ -127,6 +152,8 @@ const Map = () => {
           show={showPointCreation}
           onClose={onCloseCreation}
           area={newArea.current}
+          addPointToArea={onPressCreatingArea.current}
+          setPoint={setRegion}
         />
         <MarkerDetails marker={selectedMarker} sheetRef={detailsRef} />
       </View>

@@ -19,7 +19,7 @@ const ImagePreview = ({
           setOpenedImage(item);
           setIsVisibleImageModal(true);
         }}>
-        <Image source={{uri: item.uri}} />
+        <Image source={{uri: item.uri || item.url}} />
       </MediaButton>
       {hasDelete ? (
         <DeleteButton onPress={() => DeleteMedia(item.uri)}>

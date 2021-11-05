@@ -13,8 +13,6 @@ import theme from 'theme/theme';
 import Profile from 'components/Profile';
 import LoginPage from 'pages/LoginPage';
 import DynamicForm from 'pages/DynamicForm';
-import SupportForm from 'pages/SupportForm';
-
 import Map from 'pages/Map';
 import InitialPage from 'pages/InitialPage';
 
@@ -61,7 +59,7 @@ const Routes = () => {
         name="DynamicForm"
         component={DynamicForm}
         options={{
-          title: 'Bem Vindo',
+          title: 'Solicitar Acesso',
           headerTitleAlign: 'center',
         }}
       />
@@ -71,7 +69,7 @@ const Routes = () => {
   const LoginRoutes = () => (
     <Stack.Navigator>
       <Stack.Screen
-        name="LoginPage"
+        name="LoginPage2"
         component={LoginPage}
         options={{
           title: '',
@@ -101,7 +99,7 @@ const Routes = () => {
     <Drawer.Navigator initialRouteName="Map" drawerType="front">
       <Drawer.Screen name="Map" component={Map} options={{title: 'Mapa'}} />
       <Drawer.Screen
-        name="LoginPage"
+        name="LoginPage3"
         component={LoginRoutes}
         options={{
           headerTitle: '',
@@ -115,7 +113,7 @@ const Routes = () => {
       />
       <Drawer.Screen
         name="Solicitar Apoio"
-        component={SupportForm}
+        component={DynamicForm}
         options={{
           title: 'Solicitar Apoio',
           headerStyle: {
@@ -136,7 +134,7 @@ const Routes = () => {
         name="DynamicForm"
         component={DynamicForm}
         options={{
-          title: 'Bem Vindo',
+          title: 'Solicitar Acesso',
           headerTitleAlign: 'center',
         }}
       />

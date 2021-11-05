@@ -13,6 +13,7 @@ import MediasList from '../MediasList';
 const MarkerDetails = ({marker, sheetRef}) => {
   const snapPoints = [400, '95%'];
   const [visibleImageModal, setIsVisibleImageModal] = useState(false);
+  const [markerDetails, setMarkerMedias] = useState(null);
   const [openedImage, setOpenedImage] = useState({});
   const [audioCount, setAudioCount] = useState(0);
   const [mediaShowed, setMediaShowed] = useState({});
@@ -39,7 +40,7 @@ const MarkerDetails = ({marker, sheetRef}) => {
   };
 
   const sortMediasByImages = () => {
-    const medias = [...marker.multimedia];
+    const medias = markerDetails || [...marker.multimedia];
     medias.sort((a, b) => {
       if (a.mediaType === 'image') {
         return -1;
@@ -49,6 +50,7 @@ const MarkerDetails = ({marker, sheetRef}) => {
       }
       return 0;
     });
+
     return medias;
   };
 
@@ -61,6 +63,23 @@ const MarkerDetails = ({marker, sheetRef}) => {
       setModalShowMediaVisible(true);
     }
   }, [mediaShowed]);
+
+  const fetchMarker = async () => {
+    try {
+      const response = await api.get(`maps/midiaFromPoint/${marker.id}`);
+      if (response.data.length) {
+        setMarkerMedias(response.data);
+      }
+    } catch (error) {
+      // nothing
+    }
+  };
+
+  useEffect(() => {
+    if (marker && marker.id) {
+      fetchMarker();
+    }
+  }, [marker]);
 
   return (
     <BottomSheet
@@ -103,16 +122,13 @@ const MarkerDetails = ({marker, sheetRef}) => {
                   <Divisor my={2} />
                 </View>
                 <View px={3} style={{height: '100%'}}>
-                  {marker.multimedia.length ? (
+                  {marker.multimedia.length || markerDetails ? (
                     <View
                       style={{
                         justifyContent: 'flex-start',
                         height: '35%',
                       }}>
-                      <Text
-                        fontWeight="bold"
-                        fontSize={theme.font.sizes.SM}
-                        mb={2}>
+                      <Text fontWeight="bold" fontSize={theme.font.sizes.SM} mb={2}>
                         Multimídia:
                       </Text>
                       <MediasList
@@ -142,7 +158,7 @@ const MarkerDetails = ({marker, sheetRef}) => {
           </>
         )}
         <ImageView
-          images={[openedImage]}
+          images={[{uri: openedImage.uri || openedImage.url}]}
           imageIndex={0}
           visible={visibleImageModal}
           onRequestClose={() => setIsVisibleImageModal(false)}

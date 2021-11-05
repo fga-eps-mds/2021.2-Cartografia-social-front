@@ -27,3 +27,11 @@ export const resetNewArea = () => {
     type: actionTypes.RESET_NEW_AREA,
   };
 };
+
+export const populateMarkers = (points, areas) => {
+  return {
+    type: actionTypes.POPULATE_MARKERS,
+    points,
+    areas,
+  };
+};
