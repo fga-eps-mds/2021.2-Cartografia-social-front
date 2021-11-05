@@ -30,7 +30,8 @@ instance.interceptors.response.use(
 
       return auth()
         .currentUser.getIdToken(true)
-        .then(() => {
+        .then(async (token) => {
+          await AsyncStorage.setItem('access_token', `Bearer ${token}`);
           return axios(originalRequest);
         });
     }
