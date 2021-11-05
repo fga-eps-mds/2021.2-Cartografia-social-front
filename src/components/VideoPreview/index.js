@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
 import normalize from 'react-native-normalize';
@@ -9,7 +10,7 @@ import {ImageBackground} from './styles';
 const VideoPreview = ({item, handleShowMedia, DeleteMedia, hasDelete}) => {
   return (
     <MediaContainer bigger={hasDelete || null}>
-      <MediaButton onPress={() => handleShowMedia(item.type, item.uri)}>
+      <MediaButton onPress={() => handleShowMedia(item.type, item.uri || item.url)}>
         <ImageBackground
           source={{uri: item.thumb}}
           imageStyle={{borderRadius: 7}}>
