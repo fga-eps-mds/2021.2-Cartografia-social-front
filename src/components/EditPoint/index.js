@@ -21,6 +21,7 @@ import ImagePreview from '../ImagePreview';
 import AudioPreview from '../AudioPreview';
 import DocumentPreview from '../DocumentPreview';
 import VideoPreview from '../VideoPreview';
+import required from 'validators/required';
 
 const EditPoint = ({marker, markerDetails, editHandler, setSelectedMarker}) => {
   UseCamera();
@@ -120,6 +121,10 @@ const EditPoint = ({marker, markerDetails, editHandler, setSelectedMarker}) => {
   ];
 
   const onSave = async () => {
+    if(!title.value){
+      Alert.alert('atenção!', 'o nome não pode ser vazio');
+      return;
+    }
     let locationId = null;
     let updatedMarker;
     const mediasToRemove = [];
@@ -154,13 +159,13 @@ const EditPoint = ({marker, markerDetails, editHandler, setSelectedMarker}) => {
         }
         return m;
       });
+    }
       updatedMarker.multimedia.map((m) => {
-        if (!markerDetails.includes(m)) {
+        if (!markerDetails || !markerDetails.includes(m)) {
           mediasToAdd.push(m);
         }
         return m;
       });
-    }
 
     if (user && user.id) {
       let endpoint = isEditingArea ? '/maps/area' : '/maps/point';
@@ -176,7 +181,9 @@ const EditPoint = ({marker, markerDetails, editHandler, setSelectedMarker}) => {
           );
         });
 
-      mediasToRemove.map(async (media) => {
+      for (let index = 0; index < mediasToRemove.length; index++) {
+        const media = mediasToRemove[index];
+        
         const {mediaId} = media;
         const removeMidiaDto = {
           id: mediaId,
@@ -202,9 +209,10 @@ const EditPoint = ({marker, markerDetails, editHandler, setSelectedMarker}) => {
             );
           });
         }
-      });
+      }
 
-      mediasToAdd.map(async (media) => {
+      for (let index = 0; index < mediasToAdd.length; index++) {
+        const media = mediasToAdd[index];
         let mediaId = '';
 
         const formData = new FormData();
@@ -245,7 +253,7 @@ const EditPoint = ({marker, markerDetails, editHandler, setSelectedMarker}) => {
             );
           });
         }
-      });
+      }
     }
 
     dispatch(Actions.updateMarker(updatedMarker, markerIndex));
