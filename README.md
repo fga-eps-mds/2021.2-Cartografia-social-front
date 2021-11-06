@@ -4,6 +4,8 @@ Repositório do frontend do projeto de Cartografia Social
 ## Sumário
 
 * [Dependências](#Dependências)
+* [Clonando o repositório](#Clonando-o-repositório)
+* [Configurações necessárias](#Configurações-necessárias)
 * [Execução](#Execução)
 * [Guia de Contribuição](#Guia-de-Contribuição)
     * [Issues](#Issues)
@@ -22,6 +24,26 @@ Para a execução local da Wiki do projeto serão necessárias as seguintes depe
 * [Android Studio](https://developer.android.com/studio)
 * [VSCode](https://code.visualstudio.com/) (Opcional)
 
+## [**Clonando o repositório**](#Sumário)
+
+```bash
+# 1. Clone o repositório atual
+$ git clone https://github.com/fga-eps-mds/2021.1-Cartografia-social-front
+```
+
+## [**Configurações necessárias**](#Sumário)
+
+Antes de começar o processo de execução do projeto, é necessário adicionar o arquvio **local.properties** contendo o caminho do sdk.  
+Para isso crie o arquivo **local.properties** na pasta **android** do diretório do projeto.
+```
+2021.1-Cartografia-social-front/android/local.properties
+```
+O arquivo **local.properties** deverá conter a variavel **sdk.dir** apontando para o caminho do sdk, que geralmente fica na pasta de instalação do android. O arquivo fica da seguinte forma:
+```
+sdk.dir = /home/user/Android/Sdk
+```
+onde **/home/user/Android/Sdk** é o caminho do seu sdk.
+
 ## [**Execução**](#Sumário)
 
 Para executar o frontend, é necessário possuir o **Android Studio** e os módulos do **Node** instalados os seguintes passos:
@@ -30,24 +52,21 @@ Para executar o frontend, é necessário possuir o **Android Studio** e os módu
 # 1. Clone o repositório atual
 $ git clone https://github.com/fga-eps-mds/2021.1-Cartografia-social-front
 
-# 2. Entre na página do repositório
+# 2. Entre no diretório do repositório
 $ cd 2021.1-Cartografia-social-front/
 
-# 3. Install as dependências
+# 3. Instale as dependências
 $ npm install
 
 # 4. Execute o projeto para conexão
 $ npm start
 ```
 
-Após executar os comandos anteriores, em um outro terminal realize os seguintes comandos:
+Após executar os comandos anteriores e com o celular conectado ao computador ou com o emulador aberto, em um outro terminal realize os seguintes comandos:
 
 ```bash
 # 1. Entre novamente na página do repositório
 $ cd 2021.1-Cartografia-social-front/
-
-# 2. Install as dependências
-$ npm install
 
 # 3. Execute o projeto android
 $ npm run android
