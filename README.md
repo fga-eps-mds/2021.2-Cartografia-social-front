@@ -49,16 +49,13 @@ onde **/home/user/Android/Sdk** é o caminho do seu sdk.
 Para executar o frontend, é necessário possuir o **Android Studio** e os módulos do **Node** instalados os seguintes passos:
 
 ```bash
-# 1. Clone o repositório atual
-$ git clone https://github.com/fga-eps-mds/2021.1-Cartografia-social-front
-
-# 2. Entre no diretório do repositório
+# 1. Entre no diretório do repositório
 $ cd 2021.1-Cartografia-social-front/
 
-# 3. Instale as dependências
+# 2. Instale as dependências
 $ npm install
 
-# 4. Execute o projeto para conexão
+# 3. Execute o projeto para conexão
 $ npm start
 ```
 
