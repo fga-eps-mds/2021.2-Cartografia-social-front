@@ -1,41 +1,41 @@
 {
   "project_info": {
-    "project_number": "1071557975088",
-    "project_id": "cartografi-social-app",
-    "storage_bucket": "cartografi-social-app.appspot.com"
+    "project_number": "10008751845",
+    "project_id": "cartografia-social-2022",
+    "storage_bucket": "cartografia-social-2022.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1071557975088:android:0181d87d727dd6a840a1f5",
+        "mobilesdk_app_id": "1:10008751845:android:b9b9374ed1e328921d6e0c",
         "android_client_info": {
           "package_name": "com.cartografiasocial"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1071557975088-1vth3i4om5ssdmh678ukv3ms0cpdn2l0.apps.googleusercontent.com",
+          "client_id": "10008751845-vmria8sb05iao322jsqk4m6ivag26nu2.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.cartografiasocial",
-            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+            "certificate_hash": "5e9dccb1374269563255b730cfd7dc69886651a3"
           }
         },
         {
-          "client_id": "1071557975088-k9h54o90i8s78ai2mhd1c6evv3lkc6d1.apps.googleusercontent.com",
+          "client_id": "10008751845-o34pnv80cdm6d3qdv93et6jn3hbcrd2q.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBRUF1jSMLmaWWYEd1aUN9hN3cgnxzr4js"
+          "current_key": "AIzaSyCDrlmADpEL-51LJ7YUnPZ7ETAwgWlQXkQ"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1071557975088-k9h54o90i8s78ai2mhd1c6evv3lkc6d1.apps.googleusercontent.com",
+              "client_id": "10008751845-o34pnv80cdm6d3qdv93et6jn3hbcrd2q.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
