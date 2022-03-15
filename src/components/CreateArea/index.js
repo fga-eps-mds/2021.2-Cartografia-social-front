@@ -1,12 +1,12 @@
-import React, { useRef, useEffect } from 'react';
+import React, {useRef, useEffect} from 'react';
 import PropTypes from 'prop-types';
-import { Polygon, Marker } from 'react-native-maps';
-import { useSelector, useDispatch } from 'react-redux';
+import {Polygon, Marker} from 'react-native-maps';
+import {useSelector, useDispatch} from 'react-redux';
 import * as selectors from 'store/selectors';
 import * as Actions from 'store/actions';
-import { Point } from './styles';
-import { coordinateToPoint, pointToCoordinate } from '../../geometry/point'
-import { makeHull } from '../../geometry/convexhull'
+import {Point} from './styles';
+import {coordinateToPoint, pointToCoordinate} from '../../geometry/point';
+import {makeHull} from '../../geometry/convexhull';
 
 function ajustCoordinates(coordinates) {
   const points = coordinates.map(coordinateToPoint);
@@ -19,7 +19,7 @@ const DEFAULT_STATE = {
   holes: [],
 };
 
-const CreateArea = ({ show, onPressCreatingArea, reset, index }) => {
+const CreateArea = ({show, onPressCreatingArea, reset, index}) => {
   const dispatch = useDispatch();
   const newArea = useSelector(selectors.newArea);
   const newAreaRef = useRef(DEFAULT_STATE);
@@ -28,7 +28,7 @@ const CreateArea = ({ show, onPressCreatingArea, reset, index }) => {
     const coordinates = [
       ...newAreaRef.current.coordinates,
       e.nativeEvent.coordinate,
-    ]
+    ];
 
     const coordinateAjusted = ajustCoordinates(coordinates);
 
@@ -57,9 +57,9 @@ const CreateArea = ({ show, onPressCreatingArea, reset, index }) => {
   if (show && newArea.coordinates.length) {
     if (newArea.coordinates.length < 3) {
       return newArea.coordinates.map((cordinate) => {
-        const { latitude, longitude } = cordinate;
+        const {latitude, longitude} = cordinate;
         return (
-          <Marker coordinate={{ latitude, longitude }}>
+          <Marker coordinate={{latitude, longitude}}>
             <Point />
           </Marker>
         );
@@ -90,7 +90,7 @@ CreateArea.propTypes = {
 CreateArea.defaultProps = {
   show: false,
   index: 0,
-  reset: () => { },
+  reset: () => {},
 };
 
 export default CreateArea;
