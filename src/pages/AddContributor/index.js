@@ -49,7 +49,7 @@ const AddContributor = ({navigation}) => {
 
   // Valida formulário
   const formIsValid = (questions) => {
-    if (!userSelected.email) {
+    /*if (!userSelected.email) {
       return false;
     }
     let isValid = true;
@@ -61,6 +61,8 @@ const AddContributor = ({navigation}) => {
       return false;
     });
     return isValid;
+  */
+    return true;
   };
 
   const onError = () => {
@@ -95,7 +97,8 @@ const AddContributor = ({navigation}) => {
   };
 
   // Get community info
-  const getSelectedCommunityInfo = async () => {
+  /*const getSelectedCommunityInfo = async () => {
+    //console.log("\n\n\nthis is comunity on selected", communitySelected.name, "\n\n\nthis is comunity");
     return api
       .get(
         'community/',
@@ -120,7 +123,7 @@ const AddContributor = ({navigation}) => {
           dispatch(Actions.logout());
         }
       });
-  };
+  };*/
 
   /* const postCommunity = async () => {
     // A const deve ser reformulada a fim de localizar a comulidade, e não posta-la
@@ -171,7 +174,10 @@ const AddContributor = ({navigation}) => {
 
     Keyboard.dismiss();
     const userResponse = await getSelectedUserInfo();
-    const communityInfo = await getSelectedCommunityInfo();
+    //const communityInfo = await getSelectedCommunityInfo();
+    const communityInfo = communitySelected;
+    //console.log("\n\n\nthis is user", userResponse.data.id, "\n\n\nthis is user");
+    //console.log("\n\n\nthis is comunity", communitySelected.name);
     let userId;
     // let communityResponse;
     if (userResponse) {
@@ -179,7 +185,7 @@ const AddContributor = ({navigation}) => {
       // communityResponse = await postCommunity(); this was replaced by getSelectedCommunityInfo
     }
     if (communityInfo && userResponse) {
-      const communityId = communityInfo.id;
+      const communityId = communitySelected.id;
       const userDto = {
         userId,
         communityId,
