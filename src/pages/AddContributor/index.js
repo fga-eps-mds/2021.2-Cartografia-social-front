@@ -19,7 +19,7 @@ import {
 } from './styles';
 
 const AddContributor = ({navigation}) => {
-  //CheckBox
+  // CheckBox
   const [isSelected, setSelection] = useState(false);
   const [isModalPickerVisible, setIsModalPickerVisible] = useState(false);
   const [getFromApi, setGetFromApi] = useState(false);
@@ -84,10 +84,15 @@ const AddContributor = ({navigation}) => {
   };
 
   // Get community info
-  const getSelectedComunityInfo = async () => {
+  const getSelectedCommunityInfo = async () => {
     return api
       .get(
-        'community/listCommunities',
+        'community/',
+        {
+          params: {
+            id: communitySelected.id ? communitySelected.id : '',
+          },
+        },
         {
           headers: {
             Authorization: `Bearer ${user.token}`,
@@ -106,7 +111,7 @@ const AddContributor = ({navigation}) => {
       });
   };
 
-  const postCommunity = async () => {
+  /*const postCommunity = async () => {
     // A const deve ser reformulada a fim de localizar a comulidade, e não posta-la
     const communityDto = {
       name: communitySelected.value,
@@ -118,7 +123,7 @@ const AddContributor = ({navigation}) => {
         },
       })
       .catch(onError);
-  };
+  };*/
 
   const addUserToCommunity = async (userDto) => {
     await api
@@ -155,14 +160,15 @@ const AddContributor = ({navigation}) => {
 
     Keyboard.dismiss();
     const userResponse = await getSelectedUserInfo();
+    const communityInfo = await getSelectedCommunityInfo();
     let userId;
-    let communityResponse;
+    //let communityResponse;
     if (userResponse) {
       userId = userResponse.data.id;
-      communityResponse = await postCommunity();
+      //communityResponse = await postCommunity(); this was replaced by getSelectedCommunityInfo
     }
-    if (communityResponse && userResponse) {
-      const communityId = communityResponse.data.id;
+    if (communityInfo && userResponse) {
+      const communityId = communityInfo.id;
       const userDto = {
         userId,
         communityId,
@@ -221,7 +227,7 @@ const AddContributor = ({navigation}) => {
               <Text style={styles.label}>Adicionar como administrador</Text>
             </Container>
           </Container>
-  
+
           <Btn
             title="Salvar"
             color="#fff"

@@ -45,16 +45,16 @@ export const Icon = styled(FontAwesomeIcon).attrs((props) => ({
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingTop:-1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: -1,
   },
   checkboxContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginBottom: 20,
   },
   checkbox: {
-    alignSelf: "center",
+    alignSelf: 'center',
   },
   label: {
     margin: 8,
