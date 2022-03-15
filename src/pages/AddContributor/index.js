@@ -83,6 +83,29 @@ const AddContributor = ({navigation}) => {
       });
   };
 
+  // Get community info
+  const getSelectedComunityInfo = async () => {
+    return api
+      .get(
+        'community/listCommunities',
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        },
+      )
+      .catch((error) => {
+        onError();
+        if (error.response.status === 401) {
+          Alert.alert(
+            'Atenção!',
+            'Seu token expirou! É necesário realizar novamente o login',
+          );
+          dispatch(Actions.logout());
+        }
+      });
+  };
+
   const postCommunity = async () => {
     // A const deve ser reformulada a fim de localizar a comulidade, e não posta-la
     const communityDto = {
@@ -181,14 +204,6 @@ const AddContributor = ({navigation}) => {
           </PickerContainer>
 
           <InputText>Selecione o usuário a ser inserido</InputText>
-          <PickerContainer onPress={onOpenModalUser}>
-            <PickerText selected>
-              {userSelected.email ? userSelected.email : userSelected}
-            </PickerText>
-            <Icon size={normalize(20)} name="angle-down" color="#a3a3a3" />
-          </PickerContainer>
-
-          <InputText>Selecione o administrador a ser inserido</InputText>
           <PickerContainer onPress={onOpenModalUser}>
             <PickerText selected>
               {userSelected.email ? userSelected.email : userSelected}
