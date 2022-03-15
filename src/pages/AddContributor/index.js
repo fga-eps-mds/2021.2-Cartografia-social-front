@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
 import {Alert, Keyboard} from 'react-native';
 import ScrollView from 'components/UI/ScrollView';
@@ -7,6 +8,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import * as Actions from 'store/actions';
 import {auth} from 'store/selectors';
 import Picker from '../../components/Picker';
+import ComunityPicker from '../../components/ComunityPicker';
 import Btn from '../../components/UI/Btn';
 import {
   Main,
@@ -19,19 +21,19 @@ import {
 
 const AddContributor = ({navigation}) => {
   const [isModalPickerVisible, setIsModalPickerVisible] = useState(false);
-  const [getFromApi, setGetFromApi] = useState(false);
+  const [getUserFromApi, setGetUserFromApi] = useState(false);
+  const [getComunityFromApi, setGetComunityFromApi] = useState(false);
   // eslint-disable-next-line prettier/prettier
   const [communitySelected, setComunitySelected] = useState('Selecione uma comunidade');
   const [userSelected, setUserSelected] = useState('Selecione um usuário');
   const user = useSelector(auth);
-  const toggleModalPicker = () =>
-    setIsModalPickerVisible(!isModalPickerVisible);
-  // Get dos usuários
-  const toggleGetFromApiUser = () => setGetFromApi(!getFromApi);
+  const toggleModalPicker = () => setIsModalPickerVisible(!isModalPickerVisible);
   const dispatch = useDispatch();
   let works = true;
+  // Get dos usuários
+  const toggleGetFromApiUser = () => setGetUserFromApi(!getUserFromApi);
   // Get das comunidades
-  const toggleGetFromApiComunity = () => setGetFromApi(!getFromApi);
+  const toggleGetFromApiComunity = () => setGetComunityFromApi(!getComunityFromApi);
 
   // Valida formulário
   const formIsValid = (questions) => {
@@ -167,14 +169,20 @@ const AddContributor = ({navigation}) => {
         visible={isModalPickerVisible}
         toggle={toggleModalPicker}
         setUser={setUserSelected}
-        update={getFromApi}
+        update={getUserFromApi}
+      />
+      <ComunityPicker
+        visible={isModalPickerVisible}
+        toggle={toggleModalPicker}
+        setUser={setUserSelected}
+        update={getComunityFromApi}
       />
       <ScrollView>
         <Container>
           <InputText>Nome da comunidade</InputText>
           <PickerContainer onPress={onOpenModalComunity}>
             <PickerText selected>
-              {userSelected.email ? userSelected.email : communitySelected}
+              {communitySelected.name ? communitySelected.name : communitySelected}
             </PickerText>
             <Icon size={normalize(20)} name="angle-down" color="#a3a3a3" />
           </PickerContainer>

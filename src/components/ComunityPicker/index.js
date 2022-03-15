@@ -19,7 +19,7 @@ import {
   FlatListView,
 } from './styles';
 
-const Picker = ({visible, toggle, setUser, update}) => {
+const ComunityPicker = ({visible, toggle, setUser, update}) => {
   const [itens, setItens] = useState([]);
   const [auxItens, setAuxItens] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -52,7 +52,7 @@ const Picker = ({visible, toggle, setUser, update}) => {
         const newItens = [...response.data];
 
         newItens.sort((a, b) => {
-          return a.email > b.email ? 1 : -1;
+          return a.nome > b.nome ? 1 : -1;
         });
         setItens(newItens);
         setAuxItens(newItens);
@@ -109,7 +109,7 @@ const Picker = ({visible, toggle, setUser, update}) => {
           <>
             <SearchBox>
               <Input
-                label="Pesquisar por usuários sem comunidade"
+                label="Pesquisar por comunidades"
                 onChangeText={(text) => findResults(text)}
                 autoCapitalize="words"
               />
@@ -136,18 +136,18 @@ const Picker = ({visible, toggle, setUser, update}) => {
   );
 };
 
-Picker.propTypes = {
+ComunityPicker.propTypes = {
   visible: PropTypes.bool,
   toggle: PropTypes.func,
   setUser: PropTypes.func,
   update: PropTypes.bool,
 };
 
-Picker.defaultProps = {
+ComunityPicker.defaultProps = {
   visible: false,
   toggle: () => null,
   setUser: () => null,
   update: false,
 };
 
-export default Picker;
+export default ComunityPicker;
