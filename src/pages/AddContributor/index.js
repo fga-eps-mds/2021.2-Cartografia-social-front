@@ -30,11 +30,9 @@ const AddContributor = ({navigation}) => {
 
   const [isModalUserPickerVisible, setIsModalUserPickerVisible] = useState(false);
   const [isModalComunityPickerVisible, setIsModalComunityPickerVisible] = useState(false);
-
   const toggleModalUserPicker = () => setIsModalUserPickerVisible(!isModalUserPickerVisible);
   const toggleModalComunityPicker = () => setIsModalComunityPickerVisible(!isModalComunityPickerVisible);
 
-  
   // Get dos usuários
   const user = useSelector(auth);
   const [userSelected, setUserSelected] = useState('Selecione um usuário');
@@ -48,8 +46,8 @@ const AddContributor = ({navigation}) => {
   // const toggleGetFromApi = () => setGetFromApi(!getFromApi);
 
   // Valida formulário
-  const formIsValid = (questions) => {
-    if (!userSelected.email) {
+  /* const formIsValid = (questions) => {
+    if (!communitySelected.name) {
       return false;
     }
     let isValid = true;
@@ -61,7 +59,7 @@ const AddContributor = ({navigation}) => {
       return false;
     });
     return isValid;
-  };
+  }; */
 
   const onError = () => {
     works = false;
@@ -171,22 +169,24 @@ const AddContributor = ({navigation}) => {
 
     Keyboard.dismiss();
     const userResponse = await getSelectedUserInfo();
-    const communityInfo = await getSelectedCommunityInfo();
+    const communityResponse = await getSelectedCommunityInfo();
     let userId;
-    // let communityResponse;
-    if (userResponse) {
-      userId = userResponse.data.id;
-      // communityResponse = await postCommunity(); this was replaced by getSelectedCommunityInfo
-    }
-    if (communityInfo && userResponse) {
-      const communityId = communityInfo.id;
+    let communityId;
+
+    if (communityResponse && userResponse ) {
+      userId = userResponse.id;
+      communityId = communityResponse.id;
       const userDto = {
         userId,
         communityId,
       };
-      await addUserToCommunity(userDto);
-      await addAdminUserToCommunity(userDto);
-    }
+      if (isSelected){
+        await addAdminUserToCommunity(userDto);
+      } else{
+        await addUserToCommunity(userDto);
+      }
+    } 
+   
 
     if (works) {
       Alert.alert('Sucesso', 'Usuário inserido!');
@@ -249,7 +249,6 @@ const AddContributor = ({navigation}) => {
             title="Salvar"
             color="#fff"
             onPress={onSave}
-            disabled={!formIsValid([communitySelected])}
           />
         </Container>
       </ScrollView>
