@@ -19,17 +19,17 @@ import {
   FlatListView,
 } from './styles';
 
-const ComunityPicker = ({visible, toggle, setUser, update}) => {
+const ComunityPicker = ({visible, toggle, setComunity, update}) => {
   const [itens, setItens] = useState([]);
   const [auxItens, setAuxItens] = useState([]);
   const [loading, setLoading] = useState(true);
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   useEffect(() => {
-    async function getUsersWithoutACommunity() {
+    async function getListCommunity() {
       await sleep(1000);
       const response = await api
-        .get('community/getUsersWithoutACommunity')
+        .get('community/listCommunities')
         .catch((error) => {
           // eslint-disable-next-line no-console
           if (
@@ -39,12 +39,16 @@ const ComunityPicker = ({visible, toggle, setUser, update}) => {
             setAuxItens([]);
             setLoading(false);
           } else {
-            Alert.alert(
-              'Atenção!',
-              'Erro ao buscar dados. Tente novamente mais tarde!',
-            );
+            if (visible) {
+              Alert.alert(
+                'Atenção!',
+                'Erro ao buscar dados. Tente novamente mais tarde!',
+              );
+            }
             setLoading(true);
-            toggle();
+            if (visible) {
+              toggle();
+            }
           }
         });
       if (response) {
@@ -52,14 +56,14 @@ const ComunityPicker = ({visible, toggle, setUser, update}) => {
         const newItens = [...response.data];
 
         newItens.sort((a, b) => {
-          return a.nome > b.nome ? 1 : -1;
+          return a.name > b.name ? 1 : -1;
         });
         setItens(newItens);
         setAuxItens(newItens);
         setLoading(false);
       }
     }
-    getUsersWithoutACommunity();
+    getListCommunity();
   }, [update]);
 
   const renderItem = (item) =>
@@ -70,20 +74,20 @@ const ComunityPicker = ({visible, toggle, setUser, update}) => {
     ) : (
       <UserItem
         onPress={() => {
-          setUser(item);
+          setComunity(item);
           setAuxItens([...itens]);
           setLoading(true);
           toggle();
         }}>
         <Icon size={normalize(25)} name="user-circle" color="#a3a3a3" />
-        <ItemText>{item.email}</ItemText>
+        <ItemText>{item.name}</ItemText>
       </UserItem>
     );
 
   const findResults = (text) => {
     setAuxItens(
       itens.filter(
-        (item) => item.email.toUpperCase().indexOf(text.toUpperCase()) >= 0,
+        (item) => item.name.toUpperCase().indexOf(text.toUpperCase()) >= 0,
       ),
     );
   };
@@ -139,14 +143,14 @@ const ComunityPicker = ({visible, toggle, setUser, update}) => {
 ComunityPicker.propTypes = {
   visible: PropTypes.bool,
   toggle: PropTypes.func,
-  setUser: PropTypes.func,
+  setComunity: PropTypes.func,
   update: PropTypes.bool,
 };
 
 ComunityPicker.defaultProps = {
   visible: false,
   toggle: () => null,
-  setUser: () => null,
+  setComunity: () => null,
   update: false,
 };
 

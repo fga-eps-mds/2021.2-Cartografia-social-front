@@ -21,23 +21,30 @@ import {
 } from './styles';
 
 const AddContributor = ({navigation}) => {
-  // CheckBox
-  const [isSelected, setSelection] = useState(false);
-  const [isModalPickerVisible, setIsModalPickerVisible] = useState(false);
-  const [getUserFromApi, setGetUserFromApi] = useState(false);
-  const [getComunityFromApi, setGetComunityFromApi] = useState(false);
-  // eslint-disable-next-line prettier/prettier
-  const [communitySelected, setComunitySelected] = useState('Selecione uma comunidade');
-  const [userSelected, setUserSelected] = useState('Selecione um usuário');
-  const user = useSelector(auth);
-  const toggleModalPicker = () => setIsModalPickerVisible(!isModalPickerVisible);
-  // Get dos usuários
-  const toggleGetFromApi = () => setGetFromApi(!getFromApi);
+  // Geral 
   const dispatch = useDispatch();
   let works = true;
+
+  // CheckBox
+  const [isSelected, setSelection] = useState(false);
+
+  const [isModalUserPickerVisible, setIsModalUserPickerVisible] = useState(false);
+  const [isModalComunityPickerVisible, setIsModalComunityPickerVisible] = useState(false);
+
+  const toggleModalUserPicker = () => setIsModalUserPickerVisible(!isModalUserPickerVisible);
+  const toggleModalComunityPicker = () => setIsModalComunityPickerVisible(!isModalComunityPickerVisible);
+
+  
   // Get dos usuários
+  const user = useSelector(auth);
+  const [userSelected, setUserSelected] = useState('Selecione um usuário');
+  const [getUserFromApi, setGetUserFromApi] = useState(false);
   const toggleGetFromApiUser = () => setGetUserFromApi(!getUserFromApi);
+
   // Get das comunidades
+  const [communitySelected, setComunitySelected] = useState('Selecione uma comunidade');
+  const [getComunityFromApi, setGetComunityFromApi] = useState(false);
+  const toggleGetFromApiComunity = () => setGetComunityFromApi(!getComunityFromApi);
   // const toggleGetFromApi = () => setGetFromApi(!getFromApi);
 
   // Valida formulário
@@ -150,13 +157,13 @@ const AddContributor = ({navigation}) => {
   };
 
   const onOpenModalUser = () => {
-    toggleGetFromApi();
-    setIsModalPickerVisible(true);
+    toggleGetFromApiUser();
+    setIsModalUserPickerVisible(true);
   };
 
   const onOpenModalComunity = () => {
-    toggleGetFromApi();
-    setIsModalPickerVisible(true);
+    toggleGetFromApiComunity();
+    setIsModalComunityPickerVisible(true);
   };
 
   const onSave = async () => {
@@ -198,15 +205,15 @@ const AddContributor = ({navigation}) => {
   return (
     <Main>
       <Picker
-        visible={isModalPickerVisible}
-        toggle={toggleModalPicker}
+        visible={isModalUserPickerVisible}
+        toggle={toggleModalUserPicker}
         setUser={setUserSelected}
         update={getUserFromApi}
       />
       <ComunityPicker
-        visible={isModalPickerVisible}
-        toggle={toggleModalPicker}
-        setUser={setUserSelected}
+        visible={isModalComunityPickerVisible}
+        toggle={toggleModalComunityPicker}
+        setComunity={setComunitySelected}
         update={getComunityFromApi}
       />
       <ScrollView>
