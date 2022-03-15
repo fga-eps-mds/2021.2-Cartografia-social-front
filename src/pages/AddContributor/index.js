@@ -27,11 +27,11 @@ const AddContributor = ({navigation}) => {
   const toggleModalPicker = () =>
     setIsModalPickerVisible(!isModalPickerVisible);
   // Get dos usuários
-  const toggleGetFromApi = () => setGetFromApi(!getFromApi);
+  const toggleGetFromApiUser = () => setGetFromApi(!getFromApi);
   const dispatch = useDispatch();
   let works = true;
   // Get das comunidades
-  // const toggleGetFromApi = () => setGetFromApi(!getFromApi);
+  const toggleGetFromApiComunity = () => setGetFromApi(!getFromApi);
 
   // Valida formulário
   const formIsValid = (questions) => {
@@ -53,6 +53,7 @@ const AddContributor = ({navigation}) => {
     works = false;
   };
 
+  // Criar semelhante para comunidades
   const getSelectedUserInfo = async () => {
     return api
       .get(
@@ -104,7 +105,7 @@ const AddContributor = ({navigation}) => {
       .catch(onError);
   };
 
-  const addAdminUserToCommunity = async (adminUserDto) => {
+  /* const addAdminUserToCommunity = async (adminUserDto) => {
     await api
       .post('community/addAdminUser', adminUserDto, {
         headers: {
@@ -112,15 +113,15 @@ const AddContributor = ({navigation}) => {
         },
       })
       .catch(onError);
-  };
+  }; */
 
   const onOpenModalUser = () => {
-    toggleGetFromApi();
+    toggleGetFromApiUser();
     setIsModalPickerVisible(true);
   };
 
   const onOpenModalComunity = () => {
-    toggleGetFromApi();
+    toggleGetFromApiComunity();
     setIsModalPickerVisible(true);
   };
 
@@ -131,6 +132,8 @@ const AddContributor = ({navigation}) => {
     const userResponse = await getSelectedUserInfo();
     let userId;
     let communityResponse;
+
+    // ajustar para pegar dados de comunidade já criada
     if (userResponse) {
       userId = userResponse.data.id;
       communityResponse = await postCommunity();
@@ -142,9 +145,8 @@ const AddContributor = ({navigation}) => {
         communityId,
       };
       await addUserToCommunity(userDto);
-      await addAdminUserToCommunity(userDto);
+      // await addAdminUserToCommunity(userDto);
     }
-
     if (works) {
       Alert.alert('Sucesso', 'Usuário inserido!');
       navigation.navigate('Map');
@@ -177,7 +179,7 @@ const AddContributor = ({navigation}) => {
             <Icon size={normalize(20)} name="angle-down" color="#a3a3a3" />
           </PickerContainer>
 
-          <InputText>Selecione o usuário a ser inserido</InputText>
+          <InputText>Adicione um membro da comunidade</InputText>
           <PickerContainer onPress={onOpenModalUser}>
             <PickerText selected>
               {userSelected.email ? userSelected.email : userSelected}
@@ -185,13 +187,13 @@ const AddContributor = ({navigation}) => {
             <Icon size={normalize(20)} name="angle-down" color="#a3a3a3" />
           </PickerContainer>
 
-          <InputText>Selecione o administrador a ser inserido</InputText>
+          {/* <InputText>Adicione um administrador da comunidade</InputText>
           <PickerContainer onPress={onOpenModalUser}>
             <PickerText selected>
               {userSelected.email ? userSelected.email : userSelected}
             </PickerText>
             <Icon size={normalize(20)} name="angle-down" color="#a3a3a3" />
-          </PickerContainer>
+          </PickerContainer> */}
           <Btn
             title="Salvar"
             color="#fff"
