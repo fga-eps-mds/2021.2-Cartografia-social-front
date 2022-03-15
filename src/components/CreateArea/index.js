@@ -5,6 +5,14 @@ import {useSelector, useDispatch} from 'react-redux';
 import * as selectors from 'store/selectors';
 import * as Actions from 'store/actions';
 import {Point} from './styles';
+import {coordinateToPoint, pointToCoordinate} from '../../geometry/point';
+import {makeHull} from '../../geometry/convexhull';
+
+function ajustCoordinates(coordinates) {
+  const points = coordinates.map(coordinateToPoint);
+  const polygon = makeHull(points);
+  return polygon.map(pointToCoordinate);
+}
 
 const DEFAULT_STATE = {
   coordinates: [],
@@ -17,12 +25,16 @@ const CreateArea = ({show, onPressCreatingArea, reset, index}) => {
   const newAreaRef = useRef(DEFAULT_STATE);
 
   const onPress = (e) => {
+    const coordinates = [
+      ...newAreaRef.current.coordinates,
+      e.nativeEvent.coordinate,
+    ];
+
+    const coordinatesAjusted = ajustCoordinates(coordinates);
+
     const newPoint = {
       ...newAreaRef.current,
-      coordinates: [
-        ...newAreaRef.current.coordinates,
-        e.nativeEvent.coordinate,
-      ],
+      coordinates: coordinatesAjusted,
     };
 
     dispatch(Actions.updateArea(newPoint));
