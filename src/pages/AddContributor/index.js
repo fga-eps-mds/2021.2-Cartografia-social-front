@@ -48,8 +48,8 @@ const AddContributor = ({navigation}) => {
   // const toggleGetFromApi = () => setGetFromApi(!getFromApi);
 
   // Valida formulário
-  const formIsValid = (questions) => {
-    /*if (!userSelected.email) {
+  /*const formIsValid = (questions) => {
+    /* if (!userSelected.email) {
       return false;
     }
     let isValid = true;
@@ -61,9 +61,8 @@ const AddContributor = ({navigation}) => {
       return false;
     });
     return isValid;
-  */
     return true;
-  };
+  };*/
 
   const onError = () => {
     works = false;
@@ -97,7 +96,7 @@ const AddContributor = ({navigation}) => {
   };
 
   // Get community info
-  /*const getSelectedCommunityInfo = async () => {
+  /* const getSelectedCommunityInfo = async () => {
     //console.log("\n\n\nthis is comunity on selected", communitySelected.name, "\n\n\nthis is comunity");
     return api
       .get(
@@ -123,7 +122,7 @@ const AddContributor = ({navigation}) => {
           dispatch(Actions.logout());
         }
       });
-  };*/
+  }; */
 
   /* const postCommunity = async () => {
     // A const deve ser reformulada a fim de localizar a comulidade, e não posta-la
@@ -174,10 +173,10 @@ const AddContributor = ({navigation}) => {
 
     Keyboard.dismiss();
     const userResponse = await getSelectedUserInfo();
-    //const communityInfo = await getSelectedCommunityInfo();
+    // const communityInfo = await getSelectedCommunityInfo();
     const communityInfo = communitySelected;
-    //console.log("\n\n\nthis is user", userResponse.data.id, "\n\n\nthis is user");
-    //console.log("\n\n\nthis is comunity", communitySelected.name);
+    // console.log("\n\n\nthis is user", userResponse.data.id, "\n\n\nthis is user");
+    // console.log("\n\n\nthis is comunity", communitySelected.name);
     let userId;
     // let communityResponse;
     if (userResponse) {
@@ -255,7 +254,7 @@ const AddContributor = ({navigation}) => {
             title="Salvar"
             color="#fff"
             onPress={onSave}
-            disabled={!formIsValid([communitySelected])}
+            //disabled={!formIsValid([communitySelected])}
           />
         </Container>
       </ScrollView>
