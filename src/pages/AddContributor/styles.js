@@ -2,6 +2,7 @@ import styled from 'styled-components/native';
 import theme from 'theme/theme';
 import normalize from 'react-native-normalize';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
+import {StyleSheet} from 'react-native';
 
 export const Main = styled.View`
   flex: 1;
@@ -40,3 +41,22 @@ export const PickerText = styled.Text`
 export const Icon = styled(FontAwesomeIcon).attrs((props) => ({
   color: props.color ? props.color : theme.colors.black,
 }))``;
+
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: -1,
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    marginBottom: 20,
+  },
+  checkbox: {
+    alignSelf: 'center',
+  },
+  label: {
+    margin: 8,
+  },
+});

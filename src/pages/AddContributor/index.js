@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
-import {Alert, Keyboard} from 'react-native';
+import {Alert, Keyboard, CheckBox, Text} from 'react-native';
 import ScrollView from 'components/UI/ScrollView';
 import normalize from 'react-native-normalize';
 import api from 'services/api';
@@ -17,9 +17,12 @@ import {
   PickerContainer,
   PickerText,
   Icon,
+  styles,
 } from './styles';
 
 const AddContributor = ({navigation}) => {
+  // CheckBox
+  const [isSelected, setSelection] = useState(false);
   const [isModalPickerVisible, setIsModalPickerVisible] = useState(false);
   const [getUserFromApi, setGetUserFromApi] = useState(false);
   const [getComunityFromApi, setGetComunityFromApi] = useState(false);
@@ -28,12 +31,14 @@ const AddContributor = ({navigation}) => {
   const [userSelected, setUserSelected] = useState('Selecione um usuário');
   const user = useSelector(auth);
   const toggleModalPicker = () => setIsModalPickerVisible(!isModalPickerVisible);
+  // Get dos usuários
+  const toggleGetFromApi = () => setGetFromApi(!getFromApi);
   const dispatch = useDispatch();
   let works = true;
   // Get dos usuários
   const toggleGetFromApiUser = () => setGetUserFromApi(!getUserFromApi);
   // Get das comunidades
-  const toggleGetFromApiComunity = () => setGetComunityFromApi(!getComunityFromApi);
+  // const toggleGetFromApi = () => setGetFromApi(!getFromApi);
 
   // Valida formulário
   const formIsValid = (questions) => {
@@ -55,7 +60,6 @@ const AddContributor = ({navigation}) => {
     works = false;
   };
 
-  // Criar semelhante para comunidades
   const getSelectedUserInfo = async () => {
     return api
       .get(
@@ -83,7 +87,35 @@ const AddContributor = ({navigation}) => {
       });
   };
 
-  const postCommunity = async () => {
+  // Get community info
+  const getSelectedCommunityInfo = async () => {
+    return api
+      .get(
+        'community/',
+        {
+          params: {
+            id: communitySelected.id ? communitySelected.id : '',
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        },
+      )
+      .catch((error) => {
+        onError();
+        if (error.response.status === 401) {
+          Alert.alert(
+            'Atenção!',
+            'Seu token expirou! É necesário realizar novamente o login',
+          );
+          dispatch(Actions.logout());
+        }
+      });
+  };
+
+  /* const postCommunity = async () => {
     // A const deve ser reformulada a fim de localizar a comulidade, e não posta-la
     const communityDto = {
       name: communitySelected.value,
@@ -95,7 +127,7 @@ const AddContributor = ({navigation}) => {
         },
       })
       .catch(onError);
-  };
+  }; */
 
   const addUserToCommunity = async (userDto) => {
     await api
@@ -107,7 +139,7 @@ const AddContributor = ({navigation}) => {
       .catch(onError);
   };
 
-  /* const addAdminUserToCommunity = async (adminUserDto) => {
+  const addAdminUserToCommunity = async (adminUserDto) => {
     await api
       .post('community/addAdminUser', adminUserDto, {
         headers: {
@@ -115,15 +147,15 @@ const AddContributor = ({navigation}) => {
         },
       })
       .catch(onError);
-  }; */
+  };
 
   const onOpenModalUser = () => {
-    toggleGetFromApiUser();
+    toggleGetFromApi();
     setIsModalPickerVisible(true);
   };
 
   const onOpenModalComunity = () => {
-    toggleGetFromApiComunity();
+    toggleGetFromApi();
     setIsModalPickerVisible(true);
   };
 
@@ -132,23 +164,23 @@ const AddContributor = ({navigation}) => {
 
     Keyboard.dismiss();
     const userResponse = await getSelectedUserInfo();
+    const communityInfo = await getSelectedCommunityInfo();
     let userId;
-    let communityResponse;
-
-    // ajustar para pegar dados de comunidade já criada
+    // let communityResponse;
     if (userResponse) {
       userId = userResponse.data.id;
-      communityResponse = await postCommunity();
+      // communityResponse = await postCommunity(); this was replaced by getSelectedCommunityInfo
     }
-    if (communityResponse && userResponse) {
-      const communityId = communityResponse.data.id;
+    if (communityInfo && userResponse) {
+      const communityId = communityInfo.id;
       const userDto = {
         userId,
         communityId,
       };
       await addUserToCommunity(userDto);
-      // await addAdminUserToCommunity(userDto);
+      await addAdminUserToCommunity(userDto);
     }
+
     if (works) {
       Alert.alert('Sucesso', 'Usuário inserido!');
       navigation.navigate('Map');
@@ -187,7 +219,7 @@ const AddContributor = ({navigation}) => {
             <Icon size={normalize(20)} name="angle-down" color="#a3a3a3" />
           </PickerContainer>
 
-          <InputText>Adicione um membro da comunidade</InputText>
+          <InputText>Selecione o usuário a ser inserido</InputText>
           <PickerContainer onPress={onOpenModalUser}>
             <PickerText selected>
               {userSelected.email ? userSelected.email : userSelected}
@@ -195,13 +227,17 @@ const AddContributor = ({navigation}) => {
             <Icon size={normalize(20)} name="angle-down" color="#a3a3a3" />
           </PickerContainer>
 
-          {/* <InputText>Adicione um administrador da comunidade</InputText>
-          <PickerContainer onPress={onOpenModalUser}>
-            <PickerText selected>
-              {userSelected.email ? userSelected.email : userSelected}
-            </PickerText>
-            <Icon size={normalize(20)} name="angle-down" color="#a3a3a3" />
-          </PickerContainer> */}
+          <Container style={styles.container}>
+            <Container style={styles.checkboxContainer}>
+              <CheckBox
+                value={isSelected}
+                onValueChange={setSelection}
+                style={styles.checkbox}
+              />
+              <Text style={styles.label}>Adicionar como administrador</Text>
+            </Container>
+          </Container>
+
           <Btn
             title="Salvar"
             color="#fff"
