@@ -28,18 +28,20 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Get current date
-        id: date
-        run: echo "::set-output name=date::$(date +'%m-%d-%Y-%H-%M')"
+      - name: Get file name
+        id: name
+        run: echo "::set-output name=file_name::fga-eps-mds-2021-2-Cartografia-social-front-$(TZ='America/Sao_Paulo' date +'%m-%d-%Y-%H-%M')-${{ github.event.release.tag_name }}"
 
       - name: Copy repository
         uses: actions/checkout@v2
       - run: mkdir -p /tmp/sonar/
-      - run: curl --location --request POST 'https://sonarcloud.io/api/measures/component_tree?component=fga-eps-mds_2021.1-Cartografia-social-front&metricKeys=files,functions,complexity,comment_lines_density,duplicated_lines_density,coverage,ncloc,security_rating,tests,test_success_density,test_execution_time,reliability_rating&ps=500' > /tmp/sonar/fga-eps-mds-2021_1-Cartografia-social-front-${{ steps.date.outputs.date }}.json
+      - run: curl --location --request POST  $METRICS_URL > /tmp/sonar/${{ steps.name.outputs.file_name }}.json
+        env:
+          METRICS_URL: ${{ secrets.METRICS_URL }}
       - uses: actions/upload-artifact@v2
         with:
-          name: fga-eps-mds-2021_1-Cartografia-social-front-${{ steps.date.outputs.date }}.json
-          path: /tmp/sonar/fga-eps-mds-2021_1-Cartografia-social-front-${{ steps.date.outputs.date }}.json
+          name: ${{ steps.name.outputs.file_name }}.json
+          path: /tmp/sonar/${{ steps.name.outputs.file_name }}.json
       - name: Download APK File
         uses: actions/download-artifact@master
         with:
@@ -52,4 +54,16 @@ jobs:
           files: |
             *.apk
             LICENSE
-            /tmp/sonar/fga-eps-mds-2021_1-Cartografia-social-front-${{ steps.date.outputs.date }}.json
+            /tmp/sonar/${{ steps.name.outputs.file_name }}.json
+
+      - name: Send metrics to docs repo
+        uses: dmnemec/copy_file_to_another_repo_action@v1.1.1
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.GIT_TOKEN }}
+        with:
+          source_file: /tmp/sonar/${{ steps.name.outputs.file_name }}.json
+          destination_repo: 'fga-eps-mds/2021.2-Cartografia-social-front'
+          destination_folder: 'analytics-raw-data/2021-2-Cartografia-social-front'
+          user_email: ${{ secrets.GIT_EMAIL}}
+          user_name: ${{ secrets.GIT_USER }}
+          commit_message: New metrics from ${{ github.event.repository.name }}
