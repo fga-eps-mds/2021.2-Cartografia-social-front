@@ -111,7 +111,7 @@ const AddContributor = ({navigation}) => {
       });
   };
 
-  /*const postCommunity = async () => {
+  /* const postCommunity = async () => {
     // A const deve ser reformulada a fim de localizar a comulidade, e não posta-la
     const communityDto = {
       name: communitySelected.value,
@@ -123,7 +123,7 @@ const AddContributor = ({navigation}) => {
         },
       })
       .catch(onError);
-  };*/
+  }; */
 
   const addUserToCommunity = async (userDto) => {
     await api
@@ -162,10 +162,10 @@ const AddContributor = ({navigation}) => {
     const userResponse = await getSelectedUserInfo();
     const communityInfo = await getSelectedCommunityInfo();
     let userId;
-    //let communityResponse;
+    // let communityResponse;
     if (userResponse) {
       userId = userResponse.data.id;
-      //communityResponse = await postCommunity(); this was replaced by getSelectedCommunityInfo
+      // communityResponse = await postCommunity(); this was replaced by getSelectedCommunityInfo
     }
     if (communityInfo && userResponse) {
       const communityId = communityInfo.id;

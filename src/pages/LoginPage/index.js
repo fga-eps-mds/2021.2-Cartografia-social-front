@@ -80,7 +80,7 @@ const LoginPage = ({navigation}) => {
         password.value.trim(),
       );
       const token = await userCredentials.user.getIdToken();
-      console.log(token);
+      //console.log(token);
       await AsyncStorage.setItem('access_token', `Bearer ${token}`);
       await setUser(userCredentials, token);
     } catch (error) {
