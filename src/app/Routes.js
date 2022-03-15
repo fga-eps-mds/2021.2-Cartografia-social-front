@@ -18,6 +18,7 @@ import InitialPage from 'pages/InitialPage';
 
 import ForgotPasswordPage from 'pages/ForgotPasswordPage';
 import CreateCommunity from 'pages/CreateCommunity';
+import AddContributor from 'pages/AddContributor'; // Importando pagina de inclusão de usuário
 
 const Routes = () => {
   const user = useSelector(auth);
@@ -144,6 +145,16 @@ const Routes = () => {
           component={CreateCommunity}
           options={{
             title: 'Criar uma comunidade',
+            headerTitleAlign: 'center',
+          }}
+        />
+      ) : null}
+      {user.data && user.data.type === 'RESEARCHER' ? ( // Se o usuário for um pesquisador, ele pode adicionar outros pesquisadores
+        <Stack.Screen
+          name="AddContributor"
+          component={AddContributor} // chamando pagina de inclusão de usuário (com o ctr + click tu pode ser direcionado a ela)
+          options={{
+            title: 'Adicionar Contribuidor',
             headerTitleAlign: 'center',
           }}
         />
