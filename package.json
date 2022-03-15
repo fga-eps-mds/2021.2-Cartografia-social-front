@@ -95,24 +95,45 @@
     "metro-react-native-babel-preset": "^0.59.0",
     "prettier": "^2.2.1",
     "react-native-svg-transformer": "^0.14.3",
-    "react-test-renderer": "16.13.1"
+    "react-test-renderer": "16.13.1",
+    "jest-sonar": "^0.2.12"
   },
   "jest": {
     "preset": "react-native",
+    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
+    "setupFiles": ["<rootDir>/jest.setup.js"],
     "collectCoverage": true,
+    "rootDir": "./",
+    "testRegex": ".*\\.spec\\.js$",
+    "transformIgnorePatterns": [
+      "node_modules/(?!(react-native|rn-material-ui-textfield|prop-types|@react-native-firebase|@react-native-community/async-storage|react-(native|universal|navigation)-(.*))/)"
+    ],
     "collectCoverageFrom": [
-      "./src/**/*.(t|j)s"
+      "**/*.(t|j)s"
     ],
     "coveragePathIgnorePatterns": [
       "/dist/",
       "/test/",
-      "/android/",
-      "/ios/",
       ".*\\.module\\.ts$",
-      ".eslintrc.js"
+      ".eslintrc.js",
+      "/src/main.ts",
+      "/src/config/configuration.ts",
+      "/coverage/"
     ],
+    "testEnvironment": "jsdom",
     "coverageDirectory": "./coverage",
-    "testEnvironment": "node"
+    "reporters": [
+      "default",
+      [
+        "jest-sonar",
+        {
+          "outputDirectory": "coverage",
+          "outputName": "jest-report.xml",
+          "reportedFilePath": "relative",
+          "relativeRootDir": "<rootDir>/../"
+        }
+      ]
+    ]
   },
   "husky": {
     "hooks": {
