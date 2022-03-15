@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Alert, Keyboard} from 'react-native';
+import {Alert, Keyboard, CheckBox, Text} from 'react-native';
 import ScrollView from 'components/UI/ScrollView';
 import normalize from 'react-native-normalize';
 import api from 'services/api';
@@ -15,9 +15,12 @@ import {
   PickerContainer,
   PickerText,
   Icon,
+  styles,
 } from './styles';
 
 const AddContributor = ({navigation}) => {
+  //CheckBox
+  const [isSelected, setSelection] = useState(false);
   const [isModalPickerVisible, setIsModalPickerVisible] = useState(false);
   const [getFromApi, setGetFromApi] = useState(false);
   // eslint-disable-next-line prettier/prettier
@@ -27,11 +30,11 @@ const AddContributor = ({navigation}) => {
   const toggleModalPicker = () =>
     setIsModalPickerVisible(!isModalPickerVisible);
   // Get dos usuários
-  const toggleGetFromApiUser = () => setGetFromApi(!getFromApi);
+  const toggleGetFromApi = () => setGetFromApi(!getFromApi);
   const dispatch = useDispatch();
   let works = true;
   // Get das comunidades
-  const toggleGetFromApiComunity = () => setGetFromApi(!getFromApi);
+  // const toggleGetFromApi = () => setGetFromApi(!getFromApi);
 
   // Valida formulário
   const formIsValid = (questions) => {
@@ -53,7 +56,6 @@ const AddContributor = ({navigation}) => {
     works = false;
   };
 
-  // Criar semelhante para comunidades
   const getSelectedUserInfo = async () => {
     return api
       .get(
@@ -105,7 +107,7 @@ const AddContributor = ({navigation}) => {
       .catch(onError);
   };
 
-  /* const addAdminUserToCommunity = async (adminUserDto) => {
+  const addAdminUserToCommunity = async (adminUserDto) => {
     await api
       .post('community/addAdminUser', adminUserDto, {
         headers: {
@@ -113,15 +115,15 @@ const AddContributor = ({navigation}) => {
         },
       })
       .catch(onError);
-  }; */
+  };
 
   const onOpenModalUser = () => {
-    toggleGetFromApiUser();
+    toggleGetFromApi();
     setIsModalPickerVisible(true);
   };
 
   const onOpenModalComunity = () => {
-    toggleGetFromApiComunity();
+    toggleGetFromApi();
     setIsModalPickerVisible(true);
   };
 
@@ -132,8 +134,6 @@ const AddContributor = ({navigation}) => {
     const userResponse = await getSelectedUserInfo();
     let userId;
     let communityResponse;
-
-    // ajustar para pegar dados de comunidade já criada
     if (userResponse) {
       userId = userResponse.data.id;
       communityResponse = await postCommunity();
@@ -145,8 +145,9 @@ const AddContributor = ({navigation}) => {
         communityId,
       };
       await addUserToCommunity(userDto);
-      // await addAdminUserToCommunity(userDto);
+      await addAdminUserToCommunity(userDto);
     }
+
     if (works) {
       Alert.alert('Sucesso', 'Usuário inserido!');
       navigation.navigate('Map');
@@ -179,7 +180,7 @@ const AddContributor = ({navigation}) => {
             <Icon size={normalize(20)} name="angle-down" color="#a3a3a3" />
           </PickerContainer>
 
-          <InputText>Adicione um membro da comunidade</InputText>
+          <InputText>Selecione o usuário a ser inserido</InputText>
           <PickerContainer onPress={onOpenModalUser}>
             <PickerText selected>
               {userSelected.email ? userSelected.email : userSelected}
@@ -187,13 +188,25 @@ const AddContributor = ({navigation}) => {
             <Icon size={normalize(20)} name="angle-down" color="#a3a3a3" />
           </PickerContainer>
 
-          {/* <InputText>Adicione um administrador da comunidade</InputText>
+          <InputText>Selecione o administrador a ser inserido</InputText>
           <PickerContainer onPress={onOpenModalUser}>
             <PickerText selected>
               {userSelected.email ? userSelected.email : userSelected}
             </PickerText>
             <Icon size={normalize(20)} name="angle-down" color="#a3a3a3" />
-          </PickerContainer> */}
+          </PickerContainer>
+
+          <Container style={styles.container}>
+            <Container style={styles.checkboxContainer}>
+              <CheckBox
+                value={isSelected}
+                onValueChange={setSelection}
+                style={styles.checkbox}
+              />
+              <Text style={styles.label}>Adicionar como administrador</Text>
+            </Container>
+          </Container>
+  
           <Btn
             title="Salvar"
             color="#fff"
