@@ -48,6 +48,8 @@ const AddContributor = ({navigation}) => {
   // Valida formulário
   /* const formIsValid = (questions) => {
     if (!communitySelected.name) {
+  /*const formIsValid = (questions) => {
+    /* if (!userSelected.email) {
       return false;
     }
     let isValid = true;
@@ -59,6 +61,7 @@ const AddContributor = ({navigation}) => {
       return false;
     });
     return isValid;
+    return true;
   }; */
 
   const onError = () => {
@@ -93,7 +96,8 @@ const AddContributor = ({navigation}) => {
   };
 
   // Get community info
-  const getSelectedCommunityInfo = async () => {
+  /* const getSelectedCommunityInfo = async () => {
+    //console.log("\n\n\nthis is comunity on selected", communitySelected.name, "\n\n\nthis is comunity");
     return api
       .get(
         'community/',
@@ -118,7 +122,7 @@ const AddContributor = ({navigation}) => {
           dispatch(Actions.logout());
         }
       });
-  };
+  }; */
 
   /* const postCommunity = async () => {
     // A const deve ser reformulada a fim de localizar a comulidade, e não posta-la
@@ -169,13 +173,18 @@ const AddContributor = ({navigation}) => {
 
     Keyboard.dismiss();
     const userResponse = await getSelectedUserInfo();
-    const communityResponse = await getSelectedCommunityInfo();
+    // const communityInfo = await getSelectedCommunityInfo();
+    const communityInfo = communitySelected;
+    // console.log("\n\n\nthis is user", userResponse.data.id, "\n\n\nthis is user");
+    // console.log("\n\n\nthis is comunity", communitySelected.name);
     let userId;
-    let communityId;
-
-    if (communityResponse && userResponse ) {
-      userId = userResponse.id;
-      communityId = communityResponse.id;
+    // let communityResponse;
+    if (userResponse) {
+      userId = userResponse.data.id;
+      // communityResponse = await postCommunity(); this was replaced by getSelectedCommunityInfo
+    }
+    if (communityInfo && userResponse) {
+      const communityId = communitySelected.id;
       const userDto = {
         userId,
         communityId,
@@ -226,7 +235,7 @@ const AddContributor = ({navigation}) => {
             <Icon size={normalize(20)} name="angle-down" color="#a3a3a3" />
           </PickerContainer>
 
-          <InputText>Selecione o usuário a ser inserido</InputText>
+          <InputText>Adicione um membro da comunidade</InputText>
           <PickerContainer onPress={onOpenModalUser}>
             <PickerText selected>
               {userSelected.email ? userSelected.email : userSelected}
@@ -249,6 +258,7 @@ const AddContributor = ({navigation}) => {
             title="Salvar"
             color="#fff"
             onPress={onSave}
+            // disabled={!formIsValid([communitySelected])}
           />
         </Container>
       </ScrollView>
