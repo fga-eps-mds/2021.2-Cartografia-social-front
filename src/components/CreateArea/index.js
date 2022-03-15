@@ -30,11 +30,11 @@ const CreateArea = ({show, onPressCreatingArea, reset, index}) => {
       e.nativeEvent.coordinate,
     ];
 
-    const coordinateAjusted = ajustCoordinates(coordinates);
+    const coordinatesAjusted = ajustCoordinates(coordinates);
 
     const newPoint = {
       ...newAreaRef.current,
-      coordinates: coordinateAjusted,
+      coordinates: coordinatesAjusted,
     };
 
     dispatch(Actions.updateArea(newPoint));
