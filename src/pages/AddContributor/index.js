@@ -46,23 +46,12 @@ const AddContributor = ({navigation}) => {
   // const toggleGetFromApi = () => setGetFromApi(!getFromApi);
 
   // Valida formulário
-  /* const formIsValid = (questions) => {
-    if (!communitySelected.name) {
-  /*const formIsValid = (questions) => {
-    /* if (!userSelected.email) {
+  const formIsValid = () => {
+    if (!userSelected.email || !communitySelected.name) {
       return false;
     }
-    let isValid = true;
-    questions.some((item) => {
-      if (!item.isValid) {
-        isValid = false;
-        return true;
-      }
-      return false;
-    });
-    return isValid;
     return true;
-  }; */
+  };
 
   const onError = () => {
     works = false;
@@ -258,7 +247,7 @@ const AddContributor = ({navigation}) => {
             title="Salvar"
             color="#fff"
             onPress={onSave}
-            // disabled={!formIsValid([communitySelected])}
+            disabled={!formIsValid()}
           />
         </Container>
       </ScrollView>
