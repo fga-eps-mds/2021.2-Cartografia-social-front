@@ -20,8 +20,7 @@ import {
   styles,
 } from './styles';
 
-const AddContributor = ({navigation}) => {
-  
+const AddContributor = ({navigation}) => {  
   // Geral 
   const dispatch = useDispatch();
   let works = true;
@@ -48,7 +47,7 @@ const AddContributor = ({navigation}) => {
 
   // Valida formulário
   const formIsValid = () => {
-    if (!userSelected.email || !communitySelected.name) {
+    if (userSelected.email && communitySelected.name) {
       return false;
     }
     return true;
@@ -107,7 +106,6 @@ const AddContributor = ({navigation}) => {
       })
       .catch(onError);
   };
-  
   const onOpenModalUser = () => {
     toggleGetFromApiUser();
     setIsModalUserPickerVisible(true);
