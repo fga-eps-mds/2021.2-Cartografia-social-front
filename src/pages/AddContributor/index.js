@@ -28,6 +28,7 @@ const AddContributor = ({navigation}) => {
   // CheckBox
   const [isSelected, setSelection] = useState(false);
 
+  // Modal
   const [isModalUserPickerVisible, setIsModalUserPickerVisible] = useState(false);
   const [isModalComunityPickerVisible, setIsModalComunityPickerVisible] = useState(false);
   const toggleModalUserPicker = () => setIsModalUserPickerVisible(!isModalUserPickerVisible);
@@ -43,26 +44,11 @@ const AddContributor = ({navigation}) => {
   const [communitySelected, setComunitySelected] = useState('Selecione uma comunidade');
   const [getComunityFromApi, setGetComunityFromApi] = useState(false);
   const toggleGetFromApiComunity = () => setGetComunityFromApi(!getComunityFromApi);
-  // const toggleGetFromApi = () => setGetFromApi(!getFromApi);
 
   // Valida formulário
-  /* const formIsValid = (questions) => {
-    if (!communitySelected.name) {
-  /*const formIsValid = (questions) => {
-    /* if (!userSelected.email) {
-      return false;
-    }
-    let isValid = true;
-    questions.some((item) => {
-      if (!item.isValid) {
-        isValid = false;
-        return true;
-      }
-      return false;
-    });
-    return isValid;
-    return true;
-  }; */
+  const formIsValid = () => {
+    return (userSelected.email && communitySelected.name);
+  };
 
   const onError = () => {
     works = false;
@@ -74,6 +60,7 @@ const AddContributor = ({navigation}) => {
         'users/userByEmail',
         {
           params: {
+            id: userSelected.id ? userSelected.id : '',
             email: userSelected.email ? userSelected.email : '',
           },
         },
@@ -95,48 +82,6 @@ const AddContributor = ({navigation}) => {
       });
   };
 
-  // Get community info
-  /* const getSelectedCommunityInfo = async () => {
-    //console.log("\n\n\nthis is comunity on selected", communitySelected.name, "\n\n\nthis is comunity");
-    return api
-      .get(
-        'community/',
-        {
-          params: {
-            id: communitySelected.id ? communitySelected.id : '',
-          },
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        },
-      )
-      .catch((error) => {
-        onError();
-        if (error.response.status === 401) {
-          Alert.alert(
-            'Atenção!',
-            'Seu token expirou! É necesário realizar novamente o login',
-          );
-          dispatch(Actions.logout());
-        }
-      });
-  }; */
-
-  /* const postCommunity = async () => {
-    // A const deve ser reformulada a fim de localizar a comulidade, e não posta-la
-    const communityDto = {
-      name: communitySelected.value,
-    };
-    return api
-      .post('community', communityDto, {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      })
-      .catch(onError);
-  }; */
 
   const addUserToCommunity = async (userDto) => {
     await api
@@ -148,16 +93,16 @@ const AddContributor = ({navigation}) => {
       .catch(onError);
   };
 
-  const addAdminUserToCommunity = async (adminUserDto) => {
+  const addAdminUserToCommunity = async (userDto) => {
+    await addUserToCommunity(userDto)
     await api
-      .post('community/addAdminUser', adminUserDto, {
+      .post('community/addAdminUser', userDto, {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
       })
       .catch(onError);
   };
-
   const onOpenModalUser = () => {
     toggleGetFromApiUser();
     setIsModalUserPickerVisible(true);
@@ -169,19 +114,13 @@ const AddContributor = ({navigation}) => {
   };
 
   const onSave = async () => {
-    // onSave dever ser alterado para receber o id da comunidade
 
     Keyboard.dismiss();
     const userResponse = await getSelectedUserInfo();
-    // const communityInfo = await getSelectedCommunityInfo();
     const communityInfo = communitySelected;
-    // console.log("\n\n\nthis is user", userResponse.data.id, "\n\n\nthis is user");
-    // console.log("\n\n\nthis is comunity", communitySelected.name);
     let userId;
-    // let communityResponse;
     if (userResponse) {
       userId = userResponse.data.id;
-      // communityResponse = await postCommunity(); this was replaced by getSelectedCommunityInfo
     }
     if (communityInfo && userResponse) {
       const communityId = communitySelected.id;
@@ -258,7 +197,7 @@ const AddContributor = ({navigation}) => {
             title="Salvar"
             color="#fff"
             onPress={onSave}
-            // disabled={!formIsValid([communitySelected])}
+            disabled={!formIsValid()}
           />
         </Container>
       </ScrollView>
@@ -266,4 +205,4 @@ const AddContributor = ({navigation}) => {
   );
 };
 
-export default AddContributor; // Exportando pagina
+export default AddContributor;
