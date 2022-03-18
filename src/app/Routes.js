@@ -18,10 +18,8 @@ import Map from 'pages/Map';
 import InitialPage from 'pages/InitialPage';
 
 import ForgotPasswordPage from 'pages/ForgotPasswordPage';
-import CreateCommunity from 'pages/CreateCommunity';
 import AddContributor from 'pages/AddContributor';
 import api from 'services/api';
-
 
 const Routes = () => {
   const user = useSelector(auth);
@@ -129,24 +127,28 @@ const Routes = () => {
       />
     </Drawer.Navigator>
   );
-  
-  let isAdmin = async() => {
-    const communities = await api.get(`/community/getUserCommunity?userEmail=${user.data.email}`);
+
+  const isAdmin = async () => {
+    const communities = await api.get(
+      `/community/getUserCommunity?userEmail=${user.data.email}`,
+    );
 
     const comId = communities.data.id;
 
-    const adminsResp = await api.get(`/community/getAdminUsers?communityId=${comId}`);
-    const admins = adminsResp.data
+    const adminsResp = await api.get(
+      `/community/getAdminUsers?communityId=${comId}`,
+    );
+    const admins = adminsResp.data;
 
-    let privillege = admins.some(users => users.userId === user.data.id)
+    const privillege = admins.some((users) => users.userId === user.data.id);
 
     return privillege;
-  }
+  };
 
-  const [admin, setIsAdmin] = useState(false)
+  const [admin, setIsAdmin] = useState(false);
   isAdmin().then((response) => {
     setIsAdmin(response);
-  })
+  });
 
   const SignedIn = () => (
     <Drawer.Navigator drawerContent={(props) => <Profile {...props} />}>
