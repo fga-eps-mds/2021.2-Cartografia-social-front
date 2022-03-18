@@ -7,7 +7,7 @@ axios.defaults.timeout = DEFAULT_TIMEOUT;
 
 const instance = axios.create({
   // baseURL: Config.API,
-  baseURL: 'http://192.168.141.30:8000',
+  baseURL: 'http://147.182.225.67:8000',
 });
 
 instance.interceptors.request.use(async (config) => ({

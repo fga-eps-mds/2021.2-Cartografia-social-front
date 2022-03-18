@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
+import React, {useState} from 'react';
 import {StatusBar} from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native';
@@ -20,6 +20,8 @@ import InitialPage from 'pages/InitialPage';
 import ForgotPasswordPage from 'pages/ForgotPasswordPage';
 import CreateCommunity from 'pages/CreateCommunity';
 import AddContributor from 'pages/AddContributor';
+import api from 'services/api';
+
 
 const Routes = () => {
   const user = useSelector(auth);
@@ -127,19 +129,37 @@ const Routes = () => {
       />
     </Drawer.Navigator>
   );
+  
+  let isAdmin = async() => {
+    const communities = await api.get(`/community/getUserCommunity?userEmail=${user.data.email}`);
+
+    const comId = communities.data.id;
+
+    const adminsResp = await api.get(`/community/getAdminUsers?communityId=${comId}`);
+    const admins = adminsResp.data
+
+    let privillege = admins.some(users => users.userId === user.data.id)
+
+    return privillege;
+  }
+
+  const [admin, setIsAdmin] = useState(false)
+  isAdmin().then((response) => {
+    setIsAdmin(response);
+  })
 
   const SignedIn = () => (
     <Drawer.Navigator drawerContent={(props) => <Profile {...props} />}>
       <Drawer.Screen name="Map" component={Map} options={{title: 'Mapa'}} />
-      <Drawer.Screen
+      {/* <Drawer.Screen
         name="DynamicForm"
         component={DynamicForm}
         options={{
           title: 'Solicitar Acesso',
           headerTitleAlign: 'center',
         }}
-      />
-      {user.data && user.data.type === 'RESEARCHER' ? (
+      /> */}
+      {/* {user.data && user.data.type === 'RESEARCHER' ? (
         <Stack.Screen
           name="CreateCommunity"
           component={CreateCommunity}
@@ -148,8 +168,8 @@ const Routes = () => {
             headerTitleAlign: 'center',
           }}
         />
-      ) : null}
-      {user.data && user.data.type === 'RESEARCHER' ? ( // Se o usuário for um pesquisador, ele pode adicionar outros pesquisadores
+      ) : null} */}
+      {user.data && admin ? (
         <Stack.Screen
           name="AddContributor"
           component={AddContributor}
