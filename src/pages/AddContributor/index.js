@@ -21,6 +21,7 @@ import {
 } from './styles';
 
 const AddContributor = ({navigation}) => {
+  
   // Geral 
   const dispatch = useDispatch();
   let works = true;
@@ -44,6 +45,14 @@ const AddContributor = ({navigation}) => {
   const [communitySelected, setComunitySelected] = useState('Selecione uma comunidade');
   const [getComunityFromApi, setGetComunityFromApi] = useState(false);
   const toggleGetFromApiComunity = () => setGetComunityFromApi(!getComunityFromApi);
+
+  // Valida formulário
+  const formIsValid = () => {
+    if (!userSelected.email || !communitySelected.name) {
+      return false;
+    }
+    return true;
+  };
 
   const onError = () => {
     works = false;
@@ -98,18 +107,7 @@ const AddContributor = ({navigation}) => {
       })
       .catch(onError);
   };
-
-
- /*  const addAdminUserToCommunity = async (userDto) => {
-    await api
-      .post('community/addAdminUser', userDto, {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      })
-      .catch(onError);
-  }; */
-
+  
   const onOpenModalUser = () => {
     toggleGetFromApiUser();
     setIsModalUserPickerVisible(true);
@@ -128,11 +126,9 @@ const AddContributor = ({navigation}) => {
     let userId;
     if (userResponse) {
       userId = userResponse.data.id;
-      console.log(userResponse.data.id);
     }
     if (communityInfo && userResponse) {
       const communityId = communitySelected.id;
-      console.log(communityId);
       const userDto = {
         userId,
         communityId,
@@ -206,6 +202,7 @@ const AddContributor = ({navigation}) => {
             title="Salvar"
             color="#fff"
             onPress={onSave}
+            disabled={!formIsValid()}
           />
         </Container>
       </ScrollView>
