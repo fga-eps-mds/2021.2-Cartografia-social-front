@@ -20,7 +20,7 @@ import {
   styles,
 } from './styles';
 
-const AddContributor = ({navigation}) => {  
+const AddContributor = ({navigation}) => {
   // Geral 
   const dispatch = useDispatch();
   let works = true;
@@ -48,7 +48,7 @@ const AddContributor = ({navigation}) => {
   // Valida formulário
   const formIsValid = () => {
     if (userSelected.email && communitySelected.name) {
-      return false;
+      return true;
     }
     return true;
   };
