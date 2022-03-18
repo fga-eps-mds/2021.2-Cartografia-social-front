@@ -13,7 +13,7 @@ import {
   ModalContainer,
   SearchBox,
   ItemText,
-  UserItem,
+  ComunityItem,
   Icon,
   MessageText,
   FlatListView,
@@ -31,7 +31,6 @@ const ComunityPicker = ({visible, toggle, setComunity, update}) => {
       const response = await api
         .get('community/listCommunities')
         .catch((error) => {
-          // eslint-disable-next-line no-console
           if (
             error.response.data.message === 'Não há Comunidades cadastradas'
           ) {
@@ -72,7 +71,7 @@ const ComunityPicker = ({visible, toggle, setComunity, update}) => {
         <ActivityIndicator size={30} color="#ccc" />
       </View>
     ) : (
-      <UserItem
+      <ComunityItem
         onPress={() => {
           setComunity(item);
           setAuxItens([...itens]);
@@ -81,7 +80,7 @@ const ComunityPicker = ({visible, toggle, setComunity, update}) => {
         }}>
         <Icon size={normalize(25)} name="user-circle" color="#a3a3a3" />
         <ItemText>{item.name}</ItemText>
-      </UserItem>
+      </ComunityItem>
     );
 
   const findResults = (text) => {
@@ -106,9 +105,7 @@ const ComunityPicker = ({visible, toggle, setComunity, update}) => {
       onPress>
       <ModalContainer>
         {!loading && itens.length === 0 ? (
-          <MessageText>
-            Não existem usuários que não estão em comunidades!
-          </MessageText>
+          <MessageText>Não existem comunidades cadastradas!</MessageText>
         ) : (
           <>
             <SearchBox>
@@ -123,7 +120,7 @@ const ComunityPicker = ({visible, toggle, setComunity, update}) => {
                 keyboardShouldPersistTaps="handled"
                 mb={3}
                 verticalScroll
-                keyExtractor={(item) => item.email}
+                keyExtractor={(item) => item.id}
                 data={loading ? [1] : auxItens}
                 renderItem={({item}) => renderItem(item)}
               />

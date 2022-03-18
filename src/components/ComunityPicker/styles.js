@@ -26,7 +26,7 @@ export const SearchBox = styled.View`
   height: ${normalize(65)};
 `;
 
-export const UserItem = styled.TouchableOpacity`
+export const ComunityItem = styled.TouchableOpacity`
   height: ${normalize(60)};
   border-top-width: 1px;
   border-top-color: #a3a3a3;

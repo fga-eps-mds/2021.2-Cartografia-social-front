@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import {StatusBar} from 'react-native';
 
@@ -18,7 +19,7 @@ import InitialPage from 'pages/InitialPage';
 
 import ForgotPasswordPage from 'pages/ForgotPasswordPage';
 import CreateCommunity from 'pages/CreateCommunity';
-import AddContributor from 'pages/AddContributor'; // Importando pagina de inclusão de usuário
+import AddContributor from 'pages/AddContributor';
 
 const Routes = () => {
   const user = useSelector(auth);
@@ -128,7 +129,6 @@ const Routes = () => {
   );
 
   const SignedIn = () => (
-    // eslint-disable-next-line react/jsx-props-no-spreading
     <Drawer.Navigator drawerContent={(props) => <Profile {...props} />}>
       <Drawer.Screen name="Map" component={Map} options={{title: 'Mapa'}} />
       <Drawer.Screen
@@ -152,7 +152,7 @@ const Routes = () => {
       {user.data && user.data.type === 'RESEARCHER' ? ( // Se o usuário for um pesquisador, ele pode adicionar outros pesquisadores
         <Stack.Screen
           name="AddContributor"
-          component={AddContributor} // chamando pagina de inclusão de usuário (com o ctr + click tu pode ser direcionado a ela)
+          component={AddContributor}
           options={{
             title: 'Adicionar Contribuidor',
             headerTitleAlign: 'center',
