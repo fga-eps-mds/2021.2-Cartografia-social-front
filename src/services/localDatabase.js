@@ -15,7 +15,6 @@ const getData = async (key) => {
       return JSON.parse(data);
     }
   } catch (e) {
-    console.error(e);
     throw new Error('Error getting local data');
   }
   throw new Error('No data found');
@@ -53,11 +52,14 @@ export const exists = async (entityName, id) => {
 };
 
 export const put = async (entityName, data) => {
-  const dataToSave = data.id ? data : { ...data, id: Math.random().toString(36).substring(7) }
+  const dataToSave = data.id
+    ? data
+    : {...data, id: Math.random().toString(36).substring(7)};
   let entityArray = await getEntityArray(entityName);
-  console.log('entityArray', entityArray);
   if (await exists(entityName, dataToSave.id))
-    entityArray = entityArray.map((e) => (e.id === dataToSave.id ? dataToSave : e));
+    entityArray = entityArray.map((e) =>
+      e.id === dataToSave.id ? dataToSave : e,
+    );
   else entityArray.push(dataToSave);
 
   storeData(`${entityName}_${data.id}`, data);
@@ -77,7 +79,6 @@ export const get = async (entityName, id) => {
 
 export const remove = async (entityName, id) => {
   const entityArray = await getEntityArray(entityName);
-  console.log('entityArray', entityArray);
   storeData(
     entityName,
     entityArray.filter((e) => e.id !== id),
