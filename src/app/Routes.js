@@ -28,7 +28,6 @@ const Routes = () => {
   const Drawer = createDrawerNavigator();
 
   const AuthRoutes = () => (
-
     <Stack.Navigator>
       
       <Stack.Screen
@@ -84,7 +83,6 @@ const Routes = () => {
           headerTitleAlign: 'center',
         }}
       />
-
     </Stack.Navigator>
   );
 
@@ -105,6 +103,18 @@ const Routes = () => {
       <Stack.Screen
         name="ForgotPasswordPage"
         component={ForgotPasswordPage}
+        options={{
+          title: '',
+          headerStyle: {
+            backgroundColor: `${theme.colors.primary}`,
+            elevation: 0,
+          },
+          headerTintColor: '#fff',
+        }}
+      />
+       <Stack.Screen
+        name="UserRegistrationRequestPage"
+        component={UserRegistrationRequestPage}
         options={{
           title: '',
           headerStyle: {

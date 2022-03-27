@@ -114,7 +114,8 @@ const LoginPage = ({navigation}) => {
           />
           <TextBtn onPress={() => navigateToScreen('ForgotPasswordPage')}>
             Esqueci a senha
-          </TextBtn>
+          </TextBtn> 
+          
           <TextBtn onPress={() => navigateToScreen('UserRegistrationRequestPage')}>
             Solicitar cadastro
           </TextBtn>
@@ -129,5 +130,4 @@ const LoginPage = ({navigation}) => {
     </>
   );
 };
-
 export default LoginPage;

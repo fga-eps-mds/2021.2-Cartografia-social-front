@@ -8,6 +8,7 @@ import {Alert} from 'react-native';
 import {Container, Header, HeaderText, InputText, Text} from './styles';
 
 const ForgotPasswordPage = ({navigation}) => {
+  
   const [email, setEmail] = useState({
     isValid: false,
     value: '',
