@@ -20,6 +20,7 @@ import InitialPage from 'pages/InitialPage';
 import ForgotPasswordPage from 'pages/ForgotPasswordPage';
 import AddContributor from 'pages/AddContributor';
 import api from 'services/api';
+import UserRegistrationRequestPage from 'pages/UserRegistrationRequestPage';
 
 const Routes = () => {
   const user = useSelector(auth);
@@ -27,12 +28,15 @@ const Routes = () => {
   const Drawer = createDrawerNavigator();
 
   const AuthRoutes = () => (
+
     <Stack.Navigator>
+      
       <Stack.Screen
         name="InitialPage"
         component={InitialPage}
         options={{header: () => null}}
       />
+
       <Stack.Screen
         name="LoginPage"
         component={LoginPage}
@@ -45,6 +49,20 @@ const Routes = () => {
           headerTintColor: '#fff',
         }}
       />
+
+      <Stack.Screen
+        name="UserRegistrationRequestPage"
+        component={UserRegistrationRequestPage}
+        options={{
+          title: '',
+          headerStyle: {
+            backgroundColor: `${theme.colors.primary}`,
+            elevation: 0,
+          },
+          headerTintColor: '#fff',
+        }}
+      />
+
       <Stack.Screen
         name="ForgotPasswordPage"
         component={ForgotPasswordPage}
@@ -57,6 +75,7 @@ const Routes = () => {
           headerTintColor: '#fff',
         }}
       />
+
       <Stack.Screen
         name="DynamicForm"
         component={DynamicForm}
@@ -65,6 +84,7 @@ const Routes = () => {
           headerTitleAlign: 'center',
         }}
       />
+
     </Stack.Navigator>
   );
 

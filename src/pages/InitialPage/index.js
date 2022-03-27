@@ -13,7 +13,7 @@ const InitialPage = ({navigation}) => {
 
   const navigateToScreen = async (screen) => {
     navigation.navigate(screen);
-  };
+  }; 
 
   return (
     <Container>
