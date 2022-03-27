@@ -10,9 +10,9 @@ import * as Actions from 'store/actions';
 import {useDispatch} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 import {Alert} from 'react-native';
+import NetInfo from '@react-native-community/netinfo';
 import {Container, Header, HeaderText, InputText, TextBtn} from './styles';
-import {storeLocalCredentials, offlineLogin} from '../../services/offlineLogin'
-import NetInfo from "@react-native-community/netinfo";
+import {storeLocalCredentials, offlineLogin} from '../../services/offlineLogin';
 
 const LoginPage = ({navigation}) => {
   const dispatch = useDispatch();
@@ -76,27 +76,30 @@ const LoginPage = ({navigation}) => {
   };
 
   const onPress = async () => {
-    
-    const isConnected = await NetInfo.fetch().then(state => {
-      console.log("Tipo de conexão", state.type);
-      console.log("Está conectado?", state.isConnected);
+    const isConnected = false;
+    await NetInfo.fetch().then((state) => {
+      //console.log('Tipo de conexão', state.type);
+      if (state.isConnected) {
+        isConnected = true;
+      }
+      //console.log('Está conectado?', state.isConnected);
     });
 
-    if(isConnected.state.type == none){
+    if (isConnected === true) {
       try {
-        const userIsValid = await offlineLogin(email.value.trim(), password.value.trim()); 
-        if(userIsValid) {
-          dispatch(Actions.login("validUser"));
+        const userIsValid = await offlineLogin(
+          email.value.trim(),
+          password.value.trim(),
+        );
+        if (userIsValid) {
+          dispatch(Actions.login('validUser'));
+        } else {
+          //console.log('Usuario nao eh valido!');
         }
-        else {
-          console.log("Usuario nao eh valido!");
-        }
+      } catch (error) {
+        //console.log(error);
       }
-      catch (error) {
-        console.log(error);
-      }
-    }
-    else {
+    } else {
       try {
         const userCredentials = await auth().signInWithEmailAndPassword(
           email.value.trim(),
@@ -109,7 +112,7 @@ const LoginPage = ({navigation}) => {
       } catch (error) {
         Alert.alert('Atenção!', 'Erro na etapa de autenticação!');
         // eslint-disable-next-line no-console
-        console.error(error);
+        //console.error(error);
       }
     }
   };
