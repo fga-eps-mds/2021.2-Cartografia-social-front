@@ -11,6 +11,8 @@ import {useDispatch} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 import {Alert} from 'react-native';
 import {Container, Header, HeaderText, InputText, TextBtn} from './styles';
+import {storeLocalCredentials, offlineLogin} from '../../services/offlineLogin'
+import NetInfo from "@react-native-community/netinfo";
 
 const LoginPage = ({navigation}) => {
   const dispatch = useDispatch();
@@ -74,18 +76,41 @@ const LoginPage = ({navigation}) => {
   };
 
   const onPress = async () => {
-    try {
-      const userCredentials = await auth().signInWithEmailAndPassword(
-        email.value.trim(),
-        password.value.trim(),
-      );
-      const token = await userCredentials.user.getIdToken();
-      await AsyncStorage.setItem('access_token', `Bearer ${token}`);
-      await setUser(userCredentials, token);
-    } catch (error) {
-      Alert.alert('Atenção!', 'Erro na etapa de autenticação!');
-      // eslint-disable-next-line no-console
-      console.error(error);
+    
+    const isConnected = await NetInfo.fetch().then(state => {
+      console.log("Tipo de conexão", state.type);
+      console.log("Está conectado?", state.isConnected);
+    });
+
+    if(isConnected.state.type == none){
+      try {
+        const userIsValid = await offlineLogin(email.value.trim(), password.value.trim()); 
+        if(userIsValid) {
+          dispatch(Actions.login("validUser"));
+        }
+        else {
+          console.log("Usuario nao eh valido!");
+        }
+      }
+      catch (error) {
+        console.log(error);
+      }
+    }
+    else {
+      try {
+        const userCredentials = await auth().signInWithEmailAndPassword(
+          email.value.trim(),
+          password.value.trim(),
+        );
+        const token = await userCredentials.user.getIdToken();
+        await AsyncStorage.setItem('access_token', `Bearer ${token}`);
+        await storeLocalCredentials(email.value.trim(), password.value.trim());
+        await setUser(userCredentials, token);
+      } catch (error) {
+        Alert.alert('Atenção!', 'Erro na etapa de autenticação!');
+        // eslint-disable-next-line no-console
+        console.error(error);
+      }
     }
   };
 
