@@ -76,13 +76,16 @@ const LoginPage = ({navigation}) => {
   };
 
   const onPress = async () => {
-    const isConnected = false;
+    let isConnected;
     await NetInfo.fetch().then((state) => {
-      //console.log('Tipo de conexão', state.type);
+      // console.log('Tipo de conexão', state.type);
       if (state.isConnected) {
         isConnected = true;
       }
-      //console.log('Está conectado?', state.isConnected);
+      else {
+        isConnected = false;
+      }
+      // console.log('Está conectado?', state.isConnected);
     });
 
     if (isConnected === true) {
@@ -94,10 +97,10 @@ const LoginPage = ({navigation}) => {
         if (userIsValid) {
           dispatch(Actions.login('validUser'));
         } else {
-          //console.log('Usuario nao eh valido!');
+          // console.log('Usuario nao eh valido!');
         }
       } catch (error) {
-        //console.log(error);
+        // console.log(error);
       }
     } else {
       try {
@@ -112,7 +115,7 @@ const LoginPage = ({navigation}) => {
       } catch (error) {
         Alert.alert('Atenção!', 'Erro na etapa de autenticação!');
         // eslint-disable-next-line no-console
-        //console.error(error);
+        // console.error(error);
       }
     }
   };
