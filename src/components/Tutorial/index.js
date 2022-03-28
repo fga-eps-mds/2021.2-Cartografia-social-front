@@ -75,15 +75,15 @@ const Tutorial = () => {
               polígono que formará a área.
             </Text>
             <Text style={styles.textStyle}>Forma correta</Text>
-            <Image
+            {/*<Image
               style={styles.imagem}
-              source={require('./../assets/MarcacaoDeAreaCorreta.gif')}
-            />
+              source={require('../assets/MarcacaoDeAreaCorreta.gif')}
+            />*/}
             <Text style={styles.textStyle}>Forma incorreta</Text>
-            <Image
+            {/*<Image
               style={styles.imagem}
-              source={require('./../assets/MarcacaoDeAreaIncorreta.gif')}
-            />
+              source={require('../assets/MarcacaoDeAreaIncorreta.gif')}
+            />*/}
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => setModalVisible(false)}>
