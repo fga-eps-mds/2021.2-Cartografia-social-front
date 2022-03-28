@@ -15,6 +15,7 @@ import CreateArea from 'components/CreateArea';
 import {Polygon} from 'react-native-maps';
 import api from 'services/api';
 import {MapView} from './styles';
+import Tutorial from 'components/Tutorial';
 
 const Map = () => {
   const dispatch = useDispatch();
@@ -113,6 +114,7 @@ const Map = () => {
 
     return (
       <View flex={1}>
+        {isCreatingArea === true && <Tutorial />}
         <MapView
           region={region}
           onRegionChangeComplete={(value) => setRegion(value)}
