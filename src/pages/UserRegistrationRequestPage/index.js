@@ -1,13 +1,16 @@
 import React, {useState, useEffect} from 'react';
-import {CheckBox} from 'react-native';
 import ScrollView from 'components/UI/ScrollView';
 import Input from 'components/UI/Input';
 import required from 'validators/required';
 import Btn from 'components/UI/Btn';
-import {Container, Header, HeaderText, InputText, styles} from './styles';
+import {Container, Header, HeaderText, InputText, PickerContainer, PickerText, Icon, } from './styles';
+import normalize from 'react-native-normalize';
+import ComunityPicker from '../../components/ComunityPicker';
+import {Keyboard} from 'react-native';
+
 const UserRegistrationRequestPage = ({navigation}) => {
 
-//Campos: name, email, telefone, senha, confirmar senha, justificativa e comunidade
+//Campos: name, email, telefone, senha, confirmar senha e justificativa
   const [name, setName] = useState({
     isValid: false,
     value: '',
@@ -38,7 +41,19 @@ const UserRegistrationRequestPage = ({navigation}) => {
     value: '',
   });
 
-  const [isSelected, setSelection] = useState(false);
+// REVISAO - COMEÇO
+// Get das comunidades
+  const [communitySelected, setComunitySelected] = useState('Selecione uma comunidade');
+  const [getComunityFromApi, setGetComunityFromApi] = useState(false);
+  const toggleGetFromApiComunity = () => setGetComunityFromApi(!getComunityFromApi);
+
+// Modal
+  const [isModalComunityPickerVisible, setIsModalComunityPickerVisible] = useState(false);
+  const toggleModalComunityPicker = () => setIsModalComunityPickerVisible(!isModalComunityPickerVisible);
+  const onOpenModalComunity = () => {
+    toggleGetFromApiComunity();
+    setIsModalComunityPickerVisible(true);
+  };
 
 //aplicação de um efeito
   useEffect(() => {
@@ -47,12 +62,24 @@ const UserRegistrationRequestPage = ({navigation}) => {
     }
   }, [navigation]);
 
+  const onSave = async () => {
+  Keyboard.dismiss();
+  setComunitySelected('Selecione uma comunidade');
+};
+// REVISAO - FIM
+
 //retornando a página
   return (
     <>
       <Header>
         <HeaderText my={3}>Solicitar Cadastro</HeaderText>
       </Header>
+      <ComunityPicker
+        visible={isModalComunityPickerVisible}
+        toggle={toggleModalComunityPicker}
+        setComunity={setComunitySelected}
+        update={getComunityFromApi}
+      />
       <ScrollView>
           <Container>
             <InputText>Nome</InputText>
@@ -103,11 +130,18 @@ const UserRegistrationRequestPage = ({navigation}) => {
               autoCapitalize="words"
               rules={[required]}
             />
+            <InputText>Comunidade (opicional)</InputText>
+            <PickerContainer onPress={onOpenModalComunity}>
+              <PickerText selected>
+                {communitySelected.name ? communitySelected.name : communitySelected}
+              </PickerText>
+              <Icon size={normalize(20)} name="angle-down" color="#a3a3a3" />
+            </PickerContainer>
             <Btn
               //disabled={!formIsValid()}
               style={{marginVertical: 50}}
               title="Enviar solicitação"
-              onPress={() => setPassword()}
+              onPress={onSave}
             />
           </Container>
       </ScrollView>
