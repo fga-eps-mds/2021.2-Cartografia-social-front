@@ -81,8 +81,7 @@ const LoginPage = ({navigation}) => {
       // console.log('Tipo de conexão', state.type);
       if (state.isConnected) {
         isConnected = true;
-      }
-      else {
+      } else {
         isConnected = false;
       }
       // console.log('Está conectado?', state.isConnected);
