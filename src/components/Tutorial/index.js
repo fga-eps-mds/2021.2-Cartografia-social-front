@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Modal, StyleSheet, Text, Pressable, View, Image } from 'react-native';
+import {Modal, StyleSheet, Text, Pressable, View, Image} from 'react-native';
 import theme from 'theme/theme';
 import {Header, Title} from './styles';
 
@@ -54,7 +54,7 @@ const Tutorial = () => {
       textAlign: 'center',
     },
   });
-  
+
   return (
     <View>
       <Modal
@@ -77,12 +77,12 @@ const Tutorial = () => {
             <Text style={styles.textStyle}>Forma correta</Text>
             <Image
               style={styles.imagem}
-              source={require('../../assets/MarcacaoDeAreaCorreta.gif')}
+              source={require('./../assets/MarcacaoDeAreaCorreta.gif')}
             />
             <Text style={styles.textStyle}>Forma incorreta</Text>
             <Image
               style={styles.imagem}
-              source={require('../../assets/MarcacaoDeAreaIncorreta.gif')}
+              source={require('./../assets/MarcacaoDeAreaIncorreta.gif')}
             />
             <Pressable
               style={[styles.button, styles.buttonClose]}
