@@ -14,8 +14,8 @@ import MarkerDetails from 'components/MarkerDetails';
 import CreateArea from 'components/CreateArea';
 import {Polygon} from 'react-native-maps';
 import api from 'services/api';
-import {MapView} from './styles';
 import Tutorial from 'components/Tutorial';
+import {MapView} from './styles';
 
 const Map = () => {
   const dispatch = useDispatch();
