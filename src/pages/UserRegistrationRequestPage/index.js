@@ -1,12 +1,13 @@
 import React, {useState, useEffect} from 'react';
+import {CheckBox} from 'react-native';
 import ScrollView from 'components/UI/ScrollView';
 import Input from 'components/UI/Input';
 import required from 'validators/required';
 import Btn from 'components/UI/Btn';
-import {Container, Header, HeaderText, InputText} from './styles';
+import {Container, Header, HeaderText, InputText, styles} from './styles';
 const UserRegistrationRequestPage = ({navigation}) => {
 
-//Campos: name, email, telefone e senha
+//Campos: name, email, telefone, senha, confirmar senha, justificativa e comunidade
   const [name, setName] = useState({
     isValid: false,
     value: '',
@@ -27,6 +28,18 @@ const UserRegistrationRequestPage = ({navigation}) => {
     value: '',
   });
 
+  const [ispassword, setIspassword] = useState({
+    isValid: false,
+    value: '',
+  });
+
+  const [justify, setJustify] = useState({
+    isValid: false,
+    value: '',
+  });
+
+  const [isSelected, setSelection] = useState(false);
+
 //aplicação de um efeito
   useEffect(() => {
     if (navigation.getParent()) {
@@ -42,7 +55,6 @@ const UserRegistrationRequestPage = ({navigation}) => {
       </Header>
       <ScrollView>
           <Container>
-            
             <InputText>Nome</InputText>
             <Input
               label="Digite seu nome completo"
@@ -72,6 +84,22 @@ const UserRegistrationRequestPage = ({navigation}) => {
               label="Digite uma senha"
               onChange={setPassword}
               value={password.value}
+              autoCapitalize="words"
+              rules={[required]}
+            />
+            <InputText>Confirme sua Senha</InputText>
+            <Input
+              label="Digite sua senha novamente"
+              onChange={setIspassword}
+              value={ispassword.value}
+              autoCapitalize="words"
+              rules={[required]}
+            />
+            <InputText>Justificativa</InputText>
+            <Input
+              label="Justifique sua solicitação"
+              onChange={setJustify}
+              value={justify.value}
               autoCapitalize="words"
               rules={[required]}
             />
