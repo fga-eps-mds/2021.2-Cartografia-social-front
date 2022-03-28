@@ -1,5 +1,7 @@
 import styled from 'styled-components/native';
 import theme from 'theme/theme';
+import marcacaoDeAreaCorreta from 'assets/MarcacaoDeAreaCorreta.gif'
+import marcacaoDeAreaIncorreta from 'assets/MarcacaoDeAreaIncorreta.gif'
 
 export const Container = styled.View`
   width: 100%;
@@ -31,4 +33,25 @@ export const OptionsButton = styled.View`
   /* background-color: #0f0; */
   justify-content: space-evenly;
   flex-direction: column;
+`;
+
+export const MarcacaoDeAreaCorreta = styled.Image.attrs({
+  source: marcacaoDeAreaCorreta,
+  resizeMode: 'contain',
+})`
+  width: 150px;
+  height: 150px;
+  align-self: center;
+  margin-bottom: 40px;
+  margin-right: 10px;
+`;
+
+export const MarcacaoDeAreaIncorreta = styled.Image.attrs({
+  source: marcacaoDeAreaIncorreta,
+  resizeMode: 'contain',
+})`
+  width: 150px;
+  height: 150px;
+  align-self: center;
+  margin-bottom: 40px;
 `;

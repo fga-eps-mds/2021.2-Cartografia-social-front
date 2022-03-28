@@ -1,23 +1,15 @@
 import React, {useState} from 'react';
-import {Modal, StyleSheet, Text, Pressable, View, Image} from 'react-native';
+import {Modal, StyleSheet } from 'react-native';
 import theme from 'theme/theme';
-import {Header, Title} from './styles';
+import {Header, MarcacaoDeAreaCorreta, MarcacaoDeAreaIncorreta, Title} from './styles';
+import Text from 'components/UI/Text';
+import Btn from 'components/UI/Btn';
+import { ScrollView, View } from 'components/UI';
 
 const Tutorial = () => {
   const [modalVisible, setModalVisible] = useState(true);
 
   const styles = StyleSheet.create({
-    centeredView: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginTop: 22,
-    },
-    imagem: {
-      width: 200,
-      height: 200,
-      marginBottom: 15,
-    },
     modalView: {
       margin: 20,
       backgroundColor: 'white',
@@ -33,26 +25,6 @@ const Tutorial = () => {
       shadowRadius: 4,
       elevation: 5,
     },
-    button: {
-      borderRadius: 20,
-      padding: 10,
-      elevation: 2,
-    },
-    buttonOpen: {
-      backgroundColor: '#F194FF',
-    },
-    buttonClose: {
-      backgroundColor: '#2196F3',
-    },
-    textStyle: {
-      color: 'black',
-      fontWeight: 'bold',
-      textAlign: 'center',
-    },
-    modalText: {
-      marginBottom: 15,
-      textAlign: 'center',
-    },
   });
 
   return (
@@ -64,35 +36,46 @@ const Tutorial = () => {
         onRequestClose={() => {
           setModalVisible(!modalVisible);
         }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Header>
-              <Title fontSize={theme.font.sizes.ML}>Tutorial</Title>
-            </Header>
-            <Text>
-              Ao marcar pontos, deve-se fazê-lo de modo que o ponto atual e o
-              próximo ponto a ser marcado compartilhem a mesma aresta do
-              polígono que formará a área.
-            </Text>
-            <Text style={styles.textStyle}>Forma correta</Text>
-            <Image
-              style={styles.imagem}
-              source={require('../../assets/MarcacaoDeAreaCorreta.gif')}
-            />
-            <Text style={styles.textStyle}>Forma incorreta</Text>
-            <Image
-              style={styles.imagem}
-              source={require('../../assets/MarcacaoDeAreaIncorreta.gif')}
-            />
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(false)}>
-              <Text style={{...styles.textStyle, color: 'white'}}>
-                Hide Modal
+        <ScrollView>
+          <View style={{marginTop: 60}}>
+            <View style={styles.modalView}>
+              <Header>
+                <Title fontSize={theme.font.sizes.ML}>Como marcar áreas?</Title>
+              </Header>
+              <Text
+                alignSelf="center"
+                fontSize={theme.font.sizes.SM}
+                m={3}>
+                Ao marcar pontos, deve-se fazê-lo de modo que o ponto atual e o
+                próximo ponto a ser marcado compartilhem a mesma aresta do
+                polígono que formará a área.
               </Text>
-            </Pressable>
+              <View style={{flexDirection: 'row'}}>
+                <Text
+                  alignSelf="center"
+                  fontSize={theme.font.sizes.M}
+                  fontWeight="bold"
+                  m={3}>
+                  Forma correta</Text>
+                <Text
+                  alignSelf="center"
+                  fontSize={theme.font.sizes.M}
+                  fontWeight="bold"
+                  m={3}>
+                  Forma incorreta</Text>
+              </View>
+              <View style={{flexDirection: 'row'}}>
+                <MarcacaoDeAreaCorreta />
+                <MarcacaoDeAreaIncorreta />
+              </View>
+              <Btn
+                style={{marginVertical: 10}}
+                title="Fechar"
+                onPress={() => setModalVisible(false)}
+              />
+            </View>
           </View>
-        </View>
+        </ScrollView>
       </Modal>
     </View>
   );
