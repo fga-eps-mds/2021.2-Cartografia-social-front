@@ -24,6 +24,7 @@ const Map = () => {
   const [region, setRegion] = useState(null);
   const [selectedMarker, setSelectedMarker] = useState({});
   const [isCreatingArea, setIsCreatingArea] = useState(false);
+  const [tutorialExibido, setTutorialExibido] = useState(0);
   const detailsRef = useRef(null);
   const onPressCreatingArea = useRef(null);
   const newArea = useRef(null);
@@ -55,7 +56,10 @@ const Map = () => {
   const actions = [
     {
       icon: 'draw-polygon',
-      onPress: () => setIsCreatingArea(true),
+      onPress: () => {
+        setIsCreatingArea(true)
+        setTutorialExibido(tutorialExibido + 1)
+      },
     },
     {
       icon: 'map-marker-alt',
@@ -114,7 +118,7 @@ const Map = () => {
 
     return (
       <View flex={1}>
-        {isCreatingArea === true && <Tutorial />}
+        {isCreatingArea === true && tutorialExibido === 1 &&<Tutorial />}
         <MapView
           region={region}
           onRegionChangeComplete={(value) => setRegion(value)}
