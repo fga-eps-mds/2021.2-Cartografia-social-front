@@ -1,11 +1,60 @@
 import React, {useState} from 'react';
-import { Alert, Modal, StyleSheet, Text, Pressable, View, Image, } from 'react-native';
+import { Modal, StyleSheet, Text, Pressable, View, Image } from 'react-native';
 import theme from 'theme/theme';
 import {Header, Title} from './styles';
 
 const Tutorial = () => {
   const [modalVisible, setModalVisible] = useState(true);
 
+  const styles = StyleSheet.create({
+    centeredView: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 22,
+    },
+    imagem: {
+      width: 200,
+      height: 200,
+      marginBottom: 15,
+    },
+    modalView: {
+      margin: 20,
+      backgroundColor: 'white',
+      borderRadius: 20,
+      padding: 35,
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+    },
+    button: {
+      borderRadius: 20,
+      padding: 10,
+      elevation: 2,
+    },
+    buttonOpen: {
+      backgroundColor: '#F194FF',
+    },
+    buttonClose: {
+      backgroundColor: '#2196F3',
+    },
+    textStyle: {
+      color: 'black',
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
+    modalText: {
+      marginBottom: 15,
+      textAlign: 'center',
+    },
+  });
+  
   return (
     <View>
       <Modal
@@ -13,7 +62,6 @@ const Tutorial = () => {
         transparent
         visible={modalVisible}
         onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
           setModalVisible(!modalVisible);
         }}>
         <View style={styles.centeredView}>
@@ -22,9 +70,9 @@ const Tutorial = () => {
               <Title fontSize={theme.font.sizes.ML}>Tutorial</Title>
             </Header>
             <Text>
-              Ao marcar pontos, deve-se fazê-lo de modo que o ponto atual 
-              e o próximo ponto a ser marcado compartilhem a mesma aresta 
-              do polígono que formará a área.
+              Ao marcar pontos, deve-se fazê-lo de modo que o ponto atual e o
+              próximo ponto a ser marcado compartilhem a mesma aresta do
+              polígono que formará a área.
             </Text>
             <Text style={styles.textStyle}>Forma correta</Text>
             <Image
@@ -38,9 +86,10 @@ const Tutorial = () => {
             />
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(false)}
-            >
-            <Text style={{...styles.textStyle, color: 'white'}}>Hide Modal</Text>
+              onPress={() => setModalVisible(false)}>
+              <Text style={{...styles.textStyle, color: 'white'}}>
+                Hide Modal
+              </Text>
             </Pressable>
           </View>
         </View>
@@ -48,54 +97,5 @@ const Tutorial = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
-  },
-  imagem: {
-    width: 200,
-    height: 200,
-    marginBottom: 15,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-  },
-  textStyle: {
-    color: 'black',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-});
 
 export default Tutorial;
