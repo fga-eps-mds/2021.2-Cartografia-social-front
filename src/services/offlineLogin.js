@@ -1,10 +1,10 @@
 import * as localDataBase from './localDatabase';
 
-export const storeLocalCredentials = async (userName, password) => {
+export const storeLocalCredentials = async (/*userName, password*/) => {
   await localDataBase.put('offlineLoginCredentials', {
     id: '',
-    username: userName,
-    password: password,
+    //username: userName,
+    //password,
   });
   // console.log('Salvo!');
 };
