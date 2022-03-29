@@ -57,8 +57,8 @@ const Map = () => {
     {
       icon: 'draw-polygon',
       onPress: () => {
-        setIsCreatingArea(true)
-        setTutorialExibido(tutorialExibido + 1)
+        setIsCreatingArea(true);
+        setTutorialExibido(tutorialExibido + 1);
       },
     },
     {
@@ -118,7 +118,7 @@ const Map = () => {
 
     return (
       <View flex={1}>
-        {isCreatingArea === true && tutorialExibido === 1 &&<Tutorial />}
+        {isCreatingArea === true && tutorialExibido === 1 && <Tutorial />}
         <MapView
           region={region}
           onRegionChangeComplete={(value) => setRegion(value)}

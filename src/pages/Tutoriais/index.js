@@ -16,7 +16,8 @@ const Tutoriais = () => {
           style={{marginVertical: 50}}
           title="Marcação de Áreas"
           onPress={() => {
-            setMostrarTutorial(!mostrarTutorial);
+            setMostrarTutorial(false);
+            setMostrarTutorial(true);
           }}
         />
         {mostrarTutorial === true && <Tutorial />}

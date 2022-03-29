@@ -1,10 +1,15 @@
 import React, {useState} from 'react';
-import {Modal, StyleSheet } from 'react-native';
+import {Modal, StyleSheet} from 'react-native';
 import theme from 'theme/theme';
-import {Header, MarcacaoDeAreaCorreta, MarcacaoDeAreaIncorreta, Title} from './styles';
 import Text from 'components/UI/Text';
 import Btn from 'components/UI/Btn';
-import { ScrollView, View } from 'components/UI';
+import {ScrollView, View} from 'components/UI';
+import {
+  Header,
+  MarcacaoDeAreaCorreta,
+  MarcacaoDeAreaIncorreta,
+  Title,
+} from './styles';
 
 const Tutorial = () => {
   const [modalVisible, setModalVisible] = useState(true);
@@ -42,10 +47,7 @@ const Tutorial = () => {
               <Header>
                 <Title fontSize={theme.font.sizes.ML}>Como marcar áreas?</Title>
               </Header>
-              <Text
-                alignSelf="center"
-                fontSize={theme.font.sizes.SM}
-                m={3}>
+              <Text alignSelf="center" fontSize={theme.font.sizes.SM} m={3}>
                 Ao marcar pontos, deve-se fazê-lo de modo que o ponto atual e o
                 próximo ponto a ser marcado compartilhem a mesma aresta do
                 polígono que formará a área.
@@ -56,13 +58,15 @@ const Tutorial = () => {
                   fontSize={theme.font.sizes.M}
                   fontWeight="bold"
                   m={3}>
-                  Forma correta</Text>
+                  Forma correta
+                </Text>
                 <Text
                   alignSelf="center"
                   fontSize={theme.font.sizes.M}
                   fontWeight="bold"
                   m={3}>
-                  Forma incorreta</Text>
+                  Forma incorreta
+                </Text>
               </View>
               <View style={{flexDirection: 'row'}}>
                 <MarcacaoDeAreaCorreta />

@@ -1,7 +1,7 @@
 import styled from 'styled-components/native';
 import theme from 'theme/theme';
-import marcacaoDeAreaCorreta from 'assets/MarcacaoDeAreaCorreta.gif'
-import marcacaoDeAreaIncorreta from 'assets/MarcacaoDeAreaIncorreta.gif'
+import marcacaoDeAreaCorreta from 'assets/MarcacaoDeAreaCorreta.gif';
+import marcacaoDeAreaIncorreta from 'assets/MarcacaoDeAreaIncorreta.gif';
 
 export const Container = styled.View`
   width: 100%;
