@@ -27,6 +27,7 @@
     "@react-navigation/stack": "^6.0.6",
     "axios": "^0.21.1",
     "babel-plugin-inline-import": "^3.0.0",
+    "crypto-js": "^4.1.1",
     "form-data": "^2.3.3",
     "lodash": "^4.17.21",
     "lottie-ios": "^3.2.3",
