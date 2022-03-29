@@ -130,7 +130,7 @@ const UserRegistrationRequestPage = ({navigation}) => {
               autoCapitalize="words"
               rules={[required]}
             />
-            <InputText>Comunidade (opicional)</InputText>
+            <InputText>Comunidade (opcional)</InputText>
             <PickerContainer onPress={onOpenModalComunity}>
               <PickerText selected>
                 {communitySelected.name ? communitySelected.name : communitySelected}
