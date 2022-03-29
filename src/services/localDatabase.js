@@ -41,7 +41,7 @@ const getEntityArray = async (entityName) => {
 
 export const exists = async (entityName, id) => {
   try {
-    getData(`${entityName}_${id}`);
+    await getData(`${entityName}_${id}`);
     return true;
   } catch (e) {
     if (e.message === 'No data found') {
@@ -62,7 +62,7 @@ export const put = async (entityName, data) => {
     );
   else entityArray.push(dataToSave);
 
-  storeData(`${entityName}_${data.id}`, data);
+  storeData(`${entityName}_${dataToSave.id}`, dataToSave);
   storeData(entityName, entityArray);
 };
 
@@ -87,5 +87,5 @@ export const remove = async (entityName, id) => {
 };
 
 export const getAll = async (entityName) => {
-  return getData(entityName);
+  return await getEntityArray(entityName);
 };
