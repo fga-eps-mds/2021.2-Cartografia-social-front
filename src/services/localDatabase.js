@@ -39,6 +39,8 @@ const getEntityArray = async (entityName) => {
   }
 };
 
+export const getAll = (entityName) => getEntityArray(entityName);
+
 export const exists = async (entityName, id) => {
   try {
     await getData(`${entityName}_${id}`);
@@ -78,7 +80,7 @@ export const get = async (entityName, id) => {
 };
 
 export const remove = async (entityName, id) => {
-  const entityArray = await getEntityArray(entityName);
+  const entityArray = await getAll(entityName);
   storeData(
     entityName,
     entityArray.filter((e) => e.id !== id),
@@ -86,4 +88,3 @@ export const remove = async (entityName, id) => {
   deleteData(`${entityName}_${id}`);
 };
 
-export const getAll = (entityName) => getEntityArray(entityName);
