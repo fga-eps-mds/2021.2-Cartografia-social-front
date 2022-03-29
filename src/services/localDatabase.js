@@ -86,6 +86,4 @@ export const remove = async (entityName, id) => {
   deleteData(`${entityName}_${id}`);
 };
 
-export const getAll = async (entityName) => {
-  return await getEntityArray(entityName);
-};
+export const getAll = () =>  getEntityArray(entityName);
