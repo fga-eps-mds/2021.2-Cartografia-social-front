@@ -87,4 +87,3 @@ export const remove = async (entityName, id) => {
   );
   deleteData(`${entityName}_${id}`);
 };
-
