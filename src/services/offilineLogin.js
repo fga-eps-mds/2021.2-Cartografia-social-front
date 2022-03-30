@@ -3,7 +3,7 @@ import * as localDatabase from './localDatabase';
 
 require('dotenv').config();
 
-const {CRIPT_KEY} = process.env;
+const CRIPT_KEY = process.env.CRIPT_KEY || 'offline-login';
 const LOGIN_KEY = 'login';
 
 const encryptMessage = (message) => {

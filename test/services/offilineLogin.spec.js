@@ -22,6 +22,7 @@ describe('offilineLogin', () => {
     it('can not login with wrong data', async () => {
         await expect(offlineLogin(wrongLoginData.email, wrongLoginData.password)).rejects.toThrow('Invalid credentials')
     })
+    
 
     it('can remove login data', async () => {
         await expect(removeLoginDataOffline()).resolves.toBeUndefined()
