@@ -1,8 +1,9 @@
 import CryptoJS from 'crypto-js';
 import * as localDatabase from './localDatabase';
-require('dotenv').config()
 
-const CRIPT_KEY = process.env.CRIPT_KEY;
+require('dotenv').config();
+
+const {CRIPT_KEY} = process.env;
 const LOGIN_KEY = 'login';
 
 const encryptMessage = (message) => {
