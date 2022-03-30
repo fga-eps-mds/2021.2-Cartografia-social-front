@@ -49,7 +49,11 @@ const Tutorial = () => {
               </Header>
               <Text alignSelf="center" fontSize={theme.font.sizes.SM} m={3}>
                     Ao marcar pontos, atenti-se para:
+              </Text>
+              <Text alignSelf="center" fontSize={theme.font.sizes.SM} m={3}>
                     1. A área demarcada seguirá a ordem de marcação dos pontos.
+              </Text>
+              <Text alignSelf="center" fontSize={theme.font.sizes.SM} m={3}>
                     2. O ponto marcado sempre será ligado ao ponto anterior
                     e assim formando o mesmo lado da área demarcada.
               </Text>
