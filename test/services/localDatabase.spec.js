@@ -25,7 +25,7 @@ describe('localDatabase', () => {
         await localDatabase.remove('test', 'test');
         expect(await localDatabase.getAll('test')).toStrictEqual([]);
         expect(await localDatabase.exists('test', 'test')).toStrictEqual(false);
-        await expect(localDatabase.get('test', 'test')).rejects.toThrow();
+        await expect(localDatabase.get('test', 'test')).resolves.toBeUndefined();
     })
 
     it('can get a data entity', async () => {

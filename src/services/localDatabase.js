@@ -1,56 +1,26 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const NO_DATA_FOUND = 'No data found';
-
-const storeData = async (key, value) => {
-  try {
-    await AsyncStorage.setItem(key, JSON.stringify(value));
-  } catch (e) {
-    throw new Error('Error saving local data');
-  }
-};
+const storeData = async (key, value) =>
+  AsyncStorage.setItem(key, JSON.stringify(value));
 
 const getData = async (key) => {
-  try {
-    const data = await AsyncStorage.getItem(key);
-    if (data) {
-      return JSON.parse(data);
-    }
-  } catch (e) {
-    throw new Error('Error getting local data');
+  const data = await AsyncStorage.getItem(key);
+  if (data) {
+    return JSON.parse(data);
   }
-  throw new Error(NO_DATA_FOUND);
+  return undefined;
 };
 
-const deleteData = async (key) => {
-  try {
-    await AsyncStorage.removeItem(key);
-  } catch (e) {
-    throw new Error('Error deleting local data');
-  }
-};
+const deleteData = async (key) => AsyncStorage.removeItem(key);
 
-const getEntityArray = async (entityName) => {
-  try {
-    return await getData(entityName);
-  } catch (e) {
-    if (e.message === NO_DATA_FOUND) {
-      return [];
-    }
-    throw e;
-  }
-};
+const getEntityArray = async (entityName) => (await getData(entityName)) || [];
 
 export const exists = async (entityName, id) => {
-  try {
-    await getData(`${entityName}_${id}`);
-    return true;
-  } catch (e) {
-    if (e.message === NO_DATA_FOUND) {
-      return false;
-    }
-    throw e;
+  const data = await getData(`${entityName}_${id}`);
+  if (data === undefined) {
+    return false;
   }
+  return true;
 };
 
 export const put = async (entityName, data) => {
@@ -75,9 +45,7 @@ export const post = async (entityName, data) => {
   await put(entityName, data);
 };
 
-export const get = async (entityName, id) => {
-  return getData(`${entityName}_${id}`);
-};
+export const get = async (entityName, id) => getData(`${entityName}_${id}`);
 
 export const remove = async (entityName, id) => {
   const entityArray = await getEntityArray(entityName);
