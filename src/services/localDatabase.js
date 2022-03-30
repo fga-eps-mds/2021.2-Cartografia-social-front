@@ -1,5 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const NO_DATA_FOUND = 'No data found';
+
 const storeData = async (key, value) => {
   try {
     await AsyncStorage.setItem(key, JSON.stringify(value));
@@ -17,7 +19,7 @@ const getData = async (key) => {
   } catch (e) {
     throw new Error('Error getting local data');
   }
-  throw new Error('No data found');
+  throw new Error(NO_DATA_FOUND);
 };
 
 const deleteData = async (key) => {
@@ -32,7 +34,7 @@ const getEntityArray = async (entityName) => {
   try {
     return await getData(entityName);
   } catch (e) {
-    if (e.message === 'No data found') {
+    if (e.message === NO_DATA_FOUND) {
       return [];
     }
     throw e;
@@ -46,7 +48,7 @@ export const exists = async (entityName, id) => {
     await getData(`${entityName}_${id}`);
     return true;
   } catch (e) {
-    if (e.message === 'No data found') {
+    if (e.message === NO_DATA_FOUND) {
       return false;
     }
     throw e;
@@ -58,9 +60,11 @@ export const put = async (entityName, data) => {
     throw new Error('No id provided');
   }
   let entityArray = await getEntityArray(entityName);
-  if (await exists(entityName, data.id))
+  if (await exists(entityName, data.id)) {
     entityArray = entityArray.map((e) => (e.id === data.id ? data : e));
-  else entityArray.push(data);
+  } else {
+    entityArray.push(data);
+  }
 
   storeData(`${entityName}_${data.id}`, data);
   storeData(entityName, entityArray);
