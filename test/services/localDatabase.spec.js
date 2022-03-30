@@ -8,6 +8,15 @@ describe('localDatabase', () => {
         expect(await localDatabase.get('test', 'test')).toStrictEqual({ id: 'test' });
         expect(await localDatabase.getAll('test')).toStrictEqual([{ id: 'test' }]);
         expect(await localDatabase.exists('test', 'test')).toStrictEqual(true);
+        await localDatabase.post('test', { id: 'test2' });
+        expect(await localDatabase.getAll('test')).toStrictEqual([{ id: 'test' }, { id: 'test2' }]);
+        expect(await localDatabase.get('test', 'test2')).toStrictEqual({ id: 'test2' });
+    });
+
+    it('can put a exists entity', async () => {
+        expect(await localDatabase.get('test', 'test')).toStrictEqual({ id: 'test' });
+        await localDatabase.put('test', { id: 'test', name: 'test' });
+        expect(await localDatabase.get('test', 'test')).toStrictEqual({ id: 'test', name: 'test' });
     })
 
     it('fails when post a duplicated entity id', async () => {
@@ -16,13 +25,14 @@ describe('localDatabase', () => {
 
     it('pass when put a duplicated entity id', async () => {
         await expect(localDatabase.put('test', { id: 'test', name: 'newName' })).resolves.toBeUndefined();
-        expect(await localDatabase.getAll('test')).toStrictEqual([{ id: 'test', name: 'newName' }]);
+        expect(await localDatabase.get('test', 'test')).toStrictEqual({ id: 'test', name: 'newName' });
         expect(await localDatabase.exists('test', 'test')).toStrictEqual(true);
         expect(await localDatabase.get('test', 'test')).toStrictEqual({ id: 'test', name: 'newName' });
     })
 
     it('can delete a data entity', async () => {
         await localDatabase.remove('test', 'test');
+        await localDatabase.remove('test', 'test2');
         expect(await localDatabase.getAll('test')).toStrictEqual([]);
         expect(await localDatabase.exists('test', 'test')).toStrictEqual(false);
         await expect(localDatabase.get('test', 'test')).resolves.toBeUndefined();

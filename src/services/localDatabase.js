@@ -15,13 +15,8 @@ const deleteData = async (key) => AsyncStorage.removeItem(key);
 
 const getEntityArray = async (entityName) => (await getData(entityName)) || [];
 
-export const exists = async (entityName, id) => {
-  const data = await getData(`${entityName}_${id}`);
-  if (data === undefined) {
-    return false;
-  }
-  return true;
-};
+export const exists = async (entityName, id) =>
+  (await getData(`${entityName}_${id}`)) !== undefined;
 
 export const put = async (entityName, data) => {
   if (!data.id) {
