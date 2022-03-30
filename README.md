@@ -93,6 +93,8 @@ As issues devem ser criadas conforme template predefinido, contendo:
 
 * ***Estimate*** - As issues devem ser pontuadas conforme seu grau de dificuldade;
 
+* ***Milestone*** - As issues devem estar linkadas a uma milestone que, no caso do projeto, está atrelada ao prazo de uma _release_.
+
 #### **Nomenclatura**
 
 A Nomenclatura das issues deve seguir o padrão:
