@@ -58,10 +58,9 @@ export const put = async (entityName, data) => {
     throw new Error('No id provided');
   }
   let entityArray = await getEntityArray(entityName);
-  if (await exists(entityName, data.id)){
+  if (await exists(entityName, data.id)) {
     entityArray = entityArray.map((e) => (e.id === data.id ? data : e));
-  }
-  else{
+  } else {
     entityArray.push(data);
   }
 
