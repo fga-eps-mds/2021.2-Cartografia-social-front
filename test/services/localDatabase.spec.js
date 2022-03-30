@@ -41,5 +41,9 @@ describe('localDatabase', () => {
             { id: 'test2', name: 'newName2' },
         ]);
     })
+
+    it('fails with a data without id', async () => {
+        await expect(localDatabase.post('test', { name: 'newName' })).rejects.toThrow();
+    })
 })
 

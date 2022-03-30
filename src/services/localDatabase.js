@@ -54,17 +54,17 @@ export const exists = async (entityName, id) => {
 };
 
 export const put = async (entityName, data) => {
-  const dataToSave = data.id
-    ? data
-    : {...data, id: Math.random().toString(36).substring(7)};
+  if(!data.id) {
+    throw new Error('No id provided');
+  }
   let entityArray = await getEntityArray(entityName);
-  if (await exists(entityName, dataToSave.id))
+  if (await exists(entityName, data.id))
     entityArray = entityArray.map((e) =>
-      e.id === dataToSave.id ? dataToSave : e,
+      e.id === data.id ? data : e,
     );
-  else entityArray.push(dataToSave);
+  else entityArray.push(data);
 
-  storeData(`${entityName}_${dataToSave.id}`, dataToSave);
+  storeData(`${entityName}_${data.id}`, data);
   storeData(entityName, entityArray);
 };
 
