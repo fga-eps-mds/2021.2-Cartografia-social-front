@@ -1,7 +1,8 @@
 import CryptoJS from 'crypto-js';
 import * as localDatabase from './localDatabase';
+require('dotenv').config()
 
-const CRIPT_KEY = 'offlineLogin';
+const CRIPT_KEY = process.env.CRIPT_KEY;
 const LOGIN_KEY = 'login';
 
 const encryptMessage = (message) => {
