@@ -52,14 +52,12 @@ export const exists = async (entityName, id) => {
 };
 
 export const put = async (entityName, data) => {
-  if(!data.id) {
+  if (!data.id) {
     throw new Error('No id provided');
   }
   let entityArray = await getEntityArray(entityName);
   if (await exists(entityName, data.id))
-    entityArray = entityArray.map((e) =>
-      e.id === data.id ? data : e,
-    );
+    entityArray = entityArray.map((e) => (e.id === data.id ? data : e));
   else entityArray.push(data);
 
   storeData(`${entityName}_${data.id}`, data);
