@@ -22,8 +22,9 @@ export const saveLoginDataOffline = async (email, password) => {
 };
 
 export const offlineLogin = async (email, password) => {
-  if (!(await localDatabase.exists(LOGIN_KEY, LOGIN_KEY)))
+  if (!(await localDatabase.exists(LOGIN_KEY, LOGIN_KEY))) {
     throw new Error('Invalid credentials');
+  }
   const loginData = await localDatabase.get(LOGIN_KEY, LOGIN_KEY);
   const realEmail = decryptMessage(loginData.email);
   const realPassword = decryptMessage(loginData.password);
