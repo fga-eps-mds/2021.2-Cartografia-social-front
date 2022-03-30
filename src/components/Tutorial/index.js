@@ -16,6 +16,7 @@ const Tutorial = () => {
 
   const styles = StyleSheet.create({
     modalView: {
+      bottom:20,
       margin: 20,
       backgroundColor: 'white',
       borderRadius: 20,
