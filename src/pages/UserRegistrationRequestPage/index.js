@@ -123,8 +123,9 @@ const UserRegistrationRequestPage = ({navigation}) => {
         cellPhone: cellPhone.value,
         password: password.value,
         justification: justify.value,
-        community: 'communitySelected.value (fix need)',
+        community: communitySelected.id,
       };
+      console.log(userRequestDto);
       addUserRequest(userRequestDto);
     }
   };
