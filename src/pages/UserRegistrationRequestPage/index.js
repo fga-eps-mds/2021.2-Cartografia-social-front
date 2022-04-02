@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from 'react';
+import api from 'services/api';
 import ScrollView from 'components/UI/ScrollView';
 import Input from 'components/UI/Input';
 import required from 'validators/required';
 import Btn from 'components/UI/Btn';
 import normalize from 'react-native-normalize';
-import {Keyboard} from 'react-native';
+import {Alert, Keyboard} from 'react-native';
 import {
   Container,
   Header,
@@ -15,6 +16,8 @@ import {
   Icon,
 } from './styles';
 import ComunityPicker from '../../components/ComunityPicker';
+
+let works = true;
 
 const UserRegistrationRequestPage = ({navigation}) => {
   // Campos: name, email, telefone, senha, confirmar senha e justificativa
@@ -85,11 +88,43 @@ const UserRegistrationRequestPage = ({navigation}) => {
     );
   };
 
+  const passwordValidation = () => {
+    if (password.value !== ispassword.value) {
+      Alert.alert('Atenção!', 'Senhas não conferem!');
+      return false;
+    }
+    return true;
+  };
+
+  const onError = () => {
+    works = false;
+  };
+
+  const addUserRequest = async (userRequestDto) => {
+    await api.post('users/createUser', userRequestDto).catch(onError);
+
+    if (works) {
+      Alert.alert('Sucesso', 'Solicitação enviada com sucesso!');
+      navigation.navigate('LoginPage');
+    } else {
+      Alert.alert('Erro', 'Erro ao enviar solicitação!');
+    }
+  };
+
   const onSave = async () => {
     Keyboard.dismiss();
-    setComunitySelected('Selecione uma comunidade');
+    if (passwordValidation(password.value, ispassword.value)) {
+      const userRequestDto = {
+        name: name.value,
+        email: email.value,
+        cellPhone: cellPhone.value,
+        password: password.value,
+        justification: justify.value,
+        community: 'communitySelected.value (fix need)',
+      };
+      addUserRequest(userRequestDto);
+    }
   };
-  // REVISAO - FIM
 
   // Retornando a página
   return (
