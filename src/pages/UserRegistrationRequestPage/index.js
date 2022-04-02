@@ -105,7 +105,8 @@ const UserRegistrationRequestPage = ({navigation}) => {
 
     if (works) {
       Alert.alert(
-        'Solicitação enviada! Você será informado via email após aprovação do cadastro',
+        'Solicitação enviada!',
+        'Você será informado via email após aprovação do cadastro',
       );
       navigation.navigate('LoginPage');
     } else {
