@@ -16,7 +16,7 @@ const Tutorial = () => {
 
   const styles = StyleSheet.create({
     modalView: {
-      bottom:20,
+      bottom: 20,
       margin: 20,
       backgroundColor: 'white',
       borderRadius: 20,
@@ -49,14 +49,14 @@ const Tutorial = () => {
                 <Title fontSize={theme.font.sizes.ML}>Como marcar áreas?</Title>
               </Header>
               <Text alignSelf="center" fontSize={theme.font.sizes.SM} m={3}>
-                    Ao marcar pontos, atente-se para:
+                Ao marcar pontos, atente-se para:
               </Text>
               <Text alignSelf="center" fontSize={theme.font.sizes.SM} m={3}>
-                    1. A área demarcada seguirá a ordem de marcação dos pontos.
+                1. A área demarcada seguirá a ordem de marcação dos pontos.
               </Text>
               <Text alignSelf="center" fontSize={theme.font.sizes.SM} m={3}>
-                    2. O ponto marcado sempre será ligado ao ponto anterior
-                    e formando assim o mesmo lado da área demarcada.
+                2. O ponto marcado sempre será ligado ao ponto anterior e
+                formando assim o mesmo lado da área demarcada.
               </Text>
               <View style={{flexDirection: 'row'}}>
                 <Text
