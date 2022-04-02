@@ -128,26 +128,26 @@ const Routes = () => {
     </Drawer.Navigator>
   );
 
-  const isAdmin = async () => {
+  const isLeader = async () => {
     const communities = await api.get(
       `/community/getUserCommunity?userEmail=${user.data.email}`,
     );
 
     const comId = communities.data.id;
 
-    const adminsResp = await api.get(
+    const leaderResp = await api.get(
       `/community/getAdminUsers?communityId=${comId}`,
     );
-    const admins = adminsResp.data;
+    const leaders = leaderResp.data;
 
-    const privillege = admins.some((users) => users.userId === user.data.id);
+    const privillege = leaders.some((users) => users.userId === user.data.id);
 
     return privillege;
   };
 
-  const [admin, setIsAdmin] = useState(false);
-  isAdmin().then((response) => {
-    setIsAdmin(response);
+  const [leader, setIsLeader] = useState(false);
+  isLeader().then((response) => {
+    setIsLeader(response);
   });
 
   const SignedIn = () => (
@@ -171,7 +171,7 @@ const Routes = () => {
           }}
         />
       ) : null} */}
-      {user.data && admin ? (
+      {user.data && leader ? (
         <Stack.Screen
           name="AddContributor"
           component={AddContributor}
