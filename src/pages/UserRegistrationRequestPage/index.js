@@ -104,7 +104,9 @@ const UserRegistrationRequestPage = ({navigation}) => {
     await api.post('users/createUser', userRequestDto).catch(onError);
 
     if (works) {
-      Alert.alert('Sucesso', 'Solicitação enviada com sucesso!');
+      Alert.alert(
+        'Solicitação enviada! Você será informado via email após aprovação do cadastro',
+      );
       navigation.navigate('LoginPage');
     } else {
       Alert.alert('Erro', 'Erro ao enviar solicitação!');
