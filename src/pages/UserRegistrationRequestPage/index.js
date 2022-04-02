@@ -125,7 +125,6 @@ const UserRegistrationRequestPage = ({navigation}) => {
         justification: justify.value,
         community: communitySelected.id,
       };
-      console.log(userRequestDto);
       addUserRequest(userRequestDto);
     }
   };
