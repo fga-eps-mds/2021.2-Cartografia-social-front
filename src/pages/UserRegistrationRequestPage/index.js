@@ -74,6 +74,17 @@ const UserRegistrationRequestPage = ({navigation}) => {
     }
   }, [navigation]);
 
+  // Vallidação de campos
+  const formIsValid = () => {
+    return (
+      name.value &&
+      email.value &&
+      password.value &&
+      ispassword.value &&
+      justify.value
+    );
+  };
+
   const onSave = async () => {
     Keyboard.dismiss();
     setComunitySelected('Selecione uma comunidade');
@@ -155,6 +166,7 @@ const UserRegistrationRequestPage = ({navigation}) => {
             style={{marginVertical: 50}}
             title="Enviar solicitação"
             onPress={onSave}
+            disabled={!formIsValid()}
           />
         </Container>
       </ScrollView>

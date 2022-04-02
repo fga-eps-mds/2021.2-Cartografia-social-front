@@ -47,7 +47,7 @@ const AddContributor = ({navigation}) => {
 
   // Valida formulário
   const formIsValid = () => {
-    return (userSelected.email && communitySelected.name);
+    return userSelected.email && communitySelected.name;
   };
 
   const onError = () => {

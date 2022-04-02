@@ -29,7 +29,6 @@ const Routes = () => {
 
   const AuthRoutes = () => (
     <Stack.Navigator>
-      
       <Stack.Screen
         name="InitialPage"
         component={InitialPage}
@@ -112,7 +111,7 @@ const Routes = () => {
           headerTintColor: '#fff',
         }}
       />
-       <Stack.Screen
+      <Stack.Screen
         name="UserRegistrationRequestPage"
         component={UserRegistrationRequestPage}
         options={{
