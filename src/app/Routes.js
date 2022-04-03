@@ -20,6 +20,7 @@ import InitialPage from 'pages/InitialPage';
 import ForgotPasswordPage from 'pages/ForgotPasswordPage';
 import AddContributor from 'pages/AddContributor';
 import api from 'services/api';
+import Tutoriais from 'pages/Tutoriais';
 
 const Routes = () => {
   const user = useSelector(auth);
@@ -118,6 +119,19 @@ const Routes = () => {
         component={DynamicForm}
         options={{
           title: 'Solicitar Apoio',
+          headerStyle: {
+            backgroundColor: `${theme.colors.primary}`,
+            elevation: 0,
+          },
+          headerTintColor: '#fff',
+        }}
+      />
+      <Drawer.Screen
+        name="Tutoriais"
+        component={Tutoriais}
+        options={{
+          headerTitle: '',
+          title: 'Tutoriais',
           headerStyle: {
             backgroundColor: `${theme.colors.primary}`,
             elevation: 0,
