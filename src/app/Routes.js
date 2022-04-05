@@ -195,6 +195,19 @@ const Routes = () => {
           }}
         />
       ) : null}
+      <Drawer.Screen
+        name="Tutoriais"
+        component={Tutoriais}
+        options={{
+          headerTitle: '',
+          title: 'Tutoriais',
+          headerStyle: {
+            backgroundColor: `${theme.colors.primary}`,
+            elevation: 0,
+          },
+          headerTintColor: '#fff',
+        }}
+      />
     </Drawer.Navigator>
   );
 
