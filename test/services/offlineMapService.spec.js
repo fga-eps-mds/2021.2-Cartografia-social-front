@@ -40,18 +40,9 @@ describe('offlineMapService', () => {
         expect(areas.length).toBeGreaterThanOrEqual(1);
         mockAxios.post.mockResolvedValue({ data: { id: 'someId' } });
 
-        await syncAreas('some@email.com');
+        await expect(syncAreas('some@email.com')).resolves.toBeUndefined();
         expect(mockAxios.post).toHaveBeenCalledTimes(areas.length * 2);
-        let i = 1;
-        for (const area of areas) {
-            expect(mockAxios.post).toHaveBeenNthCalledWith(i, '/maps/area', area);
-            i = i + 1;
-            expect(mockAxios.post).toHaveBeenNthCalledWith(i, '/maps/addToCommunity', {
-                locationId: 'someId',
-                userEmail: 'some@email.com',
-            });
-            i = i + 1;
-        }
+
         const newAreas = await getAreas();
         expect(newAreas.length).toStrictEqual(0);
     })
@@ -63,11 +54,7 @@ describe('offlineMapService', () => {
         expect(areas.length).toBeGreaterThanOrEqual(1);
         mockAxios.post.mockRejectedValue(new Error("Network Error"));
         await expect(syncAreas('some@email.com')).rejects.toThrow("Network Error");
-        let i = 1;
-        for (const area of areas) {
-            expect(mockAxios.post).toHaveBeenNthCalledWith(i, '/maps/area', area);
-            i = i + 1;
-        }
+        expect(mockAxios.post).toHaveBeenCalledTimes(1);
         const newAreas = await getAreas();
         expect(newAreas.length).toStrictEqual(areas.length);
     })

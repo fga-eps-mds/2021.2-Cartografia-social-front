@@ -5,35 +5,28 @@ import api from './api';
 const AREA_ENTITY = 'area';
 
 const postArea = async (area, userEmail) => {
-    const response = await api.post('/maps/area', area)
-    console.log(response)
-    const locationId = response.data.id;
-    await api.post('/maps/addToCommunity', {
-        locationId: locationId,
-        userEmail: userEmail,
-    })
-}
+  const response = await api.post('/maps/area', area);
+  const locationId = response.data.id;
+  await api.post('/maps/addToCommunity', {
+    locationId,
+    userEmail,
+  });
+};
 
-export const saveArea = async (area) => localDatabase.post(AREA_ENTITY, {
+export const saveArea = async (area) =>
+  localDatabase.post(AREA_ENTITY, {
     ...area,
     id: uuid.v4(),
-});
+  });
 
 export const getAreas = async () => localDatabase.getAll(AREA_ENTITY);
 
 export const syncAreas = async (userEmail) => {
-    const areas = await getAreas();
-    let errors = []
+  const areas = await getAreas();
+  /* eslint-disable-next-line */
     for (const area of areas) {
-        try {
-            await postArea(area, userEmail);
-            await localDatabase.remove(AREA_ENTITY, area.id);
-        }
-        catch (e) {
-            errors.push(e);
-        }
-    }
-    if (errors.length > 0) {
-        throw errors[0];
-    }
-}
+    /* eslint-disable no-await-in-loop */
+    await postArea(area, userEmail);
+    await localDatabase.remove(AREA_ENTITY, area.id);
+  }
+};

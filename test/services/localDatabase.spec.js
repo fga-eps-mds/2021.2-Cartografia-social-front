@@ -55,5 +55,13 @@ describe('localDatabase', () => {
     it('fails with a data without id', async () => {
         await expect(localDatabase.post('test', { name: 'newName' })).rejects.toThrow();
     })
+
+    it('can put and delete n objects', async () => {
+        const data = await localDatabase.getAll('test');
+        expect(data).toHaveLength(2);
+        await expect(localDatabase.remove('test', 'test')).resolves.toBeUndefined();
+        await expect(localDatabase.remove('test', 'test2')).resolves.toBeUndefined();
+        expect(await localDatabase.getAll('test')).toStrictEqual([]);
+    })
 })
 
