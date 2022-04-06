@@ -35,7 +35,7 @@ afterEach(() => {
 describe('loginService', () => {
     it('can login correctly', async () => {
         mockAxios.get.mockResolvedValue({ data: mockUserInfo });
-        await expect(login(correctUserData.email, correctUserData.password, false)).resolves.toStrictEqual(mockUserInfo);
+        await expect(login(correctUserData.email, correctUserData.password)).resolves.toStrictEqual(mockUserInfo);
         await expect(AsyncStorage.getItem('access_token')).resolves.toStrictEqual('Bearer token');
         await expect(localDatabase.get(USER_ENTITY, mockUserInfo.id)).resolves.toStrictEqual(mockUserInfo);
         expect(mockAxios.get).toHaveBeenCalledTimes(1);
