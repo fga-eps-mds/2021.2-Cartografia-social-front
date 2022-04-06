@@ -94,8 +94,10 @@
     "eslint-plugin-react-hooks": "^1.7.0",
     "husky": "^4.2.5",
     "jest": "^25.1.0",
+    "jest-mock-axios": "^4.5.0",
     "jest-sonar": "^0.2.12",
     "metro-react-native-babel-preset": "^0.59.0",
+    "mock-async-storage": "^2.2.0",
     "prettier": "^2.2.1",
     "react-native-svg-transformer": "^0.14.3",
     "react-test-renderer": "16.13.1"
