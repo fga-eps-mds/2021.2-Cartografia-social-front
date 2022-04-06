@@ -30,6 +30,7 @@
     "crypto-js": "^4.1.1",
     "dotenv": "^16.0.0",
     "form-data": "^2.3.3",
+    "fs": "^0.0.1-security",
     "lodash": "^4.17.21",
     "lottie-ios": "^3.2.3",
     "lottie-react-native": "^4.0.3",

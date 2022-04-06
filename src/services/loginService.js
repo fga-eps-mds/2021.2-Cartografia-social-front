@@ -36,14 +36,22 @@ const firebaseLogin = async (email, password) => {
     email.trim(),
     password.trim(),
   );
-  return userCredentials.user.getIdToken();
+  return userCredentials;
 };
 
 const onlineLogin = async (email, password) => {
-  const token = await firebaseLogin(email, password);
+  const userCredentials = await firebaseLogin(email, password);
+  const token = await userCredentials.user.getIdToken();
   const userInfo = await getUserInfo(email, token);
+  const userLogIn = {
+    name: userCredentials.user.displayName,
+    id: userCredentials.user.providerId,
+    token,
+    email: email,
+    data: userInfo,
+  };
   await AsyncStorage.setItem('access_token', `Bearer ${token}`);
-  await localDatabase.put(USER_ENTITY, userInfo);
+  await localDatabase.put(USER_ENTITY, userLogIn);
   await saveLoginDataOffline(email, password);
   return userInfo;
 };

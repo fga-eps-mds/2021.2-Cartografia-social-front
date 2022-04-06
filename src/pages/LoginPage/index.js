@@ -1,18 +1,16 @@
-import React, {useState} from 'react';
-import ScrollView from 'components/UI/ScrollView';
-import Input from 'components/UI/Input';
-import required from 'validators/required';
-import api from 'services/api';
-import Btn from 'components/UI/Btn';
-import auth from '@react-native-firebase/auth';
-import AsyncStorage from '@react-native-community/async-storage';
-import * as Actions from 'store/actions';
-import {useDispatch} from 'react-redux';
-import {useFocusEffect} from '@react-navigation/native';
-import {Alert} from 'react-native';
-import {Container, Header, HeaderText, InputText, TextBtn} from './styles';
 import NetInfo from '@react-native-community/netinfo';
-import { login } from 'services/loginService';
+import {useFocusEffect} from '@react-navigation/native';
+import Btn from 'components/UI/Btn';
+import Input from 'components/UI/Input';
+import ScrollView from 'components/UI/ScrollView';
+import React, {useState} from 'react';
+import {Alert} from 'react-native';
+import {useDispatch} from 'react-redux';
+import {login} from 'services/loginService';
+import * as Actions from 'store/actions';
+import required from 'validators/required';
+
+import {Container, Header, HeaderText, InputText, TextBtn} from './styles';
 
 const LoginPage = ({navigation}) => {
   const dispatch = useDispatch();
@@ -42,14 +40,17 @@ const LoginPage = ({navigation}) => {
   );
 
   const netInfo = NetInfo.useNetInfo();
-  
+
   const onPress = async () => {
     try {
-      const isInternetReachable = netInfo.isInternetReachable;
-      const userResponse = await login(email.value, password.value, !isInternetReachable);
+      const {isInternetReachable} = netInfo;
+      const userResponse = await login(
+        email.value,
+        password.value,
+        !isInternetReachable,
+      );
       if (userResponse) {
-        userLogIn.data = userResponse.data;
-        dispatch(Actions.login(userLogIn));
+        dispatch(Actions.login({...userResponse, demonstrationMode: false}));
       }
     } catch (error) {
       Alert.alert('Atenção!', 'Erro na etapa de autenticação!');
@@ -57,8 +58,6 @@ const LoginPage = ({navigation}) => {
       console.error(error);
     }
   };
-
-
 
   return (
     <>
