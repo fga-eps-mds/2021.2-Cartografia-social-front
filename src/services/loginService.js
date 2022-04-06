@@ -28,8 +28,7 @@ const getUserInfo = async (email) => {
 
 const getUserInfoOffline = async (email) => {
   const users = await localDatabase.getAll(USER_ENTITY);
-  const selectedUser = users.find((user) => user.email === email);
-  return selectedUser;
+  return users.find((user) => user.email === email);
 };
 
 const firebaseLogin = async (email, password) => {
@@ -55,6 +54,8 @@ const offilineLogin = async (email, password) => {
 };
 
 export const login = async (email, password, isOffline = false) => {
-  if (isOffline) return offilineLogin(email, password);
+  if (isOffline) {
+    return offilineLogin(email, password);
+  }
   return onlineLogin(email, password);
 };
