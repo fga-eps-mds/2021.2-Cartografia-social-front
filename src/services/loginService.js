@@ -9,7 +9,7 @@ import {
 
 export const USER_ENTITY = 'user';
 
-const getUserInfo = async (email) => {
+const getUserInfo = async (email, token) => {
   const result = await api.get(
     'users/userByEmail',
     {
@@ -19,7 +19,7 @@ const getUserInfo = async (email) => {
     },
     {
       headers: {
-        Authorization: await AsyncStorage.getItem('access_token'),
+        Authorization: `Bearer ${token}`,
       },
     },
   );
@@ -41,8 +41,8 @@ const firebaseLogin = async (email, password) => {
 
 const onlineLogin = async (email, password) => {
   const token = await firebaseLogin(email, password);
+  const userInfo = await getUserInfo(email, token);
   await AsyncStorage.setItem('access_token', `Bearer ${token}`);
-  const userInfo = await getUserInfo(email);
   await localDatabase.put(USER_ENTITY, userInfo);
   await saveLoginDataOffline(email, password);
   return userInfo;

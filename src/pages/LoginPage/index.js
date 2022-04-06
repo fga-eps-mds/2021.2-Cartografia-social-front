@@ -11,6 +11,8 @@ import {useDispatch} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 import {Alert} from 'react-native';
 import {Container, Header, HeaderText, InputText, TextBtn} from './styles';
+import NetInfo from '@react-native-community/netinfo';
+import { login } from 'services/loginService';
 
 const LoginPage = ({navigation}) => {
   const dispatch = useDispatch();
@@ -39,55 +41,24 @@ const LoginPage = ({navigation}) => {
     }, []),
   );
 
-  const setUser = async (userCredentials, token) => {
-    const userLogIn = {
-      name: userCredentials.user.displayName,
-      id: userCredentials.user.providerId,
-      token,
-      demonstrationMode: false,
-      email: email.value,
-      data: null,
-    };
-    const userResponse = await api
-      .get(
-        'users/userByEmail',
-        {
-          params: {
-            email: email.value,
-          },
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      )
-      .catch(async () => {
-        Alert.alert('Atenção!', 'Erro ao pegar dados do usuário!');
-        // eslint-disable-next-line no-console
-        await AsyncStorage.setItem('access_token', '');
-      });
-    if (userResponse) {
-      userLogIn.data = userResponse.data;
-      dispatch(Actions.login(userLogIn));
-    }
-  };
-
+  const netInfo = NetInfo.useNetInfo();
+  
   const onPress = async () => {
     try {
-      const userCredentials = await auth().signInWithEmailAndPassword(
-        email.value.trim(),
-        password.value.trim(),
-      );
-      const token = await userCredentials.user.getIdToken();
-      await AsyncStorage.setItem('access_token', `Bearer ${token}`);
-      await setUser(userCredentials, token);
+      const isInternetReachable = netInfo.isInternetReachable;
+      const userResponse = await login(email.value, password.value, !isInternetReachable);
+      if (userResponse) {
+        userLogIn.data = userResponse.data;
+        dispatch(Actions.login(userLogIn));
+      }
     } catch (error) {
       Alert.alert('Atenção!', 'Erro na etapa de autenticação!');
       // eslint-disable-next-line no-console
       console.error(error);
     }
   };
+
+
 
   return (
     <>
