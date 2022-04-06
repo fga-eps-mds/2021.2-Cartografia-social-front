@@ -5,7 +5,7 @@ import Input from 'components/UI/Input';
 import required from 'validators/required';
 import Btn from 'components/UI/Btn';
 import normalize from 'react-native-normalize';
-import {Alert, Keyboard} from 'react-native';
+import {Alert, Keyboard, Picker} from 'react-native';
 import {
   Container,
   Header,
@@ -16,6 +16,8 @@ import {
   Icon,
 } from './styles';
 import ComunityPicker from '../../components/ComunityPicker';
+// import { map } from 'lodash';
+// import UserRegistrationPicker from '../../components/UserRegistrationPicker';
 
 let works = true;
 
@@ -46,12 +48,21 @@ const UserRegistrationRequestPage = ({navigation}) => {
     value: '',
   });
 
-  const [justify, setJustify] = useState({
+  const [posicao, setPosicao] = useState({
     isValid: false,
     value: '',
   });
 
-  // REVISAO - COMEÇO
+  const [cargo, setCargo] = useState({
+    isValid: false,
+    value: '',
+  });
+
+  const [comunidade, setComunidade] = useState({
+    isValid: false,
+    value: '',
+  });
+
   // Get das comunidades
   const [communitySelected, setComunitySelected] = useState(
     'Selecione uma comunidade',
@@ -60,7 +71,13 @@ const UserRegistrationRequestPage = ({navigation}) => {
   const toggleGetFromApiComunity = () =>
     setGetComunityFromApi(!getComunityFromApi);
 
-  // Modal
+  // Get cargos
+  /* const [cargoSelected, setCargoSelected] = useState('Selecione uma cargo');
+  const [getCargo, setGetCargo] = useState(false);
+  const toggleGetFromApiUserRegistration = () =>
+    setGetComunityFromApi(!getComunityFromApi); */
+
+  // Modal Comunidades
   const [isModalComunityPickerVisible, setIsModalComunityPickerVisible] =
     useState(false);
   const toggleModalComunityPicker = () =>
@@ -70,6 +87,29 @@ const UserRegistrationRequestPage = ({navigation}) => {
     setIsModalComunityPickerVisible(true);
   };
 
+  // Modal Paper
+  // const [paper] = useState(['Membro', 'Pesquisador', 'Membro Pesquisador']);
+
+  /* const [isModaPaperPickerVisible, setIsModalPaperPickerVisible] =
+    useState(false);
+  const toggleModalPaperPicker = () =>
+    setIsModalPaperPickerVisible(!isModaPaperPickerVisible);
+  const onOpenModalPaperUser = () => {
+    toggleModalPaperPicker();
+    // eslint-disable-next-line no-unused-expressions
+    [
+      {
+        Membro: 'Membro',
+      },
+      {
+        Pesquisador: 'Pesquisador',
+      },
+      {
+        MembroPesquisador: 'Membro Pesquisador',
+      },
+    ];
+    setIsModalPaperPickerVisible(true);
+  }; */
   // Aplicação de um efeito
   useEffect(() => {
     if (navigation.getParent()) {
@@ -79,13 +119,7 @@ const UserRegistrationRequestPage = ({navigation}) => {
 
   // Vallidação de campos
   const formIsValid = () => {
-    return (
-      name.value &&
-      email.value &&
-      password.value &&
-      ispassword.value &&
-      justify.value
-    );
+    return name.value && email.value && password.value && ispassword.value;
   };
 
   const passwordValidation = () => {
@@ -122,7 +156,7 @@ const UserRegistrationRequestPage = ({navigation}) => {
         email: email.value,
         cellPhone: cellPhone.value,
         password: password.value,
-        justification: justify.value,
+        // justification: justify.value,
         community: communitySelected.id,
       };
       addUserRequest(userRequestDto);
@@ -183,15 +217,24 @@ const UserRegistrationRequestPage = ({navigation}) => {
             autoCapitalize="words"
             rules={[required]}
           />
-          <InputText>Justificativa</InputText>
+          <InputText>Posição dentro da comunidade</InputText>
+          <Picker>
+            <Picker.Item label="Membro" value="Membro" />
+            <Picker.Item label="Pesquisador" value="Pesquisador" />
+            <Picker.Item
+              label="Membro Pesquisador"
+              value="Membro Pesquisador"
+            />
+          </Picker>
+          <InputText>Cargo (Membros)</InputText>
           <Input
-            label="Justifique sua solicitação"
-            onChange={setJustify}
-            value={justify.value}
+            label="Qual o seu cargo dentro da comunidade?"
+            onChange={setCargo}
+            value={cargo.value}
             autoCapitalize="words"
             rules={[required]}
           />
-          <InputText>Comunidade (opcional)</InputText>
+          <InputText>Comunidade (Pesquisadores)</InputText>
           <PickerContainer onPress={onOpenModalComunity}>
             <PickerText selected>
               {communitySelected.name
