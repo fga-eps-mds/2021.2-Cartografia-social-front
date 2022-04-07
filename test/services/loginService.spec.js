@@ -5,12 +5,14 @@ import * as localDatabase from '../../src/services/localDatabase';
 
 jest.mock('@react-native-firebase/auth', () => {
     return () => ({
-        signInWithEmailAndPassword: async (_, __) =>
-        ({
-            user: {
-                getIdToken: async () => 'token'
-            }
-        }),
+        signInWithEmailAndPassword: async(_, __) =>
+            ({
+                user: {
+                    getIdToken: async() => 'token',
+                    displayName: 'name',
+                    providerId: 'id',
+                }
+            }),
     })
 });
 const mockUserInfo = {
@@ -28,31 +30,39 @@ const correctUserData = {
     password: 'pocoto123',
 }
 
+const userLogData = {
+    name: 'name',
+    id: 'id',
+    token: 'token',
+    email: 'a@a.com',
+    data: mockUserInfo,
+}
+
 afterEach(() => {
     mockAxios.reset();
 });
 
 describe('loginService', () => {
-    it('can login correctly', async () => {
+    it('can login correctly', async() => {
         mockAxios.get.mockResolvedValue({ data: mockUserInfo });
-        await expect(login(correctUserData.email, correctUserData.password)).resolves.toStrictEqual(mockUserInfo);
+        await expect(login(correctUserData.email, correctUserData.password)).resolves.toStrictEqual(userLogData);
         await expect(AsyncStorage.getItem('access_token')).resolves.toStrictEqual('Bearer token');
-        await expect(localDatabase.get(USER_ENTITY, mockUserInfo.id)).resolves.toStrictEqual(mockUserInfo);
+        await expect(localDatabase.get(USER_ENTITY, mockUserInfo.id)).resolves.toStrictEqual(userLogData);
         expect(mockAxios.get).toHaveBeenCalledTimes(1);
     })
 
-    it('can login offline', async () => {
-        await expect(login(correctUserData.email, correctUserData.password, true)).resolves.toStrictEqual(mockUserInfo);
-        await expect(localDatabase.get(USER_ENTITY, mockUserInfo.id)).resolves.toStrictEqual(mockUserInfo);
+    it('can login offline', async() => {
+        await expect(login(correctUserData.email, correctUserData.password, true)).resolves.toStrictEqual(userLogData);
+        await expect(localDatabase.get(USER_ENTITY, mockUserInfo.id)).resolves.toStrictEqual(userLogData);
         expect(mockAxios.get).toHaveBeenCalledTimes(0);
     })
 
-    it('cannot login offline with incorrect data', async () => {
+    it('cannot login offline with incorrect data', async() => {
         await expect(login(correctUserData.email, 'wrong pass', true)).rejects.toThrow();
         expect(mockAxios.get).toHaveBeenCalledTimes(0);
     })
 
-    it('cannot login offline with incorrect email', async () => {
+    it('cannot login offline with incorrect email', async() => {
         await expect(login('wrong email', correctUserData.password, true)).rejects.toThrow();
         expect(mockAxios.get).toHaveBeenCalledTimes(0);
     })
