@@ -48,20 +48,20 @@ const UserRegistrationRequestPage = ({navigation}) => {
     value: '',
   });
 
-  const [posicao, setPosicao] = useState({
+  /* const [posicao, setPosicao] = useState({
     isValid: false,
     value: '',
-  });
+  }); */
 
   const [cargo, setCargo] = useState({
     isValid: false,
     value: '',
   });
 
-  const [comunidade, setComunidade] = useState({
+  /* const [comunidade, setComunidade] = useState({
     isValid: false,
     value: '',
-  });
+  }); */
 
   // Get das comunidades
   const [communitySelected, setComunitySelected] = useState(
@@ -72,8 +72,10 @@ const UserRegistrationRequestPage = ({navigation}) => {
     setGetComunityFromApi(!getComunityFromApi);
 
   // Get cargos
-  /* const [cargoSelected, setCargoSelected] = useState('Selecione uma cargo');
-  const [getCargo, setGetCargo] = useState(false);
+  const [posicao] = useState(['Membro', 'Pesquisador', 'Membro Pesquisador']);
+  const [posicaoSelected, setposicaoSelected] = useState([]);
+
+  /* const [getCargo, setGetCargo] = useState(false);
   const toggleGetFromApiUserRegistration = () =>
     setGetComunityFromApi(!getComunityFromApi); */
 
@@ -87,29 +89,6 @@ const UserRegistrationRequestPage = ({navigation}) => {
     setIsModalComunityPickerVisible(true);
   };
 
-  // Modal Paper
-  // const [paper] = useState(['Membro', 'Pesquisador', 'Membro Pesquisador']);
-
-  /* const [isModaPaperPickerVisible, setIsModalPaperPickerVisible] =
-    useState(false);
-  const toggleModalPaperPicker = () =>
-    setIsModalPaperPickerVisible(!isModaPaperPickerVisible);
-  const onOpenModalPaperUser = () => {
-    toggleModalPaperPicker();
-    // eslint-disable-next-line no-unused-expressions
-    [
-      {
-        Membro: 'Membro',
-      },
-      {
-        Pesquisador: 'Pesquisador',
-      },
-      {
-        MembroPesquisador: 'Membro Pesquisador',
-      },
-    ];
-    setIsModalPaperPickerVisible(true);
-  }; */
   // Aplicação de um efeito
   useEffect(() => {
     if (navigation.getParent()) {
@@ -217,15 +196,14 @@ const UserRegistrationRequestPage = ({navigation}) => {
             autoCapitalize="words"
             rules={[required]}
           />
-          <InputText>Posição dentro da comunidade</InputText>
-          <Picker>
-            <Picker.Item label="Membro" value="Membro" />
-            <Picker.Item label="Pesquisador" value="Pesquisador" />
-            <Picker.Item
-              label="Membro Pesquisador"
-              value="Membro Pesquisador"
-            />
+          <Picker
+            selectedValue={posicaoSelected}
+            onValueChange={(itemValue) => setposicaoSelected(itemValue)}>
+            {posicao.map((ps) => {
+              return <Picker.Item label={ps} value={ps} />;
+            })}
           </Picker>
+
           <InputText>Cargo (Membros)</InputText>
           <Input
             label="Qual o seu cargo dentro da comunidade?"
