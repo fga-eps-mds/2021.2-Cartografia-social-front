@@ -196,6 +196,7 @@ const UserRegistrationRequestPage = ({navigation}) => {
             autoCapitalize="words"
             rules={[required]}
           />
+          <InputText>Posição</InputText>
           <Picker
             selectedValue={posicaoSelected}
             onValueChange={(itemValue) => setposicaoSelected(itemValue)}>
@@ -203,24 +204,31 @@ const UserRegistrationRequestPage = ({navigation}) => {
               return <Picker.Item label={ps} value={ps} />;
             })}
           </Picker>
+          {posicaoSelected === 'Membro' ? (
+            <>
+              <InputText>Cargo (Membros)</InputText>
+              <Input
+                label="Qual o seu cargo dentro da comunidade?"
+                onChange={setCargo}
+                value={cargo.value}
+                autoCapitalize="words"
+                rules={[required]}
+              />
+            </>
+          ) : (
+            <>
+              <InputText>Comunidade (Pesquisadores)</InputText>
+              <PickerContainer onPress={onOpenModalComunity}>
+                <PickerText selected>
+                  {communitySelected.name
+                    ? communitySelected.name
+                    : communitySelected}
+                </PickerText>
+                <Icon size={normalize(20)} name="angle-down" color="#a3a3a3" />
+              </PickerContainer>
+            </>
+          )}
 
-          <InputText>Cargo (Membros)</InputText>
-          <Input
-            label="Qual o seu cargo dentro da comunidade?"
-            onChange={setCargo}
-            value={cargo.value}
-            autoCapitalize="words"
-            rules={[required]}
-          />
-          <InputText>Comunidade (Pesquisadores)</InputText>
-          <PickerContainer onPress={onOpenModalComunity}>
-            <PickerText selected>
-              {communitySelected.name
-                ? communitySelected.name
-                : communitySelected}
-            </PickerText>
-            <Icon size={normalize(20)} name="angle-down" color="#a3a3a3" />
-          </PickerContainer>
           <Btn
             style={{marginVertical: 50}}
             title="Enviar solicitação"
