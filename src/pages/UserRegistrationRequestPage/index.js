@@ -204,11 +204,12 @@ const UserRegistrationRequestPage = ({navigation}) => {
               return <Picker.Item label={ps} value={ps} />;
             })}
           </Picker>
-          {posicaoSelected === 'Membro' ? (
+          {posicaoSelected === 'Pesquisador' ||
+          posicaoSelected === 'Membro Pesquisador' ? (
             <>
-              <InputText>Cargo (Membros)</InputText>
+              <InputText>Instituição Ligada ao Pesquisador</InputText>
               <Input
-                label="Qual o seu cargo dentro da comunidade?"
+                label="A qual instituição você está ligado?"
                 onChange={setCargo}
                 value={cargo.value}
                 autoCapitalize="words"
@@ -217,17 +218,25 @@ const UserRegistrationRequestPage = ({navigation}) => {
             </>
           ) : (
             <>
-              <InputText>Comunidade (Pesquisadores)</InputText>
-              <PickerContainer onPress={onOpenModalComunity}>
-                <PickerText selected>
-                  {communitySelected.name
-                    ? communitySelected.name
-                    : communitySelected}
-                </PickerText>
-                <Icon size={normalize(20)} name="angle-down" color="#a3a3a3" />
-              </PickerContainer>
+              <InputText>Cargo do Membro</InputText>
+              <Input
+                label="Qual o seu cargo dentro da comunidade?"
+                onChange={setCargo}
+                value={cargo.value}
+                autoCapitalize="words"
+                rules={[required]}
+              />
             </>
           )}
+          <InputText>Comunidade</InputText>
+          <PickerContainer onPress={onOpenModalComunity}>
+            <PickerText selected>
+              {communitySelected.name
+                ? communitySelected.name
+                : communitySelected}
+            </PickerText>
+            <Icon size={normalize(20)} name="angle-down" color="#a3a3a3" />
+          </PickerContainer>
 
           <Btn
             style={{marginVertical: 50}}
