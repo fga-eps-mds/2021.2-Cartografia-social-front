@@ -59,7 +59,7 @@ const UserRegistrationRequestPage = ({navigation}) => {
   const [communitySelected, setComunitySelected] = useState(
     'Selecione uma comunidade',
   );
-  const [getComunityFromApi, setGetComunityFromApi] = useState(false);
+  const [getComunityFromApi, setGetComunityFromApi] = useState();
   const toggleGetFromApiComunity = () =>
     setGetComunityFromApi(!getComunityFromApi);
 
@@ -91,13 +91,12 @@ const UserRegistrationRequestPage = ({navigation}) => {
       email.value &&
       password.value &&
       ispassword.value &&
-      cellPhone.value &&
-      (instituicao.value || cargo.value)
+      cellPhone.value
     );
   };
 
-  const passwordValidation = () => {
-    if (password.value !== ispassword.value) {
+  const passwordValidation = (senha, confirmacaoSenha) => {
+    if (senha !== confirmacaoSenha) {
       Alert.alert('Atenção!', 'Senhas não conferem!');
       return false;
     }
@@ -130,9 +129,9 @@ const UserRegistrationRequestPage = ({navigation}) => {
         email: email.value,
         cellPhone: cellPhone.value,
         password: password.value,
-        posicao: posicaoSelected,
-        instituicao: instituicao.value,
-        cargo: cargo.value,
+        role: posicaoSelected,
+        position: cargo.value,
+        affiliation: instituicao.value,
         community: communitySelected.id,
       };
       addUserRequest(userRequestDto);
