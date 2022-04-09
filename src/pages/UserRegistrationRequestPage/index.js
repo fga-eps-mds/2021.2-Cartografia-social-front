@@ -16,13 +16,10 @@ import {
   Icon,
 } from './styles';
 import ComunityPicker from '../../components/ComunityPicker';
-// import { map } from 'lodash';
-// import UserRegistrationPicker from '../../components/UserRegistrationPicker';
 
 let works = true;
 
 const UserRegistrationRequestPage = ({navigation}) => {
-  // Campos: name, email, telefone, senha, confirmar senha e justificativa
   const [name, setName] = useState({
     isValid: false,
     value: '',
@@ -48,20 +45,15 @@ const UserRegistrationRequestPage = ({navigation}) => {
     value: '',
   });
 
-  /* const [posicao, setPosicao] = useState({
+  const [instituicao, setInstituicao] = useState({
     isValid: false,
     value: '',
-  }); */
+  });
 
   const [cargo, setCargo] = useState({
     isValid: false,
     value: '',
   });
-
-  /* const [comunidade, setComunidade] = useState({
-    isValid: false,
-    value: '',
-  }); */
 
   // Get das comunidades
   const [communitySelected, setComunitySelected] = useState(
@@ -73,11 +65,7 @@ const UserRegistrationRequestPage = ({navigation}) => {
 
   // Get cargos
   const [posicao] = useState(['Membro', 'Pesquisador', 'Membro Pesquisador']);
-  const [posicaoSelected, setposicaoSelected] = useState([]);
-
-  /* const [getCargo, setGetCargo] = useState(false);
-  const toggleGetFromApiUserRegistration = () =>
-    setGetComunityFromApi(!getComunityFromApi); */
+  const [posicaoSelected, setposicaoSelected] = useState('Membro');
 
   // Modal Comunidades
   const [isModalComunityPickerVisible, setIsModalComunityPickerVisible] =
@@ -98,7 +86,14 @@ const UserRegistrationRequestPage = ({navigation}) => {
 
   // Vallidação de campos
   const formIsValid = () => {
-    return name.value && email.value && password.value && ispassword.value;
+    return (
+      name.value &&
+      email.value &&
+      password.value &&
+      ispassword.value &&
+      cellPhone.value &&
+      (instituicao.value || cargo.value)
+    );
   };
 
   const passwordValidation = () => {
@@ -135,7 +130,9 @@ const UserRegistrationRequestPage = ({navigation}) => {
         email: email.value,
         cellPhone: cellPhone.value,
         password: password.value,
-        // justification: justify.value,
+        posicao: posicaoSelected,
+        instituicao: instituicao.value,
+        cargo: cargo.value,
         community: communitySelected.id,
       };
       addUserRequest(userRequestDto);
@@ -204,19 +201,7 @@ const UserRegistrationRequestPage = ({navigation}) => {
               return <Picker.Item label={ps} value={ps} />;
             })}
           </Picker>
-          {posicaoSelected === 'Pesquisador' ||
-          posicaoSelected === 'Membro Pesquisador' ? (
-            <>
-              <InputText>Instituição Ligada ao Pesquisador</InputText>
-              <Input
-                label="A qual instituição você está ligado?"
-                onChange={setCargo}
-                value={cargo.value}
-                autoCapitalize="words"
-                rules={[required]}
-              />
-            </>
-          ) : (
+          {posicaoSelected === 'Membro' ? (
             <>
               <InputText>Cargo do Membro</InputText>
               <Input
@@ -227,8 +212,19 @@ const UserRegistrationRequestPage = ({navigation}) => {
                 rules={[required]}
               />
             </>
+          ) : (
+            <>
+              <InputText>Instituição Ligada ao Pesquisador</InputText>
+              <Input
+                label="A qual instituição você está ligado?"
+                onChange={setInstituicao}
+                value={instituicao.value}
+                autoCapitalize="words"
+                rules={[required]}
+              />
+            </>
           )}
-          <InputText>Comunidade</InputText>
+          <InputText>Comunidade (opcional)</InputText>
           <PickerContainer onPress={onOpenModalComunity}>
             <PickerText selected>
               {communitySelected.name
