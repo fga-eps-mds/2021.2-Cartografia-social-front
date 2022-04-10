@@ -31,34 +31,24 @@ const getUserInfoOffline = async (email) => {
   return users.find((user) => user.email === email);
 };
 
-const firebaseLogin = async (email, password) => {
-  const userCredentials = await auth().signInWithEmailAndPassword(
-    email.trim(),
-    password.trim(),
-  );
-  return userCredentials;
-};
+const firebaseLogin = async (email, password) =>
+  auth().signInWithEmailAndPassword(email.trim(), password.trim());
 
 const onlineLogin = async (email, password) => {
   const userCredentials = await firebaseLogin(email, password);
   const token = await userCredentials.user.getIdToken();
   await AsyncStorage.setItem('access_token', `Bearer ${token}`);
-  try {
-    const userInfo = await getUserInfo(email, token);
-    const userLogIn = {
-      name: userCredentials.user.displayName,
-      id: userCredentials.user.providerId,
-      token,
-      email,
-      data: userInfo,
-    };
-    await localDatabase.put(USER_ENTITY, userLogIn);
-    await saveLoginDataOffline(email, password);
-    return userLogIn;
-  } catch (error) {
-    await AsyncStorage.removeItem('access_token');
-    throw error;
-  }
+  const userInfo = await getUserInfo(email, token);
+  const userLogIn = {
+    name: userCredentials.user.displayName,
+    id: userCredentials.user.providerId,
+    token,
+    email,
+    data: userInfo,
+  };
+  await localDatabase.put(USER_ENTITY, userLogIn);
+  await saveLoginDataOffline(email, password);
+  return userLogIn;
 };
 
 const offilineLogin = async (email, password) => {

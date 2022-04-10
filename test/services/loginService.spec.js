@@ -66,4 +66,13 @@ describe('loginService', () => {
         await expect(login('wrong email', correctUserData.password, true)).rejects.toThrow();
         expect(mockAxios.get).toHaveBeenCalledTimes(0);
     })
+
+    it('do not delete token when the internet is off', async() => {
+        mockAxios.get.mockRejectedValue(new Error('Network Error'));
+        await expect(login(correctUserData.email, correctUserData.password, false)).rejects.toThrow();
+        expect(mockAxios.get).toHaveBeenCalledTimes(1);
+        await expect(login(correctUserData.email, correctUserData.password, true)).resolves.toStrictEqual(userLogData);
+        await expect(localDatabase.get(USER_ENTITY, mockUserInfo.id)).resolves.toStrictEqual(userLogData);
+
+    })
 })
