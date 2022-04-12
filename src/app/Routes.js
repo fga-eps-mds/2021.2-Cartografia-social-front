@@ -21,6 +21,7 @@ import ForgotPasswordPage from 'pages/ForgotPasswordPage';
 import AddContributor from 'pages/AddContributor';
 import api from 'services/api';
 import UserRegistrationRequestPage from 'pages/UserRegistrationRequestPage';
+import Tutoriais from 'pages/Tutoriais';
 
 const Routes = () => {
   const user = useSelector(auth);
@@ -154,29 +155,42 @@ const Routes = () => {
           headerTintColor: '#fff',
         }}
       />
+      <Drawer.Screen
+        name="Tutoriais"
+        component={Tutoriais}
+        options={{
+          headerTitle: '',
+          title: 'Tutoriais',
+          headerStyle: {
+            backgroundColor: `${theme.colors.primary}`,
+            elevation: 0,
+          },
+          headerTintColor: '#fff',
+        }}
+      />
     </Drawer.Navigator>
   );
 
-  const isAdmin = async () => {
+  const isLeader = async () => {
     const communities = await api.get(
       `/community/getUserCommunity?userEmail=${user.data.email}`,
     );
 
     const comId = communities.data.id;
 
-    const adminsResp = await api.get(
+    const leaderResp = await api.get(
       `/community/getAdminUsers?communityId=${comId}`,
     );
-    const admins = adminsResp.data;
+    const leaders = leaderResp.data;
 
-    const privillege = admins.some((users) => users.userId === user.data.id);
+    const privillege = leaders.some((users) => users.userId === user.data.id);
 
     return privillege;
   };
 
-  const [admin, setIsAdmin] = useState(false);
-  isAdmin().then((response) => {
-    setIsAdmin(response);
+  const [leader, setIsLeader] = useState(false);
+  isLeader().then((response) => {
+    setIsLeader(response);
   });
 
   const SignedIn = () => (
@@ -200,7 +214,7 @@ const Routes = () => {
           }}
         />
       ) : null} */}
-      {user.data && admin ? (
+      {user.data && leader ? (
         <Stack.Screen
           name="AddContributor"
           component={AddContributor}
@@ -210,6 +224,19 @@ const Routes = () => {
           }}
         />
       ) : null}
+      <Drawer.Screen
+        name="Tutoriais"
+        component={Tutoriais}
+        options={{
+          headerTitle: '',
+          title: 'Tutoriais',
+          headerStyle: {
+            backgroundColor: `${theme.colors.primary}`,
+            elevation: 0,
+          },
+          headerTintColor: '#fff',
+        }}
+      />
     </Drawer.Navigator>
   );
 
