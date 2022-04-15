@@ -33,6 +33,18 @@ afterEach(() => {
 });
 
 describe('offlineMapService', () => {
+
+    it('Can get offline areas with no area saved', async() => {
+        await expect(getCommunityData(userEmail, true)).resolves.toStrictEqual({ areas: [], points: [] });
+        expect(mockAxios.post).toHaveBeenCalledTimes(0);
+        expect(mockAxios.get).toHaveBeenCalledTimes(0);
+    });
+
+    it('Can save marker directly online', async() => {
+        mockAxios.post.mockResolvedValue({ data: { id: 'someId' } });
+        await expect(saveArea(newMarker, userEmail)).resolves.toBeUndefined();
+    })
+
     it('Can save a new marker', async() => {
         mockAxios.get.mockResolvedValue({ data: mockReturnedMarkers });
         mockAxios.post.mockResolvedValue({ data: { id: 'someId' } });

@@ -26,7 +26,7 @@ const postArea = async(area, userEmail) => {
     });
 };
 
-const getOfflineCommunityData = async(userEmail) => {
+const getOfflineCommunityData = async() => {
     const data = await localDatabase.get(ONLINE_MAP_ENTITY, ONLINE_MAP_ENTITY) || { areas: [], points: [] };
     const localAreas = await localDatabase.getAll(AREA_ENTITY);
     return {
@@ -54,7 +54,7 @@ export const saveArea = async(area, userEmail, isOffline = false) => {
 
 export const getCommunityData = async(userEmail, isOffline = false) => {
     if (isOffline) {
-        return getOfflineCommunityData(userEmail);
+        return getOfflineCommunityData();
     } else {
         return getOnlineCommunityData(userEmail);
     }
