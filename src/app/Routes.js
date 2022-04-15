@@ -20,6 +20,7 @@ import InitialPage from 'pages/InitialPage';
 import ForgotPasswordPage from 'pages/ForgotPasswordPage';
 import AddContributor from 'pages/AddContributor';
 import api from 'services/api';
+import UserRegistrationRequestPage from 'pages/UserRegistrationRequestPage';
 import Tutoriais from 'pages/Tutoriais';
 
 const Routes = () => {
@@ -34,6 +35,7 @@ const Routes = () => {
         component={InitialPage}
         options={{header: () => null}}
       />
+
       <Stack.Screen
         name="LoginPage"
         component={LoginPage}
@@ -46,6 +48,20 @@ const Routes = () => {
           headerTintColor: '#fff',
         }}
       />
+
+      <Stack.Screen
+        name="UserRegistrationRequestPage"
+        component={UserRegistrationRequestPage}
+        options={{
+          title: '',
+          headerStyle: {
+            backgroundColor: `${theme.colors.primary}`,
+            elevation: 0,
+          },
+          headerTintColor: '#fff',
+        }}
+      />
+
       <Stack.Screen
         name="ForgotPasswordPage"
         component={ForgotPasswordPage}
@@ -58,6 +74,7 @@ const Routes = () => {
           headerTintColor: '#fff',
         }}
       />
+
       <Stack.Screen
         name="DynamicForm"
         component={DynamicForm}
@@ -86,6 +103,18 @@ const Routes = () => {
       <Stack.Screen
         name="ForgotPasswordPage"
         component={ForgotPasswordPage}
+        options={{
+          title: '',
+          headerStyle: {
+            backgroundColor: `${theme.colors.primary}`,
+            elevation: 0,
+          },
+          headerTintColor: '#fff',
+        }}
+      />
+      <Stack.Screen
+        name="UserRegistrationRequestPage"
+        component={UserRegistrationRequestPage}
         options={{
           title: '',
           headerStyle: {

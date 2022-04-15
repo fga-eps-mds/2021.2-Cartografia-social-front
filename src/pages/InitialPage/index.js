@@ -37,6 +37,11 @@ const InitialPage = ({navigation}) => {
       />
       <Btn
         style={{marginVertical: 10}}
+        title="Solicitar Cadastro"
+        onPress={() => navigateToScreen('UserRegistrationRequestPage')}
+      />
+      <Btn
+        style={{marginVertical: 10}}
         title="Solicitar apoio"
         onPress={() => navigateToScreen('DynamicForm')}
       />
