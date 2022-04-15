@@ -1,10 +1,8 @@
 import mockAxios from 'jest-mock-axios';
-import { saveArea, getAreas, syncAreas } from '../../src/services/offlineMapService';
+import { saveArea, getCommunityData, syncCommunityData } from '../../src/services/offlineMapService';
 
-const newMarker =
-{
-    "coordinates": [
-        {
+const newMarker = {
+    "coordinates": [{
             "latitude": -15.824315693302905,
             "longitude": -48.096313923597336
         },
@@ -23,39 +21,49 @@ const newMarker =
     "title": "A"
 }
 
+const mockReturnedMarkers = {
+    areas: [newMarker],
+    points: []
+}
+
+const userEmail = 'user@email.com';
+
 afterEach(() => {
     mockAxios.reset();
 });
 
 describe('offlineMapService', () => {
-    it('Can save a new marker', async () => {
-        expect(await getAreas()).toStrictEqual([]);
-        await expect(saveArea(newMarker)).resolves.toBeUndefined();
-        await expect(saveArea(newMarker)).resolves.toBeUndefined();
-        expect((await getAreas()).length).toStrictEqual(2);
-    })
-
-    it('Can sync saved markers', async () => {
-        const areas = await getAreas();
-        expect(areas.length).toBeGreaterThanOrEqual(1);
+    it('Can save a new marker', async() => {
+        mockAxios.get.mockResolvedValue({ data: mockReturnedMarkers });
         mockAxios.post.mockResolvedValue({ data: { id: 'someId' } });
-
-        await expect(syncAreas('some@email.com')).resolves.toBeUndefined();
-        expect(mockAxios.post).toHaveBeenCalledTimes(areas.length * 2);
-
-        const newAreas = await getAreas();
-        expect(newAreas.length).toStrictEqual(0);
+        expect(await getCommunityData(userEmail)).toStrictEqual(mockReturnedMarkers);
+        await expect(saveArea(newMarker, userEmail, true)).resolves.toBeUndefined();
+        await expect(saveArea(newMarker, userEmail, true)).resolves.toBeUndefined();
+        expect(mockAxios.post).toHaveBeenCalledTimes(0);
+        const communityData = await getCommunityData();
+        expect(communityData.areas.length).toStrictEqual(3);
     })
 
-    it('Do not delete on error to sync areas', async () => {
-        await saveArea(newMarker);
-        await saveArea(newMarker);
-        const areas = await getAreas();
-        expect(areas.length).toBeGreaterThanOrEqual(1);
+    it('Can sync saved markers', async() => {
+        const communityData = await getCommunityData();
+        mockAxios.post.mockResolvedValue({ data: { id: 'someId' } });
+        await expect(syncCommunityData('some@email.com')).resolves.toBeUndefined();
+        expect(mockAxios.post).toHaveBeenCalledTimes(4); // 4 because the post is called 2 times for each marker
+        mockAxios.get.mockResolvedValue({ data: communityData });
+        const newCommunityData = await getCommunityData();
+        expect(newCommunityData.areas.length).toStrictEqual(3);
+    })
+
+    it('Do not delete on error to sync areas', async() => {
+        mockAxios.get.mockResolvedValue({ data: mockReturnedMarkers });
+        await saveArea(newMarker, userEmail, true);
+        await saveArea(newMarker, userEmail, true);
+        const communityData = await getCommunityData();
+        expect(communityData.areas.length).toStrictEqual(3);
         mockAxios.post.mockRejectedValue(new Error("Network Error"));
-        await expect(syncAreas('some@email.com')).rejects.toThrow("Network Error");
+        await expect(syncCommunityData('some@email.com')).rejects.toThrow("Network Error");
         expect(mockAxios.post).toHaveBeenCalledTimes(1);
-        const newAreas = await getAreas();
-        expect(newAreas.length).toStrictEqual(areas.length);
+        const newCommunityData = await getCommunityData();
+        expect(newCommunityData.areas.length).toStrictEqual(3);
     })
 })
