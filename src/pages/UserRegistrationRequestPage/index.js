@@ -64,8 +64,14 @@ const UserRegistrationRequestPage = ({navigation}) => {
     setGetComunityFromApi(!getComunityFromApi);
 
   // Get cargos
-  const [posicao] = useState(['Membro', 'Pesquisador', 'Membro Pesquisador']);
-  const [posicaoSelected, setposicaoSelected] = useState('Membro');
+  const [posicao] = useState([
+    'Membro de Comunidade',
+    'Pesquisador',
+    'Membro Pesquisador',
+  ]);
+  const [posicaoSelected, setposicaoSelected] = useState(
+    'Membro de Comunidade',
+  );
 
   // Modal Comunidades
   const [isModalComunityPickerVisible, setIsModalComunityPickerVisible] =
@@ -124,13 +130,18 @@ const UserRegistrationRequestPage = ({navigation}) => {
   const onSave = async () => {
     Keyboard.dismiss();
     if (passwordValidation(password.value, ispassword.value)) {
+      let type;
+
+      if (posicaoSelected === 'Membro de Comunidade') type = 'COMMUNITY_MEMBER';
+      else type = 'RESEARCHER';
+
       const userRequestDto = {
         name: name.value,
         email: email.value,
         cellPhone: cellPhone.value,
         password: password.value,
-        role: posicaoSelected,
-        position: cargo.value,
+        type,
+        role: cargo.value,
         affiliation: instituicao.value,
         community: communitySelected.id,
       };
@@ -200,7 +211,8 @@ const UserRegistrationRequestPage = ({navigation}) => {
               return <Picker.Item label={ps} value={ps} />;
             })}
           </Picker>
-          {posicaoSelected === 'Membro' ? (
+          {posicaoSelected === 'Membro de Comunidade' ||
+          posicaoSelected === 'Membro Pesquisador' ? (
             <>
               <InputText>Cargo do Membro</InputText>
               <Input
@@ -211,7 +223,9 @@ const UserRegistrationRequestPage = ({navigation}) => {
                 rules={[required]}
               />
             </>
-          ) : (
+          ) : null}
+          {posicaoSelected === 'Pesquisador' ||
+          posicaoSelected === 'Membro Pesquisador' ? (
             <>
               <InputText>Instituição Ligada ao Pesquisador</InputText>
               <Input
@@ -222,7 +236,7 @@ const UserRegistrationRequestPage = ({navigation}) => {
                 rules={[required]}
               />
             </>
-          )}
+          ) : null}
           <InputText>Comunidade (opcional)</InputText>
           <PickerContainer onPress={onOpenModalComunity}>
             <PickerText selected>
