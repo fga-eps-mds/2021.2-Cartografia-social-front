@@ -124,7 +124,7 @@ const Map = () => {
           onRegionChangeComplete={(value) => setRegion(value)}
           {...mapOptions}>
           {markers.map((marker, index) =>
-            marker.coordinates ? (
+            marker && marker.coordinates ? (
               <Polygon
                 key={index}
                 coordinates={marker.coordinates}
