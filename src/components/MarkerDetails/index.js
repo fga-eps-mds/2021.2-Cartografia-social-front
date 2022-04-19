@@ -40,7 +40,7 @@ const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
   };
 
   const validarArea = () => {
-    marker.validation = 'rgba(255,255,0,0.5)';
+    //marker.validation = 'rgba(255,255,0,0.5)';
   };
 
   const eraseMarker = async () => {
@@ -212,7 +212,7 @@ const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
                       title="Validar Área"
                       onPress={() => {
                         validarArea();
-                        console.log(marker);
+                        //console.log(marker);
                         // Alert.alert("Área validada")
                       }}
                     />
