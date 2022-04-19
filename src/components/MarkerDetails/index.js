@@ -40,7 +40,7 @@ const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
   };
 
   const validarArea = () => {
-    marker.validation = "rgba(255,255,0,0.5)"
+    marker.validation = 'rgba(255,255,0,0.5)';
   };
 
   const eraseMarker = async () => {
@@ -209,11 +209,11 @@ const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
                   </View>
                   <View style={{marginTop: 50}}>
                     <Btn
-                      title='Validar Área'
+                      title="Validar Área"
                       onPress={() => {
-                        validarArea()
-                        console.log(marker)
-                        //Alert.alert("Área validada")
+                        validarArea();
+                        console.log(marker);
+                        // Alert.alert("Área validada")
                       }}
                     />
                   </View>

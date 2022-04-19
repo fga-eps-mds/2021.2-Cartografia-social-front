@@ -63,7 +63,7 @@ const Map = () => {
     },
     {
       icon: 'map-check',
-      onPress: () => Alert.alert("Validar marcações feitas"),
+      onPress: () => Alert.alert('Validar marcações feitas'),
     },
     {
       icon: 'map-marker-alt',
