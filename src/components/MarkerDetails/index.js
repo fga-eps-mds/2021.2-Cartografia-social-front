@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, {useEffect, useState} from 'react';
 import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
-import {View, Text, Divisor} from 'components/UI';
+import {View, Text, Divisor, Btn} from 'components/UI';
 import theme from 'theme/theme';
 import ImageView from 'react-native-image-viewing';
 import Modal from 'react-native-modal';
@@ -37,6 +37,10 @@ const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
   const closeShowMediaModal = () => {
     setMediaShowed({});
     setModalShowMediaVisible(false);
+  };
+
+  const validarArea = () => {
+    marker.validation = "rgba(255,255,0,0.5)"
   };
 
   const eraseMarker = async () => {
@@ -202,6 +206,16 @@ const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
                       Descrição:
                     </Text>
                     <Text ml={3}>{marker.description}</Text>
+                  </View>
+                  <View style={{marginTop: 50}}>
+                    <Btn
+                      title='Validar Área'
+                      onPress={() => {
+                        validarArea()
+                        console.log(marker)
+                        //Alert.alert("Área validada")
+                      }}
+                    />
                   </View>
                 </View>
               </>

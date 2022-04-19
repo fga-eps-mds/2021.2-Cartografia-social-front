@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
 import React, {useState, useEffect, useRef} from 'react';
-import {View} from 'components/UI';
+import {Btn, View} from 'components/UI';
 import {Alert} from 'react-native';
 import useLocation from 'services/useLocation';
 import Fabs from 'components/Fabs';
@@ -60,6 +60,10 @@ const Map = () => {
         setIsCreatingArea(true);
         setTutorialExibido(tutorialExibido + 1);
       },
+    },
+    {
+      icon: 'map-check',
+      onPress: () => Alert.alert("Validar marcações feitas"),
     },
     {
       icon: 'map-marker-alt',
@@ -130,7 +134,7 @@ const Map = () => {
                 coordinates={marker.coordinates}
                 tappable
                 strokeColor="#000"
-                fillColor="rgba(255,0,0,0.5)"
+                fillColor={marker.validation}
                 strokeWidth={1}
                 onPress={() => onPressMarker(marker)}
               />
