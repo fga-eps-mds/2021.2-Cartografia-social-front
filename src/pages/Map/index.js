@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
 import React, {useState, useEffect, useRef} from 'react';
-import {Btn, View} from 'components/UI';
+import {View} from 'components/UI';
 import {Alert} from 'react-native';
 import useLocation from 'services/useLocation';
 import Fabs from 'components/Fabs';
@@ -60,10 +60,6 @@ const Map = () => {
         setIsCreatingArea(true);
         setTutorialExibido(tutorialExibido + 1);
       },
-    },
-    {
-      icon: 'map-check',
-      onPress: () => Alert.alert('Validar marcações feitas'),
     },
     {
       icon: 'map-marker-alt',
