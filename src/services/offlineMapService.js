@@ -3,6 +3,7 @@ import * as localDatabase from './localDatabase';
 import api from './api';
 
 const AREA_ENTITY = 'area';
+const POINT_ENTITY = 'point';
 const ONLINE_MAP_ENTITY = 'onlineMap';
 
 const getCommunityDataOnServer = async(userEmail) => {
@@ -17,30 +18,60 @@ const getCommunityDataOnServer = async(userEmail) => {
     return data;
 };
 
+const addLocationToCommunity = async(locationId, userEmail) => api.post('/maps/addToCommunity', {
+    locationId,
+    userEmail,
+});
+
 const postArea = async(area, userEmail) => {
     const response = await api.post('/maps/area', area);
     const locationId = response.data.id;
-    await api.post('/maps/addToCommunity', {
-        locationId,
-        userEmail,
-    });
+    await addLocationToCommunity(locationId, userEmail);
+};
+
+const postPoint = async(point, userEmail) => {
+    const response = await api.post('/maps/point', point);
+    const locationId = response.data.id;
+    await addLocationToCommunity(locationId, userEmail);
 };
 
 const getOfflineCommunityData = async() => {
     const data = await localDatabase.get(ONLINE_MAP_ENTITY, ONLINE_MAP_ENTITY) || { areas: [], points: [] };
     const localAreas = await localDatabase.getAll(AREA_ENTITY);
+    const localPoints = await localDatabase.getAll(POINT_ENTITY);
     return {
         areas: [...data.areas, ...localAreas],
-        points: data.points
+        points: [...data.points, ...localPoints]
     }
 }
 
 const getOnlineCommunityData = async(userEmail) => {
     const data = await getCommunityDataOnServer(userEmail);
     const localAreas = await localDatabase.getAll(AREA_ENTITY);
+    const localPoints = await localDatabase.getAll(POINT_ENTITY);
     return {
         areas: [...data.areas, ...localAreas],
-        points: data.points
+        points: [...data.points, ...localPoints]
+    }
+}
+
+const syncPoints = async(userEmail) => {
+    const areas = await localDatabase.getAll(AREA_ENTITY);
+    /* eslint-disable-next-line */
+    for (const area of areas) {
+        /* eslint-disable no-await-in-loop */
+        await postArea(area, userEmail);
+        await localDatabase.remove(AREA_ENTITY, area.id);
+    }
+}
+
+const syncAreas = async(userEmail) => {
+    const points = await localDatabase.getAll(POINT_ENTITY);
+    /* eslint-disable-next-line */
+    for (const point of points) {
+        /* eslint-disable no-await-in-loop */
+        await postPoint(point, userEmail);
+        await localDatabase.remove(POINT_ENTITY, point.id);
     }
 }
 
@@ -51,6 +82,12 @@ export const saveArea = async(area, userEmail, isOffline = false) => {
     }
 }
 
+export const savePoint = async(point, userEmail, isOffline = false) => {
+    await localDatabase.post(POINT_ENTITY, {...point, id: uuid.v4() });
+    if (!isOffline) {
+        await syncCommunityData(userEmail);
+    }
+}
 
 export const getCommunityData = async(userEmail, isOffline = false) => {
     if (isOffline) {
@@ -61,11 +98,6 @@ export const getCommunityData = async(userEmail, isOffline = false) => {
 }
 
 export const syncCommunityData = async(userEmail) => {
-    const areas = await localDatabase.getAll(AREA_ENTITY);
-    /* eslint-disable-next-line */
-    for (const area of areas) {
-        /* eslint-disable no-await-in-loop */
-        await postArea(area, userEmail);
-        await localDatabase.remove(AREA_ENTITY, area.id);
-    }
+    await syncPoints(userEmail);
+    await syncAreas(userEmail);
 };
