@@ -40,7 +40,6 @@
         "react-native": "0.63.4",
         "react-native-android-location-enabler": "^1.2.2",
         "react-native-audio-recorder-player": "^3.2.0",
-        "react-native-blob-util": "^0.15.0",
         "react-native-camera": "^4.1.1",
         "react-native-config": "^1.4.4",
         "react-native-create-thumbnail": "^1.4.1",
@@ -66,7 +65,6 @@
         "react-native-snap-carousel": "^3.9.1",
         "react-native-svg": "^12.1.0",
         "react-native-svg-uri": "^1.2.3",
-        "react-native-uuid": "^2.0.1",
         "react-native-vector-icons": "^8.1.0",
         "react-native-video": "^5.1.1",
         "react-native-video-controls": "^2.8.1",
@@ -141,8 +139,7 @@
         "testEnvironment": "jsdom",
         "coverageDirectory": "./coverage",
         "reporters": [
-            "default",
-            [
+            "default", [
                 "jest-sonar",
                 {
                     "outputDirectory": "coverage",
