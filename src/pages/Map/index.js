@@ -126,26 +126,25 @@ const Map = () => {
           {markers.map((marker, index) => {
             if (marker.coordinates) {
               // ↓ Mostrar áreas validadas ↓
-              if (marker.title === "A") {
+              if (marker.title === 'A') {
                 return (
                   <Polygon
                     key={index}
                     coordinates={marker.coordinates}
                     tappable
                     strokeColor="#000"
-                    fillColor='rgba(255,0,0,0.5)'
+                    fillColor="rgba(255,0,0,0.5)"
                     strokeWidth={1}
                     onPress={() => onPressMarker(marker)}
                   />
-                )
+                );
               }
             } else {
-                return (
-                  <Marker key={index} marker={marker} onPress={onPressMarker} />
-                )
-              }
+              return (
+                <Marker key={index} marker={marker} onPress={onPressMarker} />
+              );
             }
-          )}
+          })}
           <CreateArea
             reset={(func) => {
               resetArea.current = func;
