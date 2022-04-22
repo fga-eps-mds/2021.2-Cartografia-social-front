@@ -12,6 +12,8 @@ import api from 'services/api';
 import {useSelector} from 'react-redux';
 import {auth} from 'store/selectors';
 import MediasList from '../MediasList';
+import {Polygon} from 'react-native-maps';
+import Marker from 'components/Marker';
 
 const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
   const user = useSelector(auth);
@@ -24,6 +26,7 @@ const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
   const [mediaShowed, setMediaShowed] = useState({});
   const [modalShowMediaVisible, setModalShowMediaVisible] = useState(false);
   const [editing, setEdit] = useState(false);
+  let Validated = false;
 
   const handleShowMedia = (fileType, fileUri, fileDuration) => {
     const media = {
@@ -40,7 +43,7 @@ const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
   };
 
   const validarArea = () => {
-    //marker.validation = 'rgba(255,255,0,0.5)';
+    marker.validation = 'rgba(255,255,0,0.5)';
   };
 
   const eraseMarker = async () => {
@@ -207,16 +210,18 @@ const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
                     </Text>
                     <Text ml={3}>{marker.description}</Text>
                   </View>
-                  <View style={{marginTop: 50}}>
+                  {marker.coordinates && user.token === "" && !Validated &&
+                  <View style={{marginTop: 50, flexDirection: 'row', justifyContent: 'space-evenly'}}>
                     <Btn
+                      style={{width: 150}}
                       title="Validar Área"
-                      onPress={() => {
-                        validarArea();
-                        //console.log(marker);
-                        // Alert.alert("Área validada")
-                      }}
+                      onPress={validarArea}
+                      />
+                    <Btn
+                      style={{width: 150}}
+                      title="Excluir Área"
                     />
-                  </View>
+                  </View>}
                 </View>
               </>
             ) : (
