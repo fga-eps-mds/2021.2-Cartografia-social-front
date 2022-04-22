@@ -55,15 +55,15 @@ describe('Tests with areas', () => {
 
     it('Can save area directly online', async() => {
         mockAxios.post.mockResolvedValue({ data: { id: 'someId' } });
-        await expect(saveArea(newArea, userEmail)).resolves.toBeUndefined();
+        await expect(saveArea(newArea, userEmail)).resolves
     })
 
     it('Can save a new areas offline', async() => {
         mockAxios.get.mockResolvedValue({ data: mockReturnedMarkers });
         mockAxios.post.mockResolvedValue({ data: { id: 'someId' } });
         expect(await getCommunityData(userEmail)).toStrictEqual(mockReturnedMarkers);
-        await expect(saveArea(newArea, userEmail, true)).resolves.toBeUndefined();
-        await expect(saveArea(newArea, userEmail, true)).resolves.toBeUndefined();
+        await saveArea(newArea, userEmail, true);
+        await saveArea(newArea, userEmail, true);
         expect(mockAxios.post).toHaveBeenCalledTimes(0);
         const communityData = await getCommunityData();
         expect(communityData.areas.length).toStrictEqual(3);
@@ -71,8 +71,8 @@ describe('Tests with areas', () => {
     })
 
     it('Can sync saved area', async() => {
-        await expect(saveArea(newArea, userEmail, true)).resolves.toBeUndefined();
-        await expect(saveArea(newArea, userEmail, true)).resolves.toBeUndefined();
+        await saveArea(newArea, userEmail, true);
+        await saveArea(newArea, userEmail, true);
         const communityData = await getCommunityData();
         mockAxios.post.mockResolvedValue({ data: { id: 'someId' } });
         await expect(syncCommunityData('some@email.com')).resolves.toBeUndefined();
@@ -100,15 +100,15 @@ describe('Tests with areas', () => {
 describe('Tests with points', () => {
     it('Can save a point directly online', async() => {
         mockAxios.post.mockResolvedValue({ data: { id: 'someId' } });
-        await expect(savePoint(newPoint, userEmail)).resolves.toBeUndefined();
+        await expect(savePoint(newPoint, userEmail)).resolves
     })
 
     it('Can save points offline and getCommunityData', async() => {
         mockAxios.get.mockResolvedValue({ data: mockReturnedMarkers });
         mockAxios.post.mockResolvedValue({ data: { id: 'someId' } });
         expect(await getCommunityData(userEmail)).toStrictEqual(mockReturnedMarkers);
-        await expect(savePoint(newPoint, userEmail, true)).resolves.toBeUndefined();
-        await expect(savePoint(newPoint, userEmail, true)).resolves.toBeUndefined();
+        await savePoint(newPoint, userEmail, true);
+        await savePoint(newPoint, userEmail, true);
         expect(mockAxios.post).toHaveBeenCalledTimes(0);
         const communityData = await getCommunityData();
         expect(communityData.areas.length).toStrictEqual(1);
@@ -116,8 +116,8 @@ describe('Tests with points', () => {
     })
 
     it('Can sync saved point', async() => {
-        await expect(savePoint(newPoint, userEmail, true)).resolves.toBeUndefined();
-        await expect(savePoint(newPoint, userEmail, true)).resolves.toBeUndefined();
+        await savePoint(newPoint, userEmail, true);
+        await savePoint(newPoint, userEmail, true);
         const communityData = await getCommunityData();
         mockAxios.post.mockResolvedValue({ data: { id: 'someId' } });
         await expect(syncCommunityData('some@email.com')).resolves.toBeUndefined();

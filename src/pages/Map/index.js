@@ -13,7 +13,11 @@ import Marker from 'components/Marker';
 import MarkerDetails from 'components/MarkerDetails';
 import CreateArea from 'components/CreateArea';
 import {Polygon} from 'react-native-maps';
-import {getCommunityData} from 'services/offlineMapService';
+import {
+  getCommunityData,
+  syncCommunityData,
+  hasDataToSync,
+} from 'services/offlineMapService';
 import Tutorial from 'components/Tutorial';
 import NetInfo from '@react-native-community/netinfo';
 import {MapView} from './styles';
@@ -35,11 +39,33 @@ const Map = () => {
   const user = useSelector(selectors.auth);
   const netInfo = NetInfo.useNetInfo();
 
+  const syncOfflineData = async (email) => {
+    try {
+      if (await hasDataToSync()) {
+        await syncCommunityData(email);
+        Alert.alert(
+          'Sincronização concluída',
+          'Os dados foram sincronizados com sucesso!',
+        );
+      } else {
+        Alert.alert(
+          'Não há dados para sincronizar',
+          'Não há dados para sincronizar com o servidor!',
+        );
+      }
+    } catch (error) {
+      Alert.alert('Erro ao sincronizar os dados offline', error.message);
+    }
+  };
+
   const getPointsAndAreas = async () => {
     try {
       if (user.id) {
         const {isInternetReachable} = netInfo;
         const data = await getCommunityData(user.email, !isInternetReachable);
+        if (isInternetReachable) {
+          syncOfflineData(user.email);
+        }
         if (data && data.points && data.areas) {
           dispatch(Actions.populateMarkers(data.points, data.areas));
         }
@@ -51,7 +77,7 @@ const Map = () => {
 
   useEffect(() => {
     getPointsAndAreas();
-  }, [markers.length]);
+  }, [netInfo]);
 
   const actions = [
     {

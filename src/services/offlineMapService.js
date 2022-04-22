@@ -26,12 +26,14 @@ const postArea = async (area, userEmail) => {
   const response = await api.post('/maps/area', area);
   const locationId = response.data.id;
   await addLocationToCommunity(locationId, userEmail);
+  return response;
 };
 
 const postPoint = async (point, userEmail) => {
   const response = await api.post('/maps/point', point);
   const locationId = response.data.id;
   await addLocationToCommunity(locationId, userEmail);
+  return response;
 };
 
 const getOfflineCommunityData = async () => {
@@ -78,17 +80,21 @@ const syncAreas = async (userEmail) => {
 };
 
 export const saveArea = async (area, userEmail, isOffline = false) => {
-  await localDatabase.post(AREA_ENTITY, {...area, id: uuid.v4()});
-  if (!isOffline) {
-    await syncAreas(userEmail);
+  const areaToPost = {...area, id: uuid.v4()};
+  if (isOffline) {
+    await localDatabase.post(AREA_ENTITY, areaToPost);
+    return areaToPost;
   }
+  return postArea(areaToPost, userEmail);
 };
 
 export const savePoint = async (point, userEmail, isOffline = false) => {
-  await localDatabase.post(POINT_ENTITY, {...point, id: uuid.v4()});
-  if (!isOffline) {
-    await syncPoints(userEmail);
+  const pointToPost = {...point, id: uuid.v4()};
+  if (isOffline) {
+    await localDatabase.post(POINT_ENTITY, pointToPost);
+    return pointToPost;
   }
+  return postPoint(pointToPost, userEmail);
 };
 
 export const getCommunityData = async (userEmail, isOffline = false) => {
@@ -98,6 +104,11 @@ export const getCommunityData = async (userEmail, isOffline = false) => {
   return getOnlineCommunityData(userEmail);
 };
 
+export const hasDataToSync = async () => {
+  const areas = await localDatabase.getAll(AREA_ENTITY);
+  const points = await localDatabase.getAll(POINT_ENTITY);
+  return areas.length > 0 || points.length > 0;
+};
 export const syncCommunityData = async (userEmail) => {
   await syncPoints(userEmail);
   await syncAreas(userEmail);

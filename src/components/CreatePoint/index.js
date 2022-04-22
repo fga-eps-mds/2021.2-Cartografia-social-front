@@ -1,4 +1,5 @@
 import React, {useRef, useMemo, useState, useEffect} from 'react';
+import NetInfo from '@react-native-community/netinfo';
 import {Alert} from 'react-native';
 import Modal from 'react-native-modal';
 import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
@@ -9,6 +10,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {auth, newArea} from 'store/selectors';
 import * as Actions from 'store/actions';
 import api from 'services/api';
+import {saveArea, savePoint} from 'services/offlineMapService';
 import Fabs from 'components/Fabs';
 import theme from 'theme/theme';
 import useDocumentPicker from 'services/useDocumentPicker';
@@ -79,6 +81,7 @@ const CreatePoint = ({
   const [mediaShowed, setMediaShowed] = useState({});
   const [visibleImageModal, setIsVisibleImageModal] = useState(false);
   const [openedImage, setOpenedImage] = useState({});
+  const netInfo = NetInfo.useNetInfo();
 
   const selectPdf = async () => {
     let results = await useDocumentPicker();
@@ -141,7 +144,7 @@ const CreatePoint = ({
   };
 
   const onSave = async () => {
-    let locationId = null;
+    const locationId = null;
     setShowMarker(false);
     setTimeout(() => {
       setShowMarker(true);
@@ -175,77 +178,74 @@ const CreatePoint = ({
       return;
     }
 
+    const {isInternetReachable} = netInfo;
     if (user && user.id) {
-      let endpoint = isCreatingArea ? '/maps/area' : '/maps/point';
+      try {
+        if (isCreatingArea) {
+          const response = await saveArea(
+            newMarker,
+            user.email,
+            !isInternetReachable,
+          );
+          newMarker.id = response.id;
+        } else {
+          const response = await savePoint(
+            newMarker,
+            user.email,
+            !isInternetReachable,
+          );
+          newMarker.id = response.id;
+        }
+      } catch (error) {
+        Alert.alert(
+          `Erro ao salvar ${isCreatingArea ? 'a area' : 'o ponto'}`,
+          error.Message,
+        );
+      }
+    }
+
+    medias.map(async (media) => {
+      let mediaId = '';
+
+      const formData = new FormData();
+      formData.append('file', {
+        uri: media.uri,
+        type: media.type,
+        name: media.fileName,
+      });
+
       await api
-        .post(endpoint, newMarker)
+        .post('midia/uploadMidia', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
         .then((response) => {
-          locationId = response.data;
+          mediaId = response.data;
         })
         .catch(() => {
           Alert.alert(
-            'Tente mais tarde',
-            'Não foi possível salvar a marcação.',
+            'Tente mais tarde.',
+            `Erro ao salvar arquivo '${media.fileName}'`,
           );
         });
-      if (locationId.id !== '' && user.data.email) {
-        const CommunityMarking = {
+
+      if (mediaId !== '') {
+        const newMediaPoint = {
           locationId: locationId.id,
-          userEmail: user.data.email,
+          mediaId: mediaId.public_id,
         };
-        await api.post('/maps/addToCommunity', CommunityMarking).catch(() => {
+        const endpoint = isCreatingArea
+          ? '/maps/addMediaToArea'
+          : '/maps/addMediaToPoint';
+        await api.post(endpoint, newMediaPoint).catch(() => {
           Alert.alert(
             'Tente mais tarde.',
-            `Erro ao adicionar ponto à comunidade`,
+            `Erro ao adicionar midia à marcação: ${media.fileName}`,
           );
         });
       }
-
-      newMarker.id = locationId.id;
-
-      medias.map(async (media) => {
-        let mediaId = '';
-
-        const formData = new FormData();
-        formData.append('file', {
-          uri: media.uri,
-          type: media.type,
-          name: media.fileName,
-        });
-
-        await api
-          .post('midia/uploadMidia', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          })
-          .then((response) => {
-            mediaId = response.data;
-          })
-          .catch(() => {
-            Alert.alert(
-              'Tente mais tarde.',
-              `Erro ao salvar arquivo '${media.fileName}'`,
-            );
-          });
-
-        if (mediaId !== '') {
-          const newMediaPoint = {
-            locationId: locationId.id,
-            mediaId: mediaId.public_id,
-          };
-          endpoint = isCreatingArea
-            ? '/maps/addMediaToArea'
-            : '/maps/addMediaToPoint';
-          await api.post(endpoint, newMediaPoint).catch(() => {
-            Alert.alert(
-              'Tente mais tarde.',
-              `Erro ao adicionar midia à marcação: ${media.fileName}`,
-            );
-          });
-        }
-      });
-    }
+    });
     dispatch(Actions.createMarker(newMarker));
     sheetRef.current.close();
 
