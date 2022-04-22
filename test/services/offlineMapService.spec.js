@@ -39,7 +39,9 @@ const mockReturnedMarkers = {
 
 const userEmail = 'user@email.com';
 
-afterEach(() => {
+afterEach(async() => {
+    mockAxios.post.mockResolvedValue({ data: { id: 'someId' } });
+    await syncCommunityData(userEmail); // Clear local database
     mockAxios.reset();
 });
 
@@ -69,6 +71,8 @@ describe('Tests with areas', () => {
     })
 
     it('Can sync saved area', async() => {
+        await expect(saveArea(newArea, userEmail, true)).resolves.toBeUndefined();
+        await expect(saveArea(newArea, userEmail, true)).resolves.toBeUndefined();
         const communityData = await getCommunityData();
         mockAxios.post.mockResolvedValue({ data: { id: 'someId' } });
         await expect(syncCommunityData('some@email.com')).resolves.toBeUndefined();
@@ -112,6 +116,8 @@ describe('Tests with points', () => {
     })
 
     it('Can sync saved point', async() => {
+        await expect(savePoint(newPoint, userEmail, true)).resolves.toBeUndefined();
+        await expect(savePoint(newPoint, userEmail, true)).resolves.toBeUndefined();
         const communityData = await getCommunityData();
         mockAxios.post.mockResolvedValue({ data: { id: 'someId' } });
         await expect(syncCommunityData('some@email.com')).resolves.toBeUndefined();
