@@ -126,8 +126,9 @@ const Map = () => {
           {markers.map((marker, index) => {
             if (marker.coordinates) {
               // ↓ Mostrar áreas validadas ↓
-              if (marker.title === 'A') {
-                return (
+              //console.log(user.type)
+              let leader
+              {user.data && leader ? (
                   <Polygon
                     key={index}
                     coordinates={marker.coordinates}
@@ -137,14 +138,12 @@ const Map = () => {
                     strokeWidth={1}
                     onPress={() => onPressMarker(marker)}
                   />
-                );
-              }
-            } else {
-              return (
+              ) : (
                 <Marker key={index} marker={marker} onPress={onPressMarker} />
-              );
+              )
             }
-          })}
+          }
+        })}
           <CreateArea
             reset={(func) => {
               resetArea.current = func;

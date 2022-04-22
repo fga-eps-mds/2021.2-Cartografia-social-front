@@ -11,8 +11,6 @@ import EditPoint from 'components/EditPoint';
 import api from 'services/api';
 import {useSelector} from 'react-redux';
 import {auth} from 'store/selectors';
-import {Polygon} from 'react-native-maps';
-import Marker from 'components/Marker';
 import MediasList from '../MediasList';
 
 const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
@@ -43,7 +41,7 @@ const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
   };
 
   const validarArea = () => {
-    //marker.validation = 'rgba(255,255,0,0.5)';
+    // marker.validation = 'rgba(255,255,0,0.5)';
   };
 
   const eraseMarker = async () => {
