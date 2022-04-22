@@ -13,8 +13,9 @@ import Marker from 'components/Marker';
 import MarkerDetails from 'components/MarkerDetails';
 import CreateArea from 'components/CreateArea';
 import {Polygon} from 'react-native-maps';
-import api from 'services/api';
+import {getCommunityData} from 'services/offlineMapService';
 import Tutorial from 'components/Tutorial';
+import NetInfo from '@react-native-community/netinfo';
 import {MapView} from './styles';
 
 const Map = () => {
@@ -32,14 +33,13 @@ const Map = () => {
 
   const markers = useSelector(selectors.markers);
   const user = useSelector(selectors.auth);
+  const netInfo = NetInfo.useNetInfo();
 
   const getPointsAndAreas = async () => {
     try {
       if (user.id) {
-        const response = await api.get(
-          `/maps/communityDataByUserEmail/${user.email}`,
-        );
-        const {data} = response;
+        const {isInternetReachable} = netInfo;
+        const data = await getCommunityData(user.email, !isInternetReachable);
         if (data && data.points && data.areas) {
           dispatch(Actions.populateMarkers(data.points, data.areas));
         }
