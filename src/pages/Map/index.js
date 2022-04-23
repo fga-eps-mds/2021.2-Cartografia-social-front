@@ -77,7 +77,7 @@ const Map = () => {
 
   useEffect(() => {
     getPointsAndAreas();
-  }, [netInfo]);
+  }, [markers.length]);
 
   const actions = [
     {
