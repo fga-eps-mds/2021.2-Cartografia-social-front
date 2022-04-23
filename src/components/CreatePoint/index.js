@@ -178,7 +178,7 @@ const CreatePoint = ({
       return;
     }
 
-    const {isInternetReachable} = {isInternetReachable:false};
+    const {isInternetReachable} = netInfo;
     if (user && user.id) {
       try {
         if (isCreatingArea) {

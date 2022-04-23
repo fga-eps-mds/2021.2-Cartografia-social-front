@@ -2,7 +2,6 @@
 /* eslint-disable react/no-array-index-key */
 import React, {useState, useEffect, useRef} from 'react';
 import {View} from 'components/UI';
-import {Alert} from 'react-native';
 import useLocation from 'services/useLocation';
 import Fabs from 'components/Fabs';
 import CreatePoint from 'components/CreatePoint';
@@ -20,8 +19,8 @@ import {
 } from 'services/offlineMapService';
 import Tutorial from 'components/Tutorial';
 import NetInfo from '@react-native-community/netinfo';
-import {MapView} from './styles';
 import SyncButton from 'components/SyncButton';
+import {MapView} from './styles';
 
 const Map = () => {
   const dispatch = useDispatch();
@@ -44,12 +43,9 @@ const Map = () => {
   const netInfo = NetInfo.useNetInfo();
 
   const getPointsAndAreas = async () => {
-    console.log(user)
     if (user.id) {
       const {isInternetReachable} = netInfo;
       const data = await getCommunityData(user.email, !isInternetReachable);
-      console.log('areas', data.areas.length, data.areas);
-      console.log('points', data.points.length, data.points);
       if (data && data.points && data.areas) {
         dispatch(Actions.populateMarkers(data.points, data.areas));
       }

@@ -6,6 +6,23 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import PropTypes from 'prop-types';
+
+const styles = StyleSheet.create({
+  button: {
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 50,
+    position: 'absolute',
+    bottom: 30,
+    left: 20,
+    height: 50,
+    backgroundColor: '#900',
+    borderRadius: 100,
+  },
+});
 
 const SyncButton = ({visible, onSync}) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -51,20 +68,13 @@ const SyncButton = ({visible, onSync}) => {
   ) : null;
 };
 
-export default SyncButton;
+SyncButton.propTypes = {
+  visible: PropTypes.bool,
+  onSync: PropTypes.func,
+};
+SyncButton.defaultProps = {
+  visible: false,
+  onSync: () => {},
+};
 
-const styles = StyleSheet.create({
-  button: {
-    borderWidth: 1,
-    borderColor: 'rgba(0,0,0,0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 50,
-    position: 'absolute',
-    bottom: 30,
-    left: 20,
-    height: 50,
-    backgroundColor: '#900',
-    borderRadius: 100,
-  },
-});
+export default SyncButton;
