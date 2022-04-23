@@ -1,11 +1,52 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Alert,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
-const SyncButton = ({visible}) => {
-  console.log(visible)
+const SyncButton = ({visible, onSync}) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const onSyncData = async () => {
+    setIsLoading(true);
+    try {
+      await onSync();
+      Alert.alert(
+        'Sincronização concluída',
+        'Os dados foram sincronizados com sucesso!',
+      );
+    } catch (error) {
+      Alert.alert('Erro ao sincronizar os dados offline', error.message);
+    }
+    setIsLoading(false);
+  };
+
+  const onSyncButtonPress = () => {
+    Alert.alert(
+      'Sincronizar dados offline',
+      'Deseja sincronizar os dados offline?',
+      [
+        {
+          text: 'Não',
+          style: 'cancel',
+        },
+        {
+          text: 'Sim',
+          onPress: onSyncData,
+        },
+      ],
+    );
+  };
+
   return visible ? (
-    <TouchableOpacity style={styles.button}>
-      <Text>Abc</Text>
+    <TouchableOpacity style={styles.button} onPress={onSyncButtonPress}>
+      {isLoading ? (
+        <ActivityIndicator color="#fff" />
+      ) : (
+        <Icon name="cloud-upload-alt" size={23} color="#fff" />
+      )}
     </TouchableOpacity>
   ) : null;
 };
@@ -18,12 +59,12 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(0,0,0,0.2)',
     alignItems: 'center',
     justifyContent: 'center',
-    width: 70,
+    width: 50,
     position: 'absolute',
-    bottom: 10,
-    right: 10,
-    height: 70,
-    backgroundColor: '#fff',
+    bottom: 30,
+    left: 20,
+    height: 50,
+    backgroundColor: '#900',
     borderRadius: 100,
   },
 });

@@ -16,7 +16,7 @@ import {Polygon} from 'react-native-maps';
 import {
   getCommunityData,
   syncCommunityData,
-  hasDataToSync,
+  hasDataToSync as getIfHasDataToSync,
 } from 'services/offlineMapService';
 import Tutorial from 'components/Tutorial';
 import NetInfo from '@react-native-community/netinfo';
@@ -31,42 +31,27 @@ const Map = () => {
   const [selectedMarker, setSelectedMarker] = useState({});
   const [isCreatingArea, setIsCreatingArea] = useState(false);
   const [tutorialExibido, setTutorialExibido] = useState(0);
+  const [hasDataToSync, setHasDataToSync] = useState(false);
+  const [triggerHasDataToSync, setTriggerHasDataToSync] = useState(false);
+
   const detailsRef = useRef(null);
   const onPressCreatingArea = useRef(null);
   const newArea = useRef(null);
   const resetArea = useRef(() => {});
 
+  useEffect(() => {
+    getIfHasDataToSync().then(setHasDataToSync);
+  }, [triggerHasDataToSync]);
+
   const markers = useSelector(selectors.markers);
   const user = useSelector(selectors.auth);
   const netInfo = NetInfo.useNetInfo();
-
-  const syncOfflineData = async (email) => {
-    try {
-      if (await hasDataToSync()) {
-        await syncCommunityData(email);
-        Alert.alert(
-          'Sincronização concluída',
-          'Os dados foram sincronizados com sucesso!',
-        );
-      } else {
-        Alert.alert(
-          'Não há dados para sincronizar',
-          'Não há dados para sincronizar com o servidor!',
-        );
-      }
-    } catch (error) {
-      Alert.alert('Erro ao sincronizar os dados offline', error.message);
-    }
-  };
 
   const getPointsAndAreas = async () => {
     try {
       if (user.id) {
         const {isInternetReachable} = netInfo;
         const data = await getCommunityData(user.email, !isInternetReachable);
-        if (isInternetReachable) {
-          syncOfflineData(user.email);
-        }
         if (data && data.points && data.areas) {
           dispatch(Actions.populateMarkers(data.points, data.areas));
         }
@@ -145,7 +130,6 @@ const Map = () => {
 
     return (
       <View flex={1}>
-        
         {isCreatingArea === true && tutorialExibido === 1 && <Tutorial />}
         <MapView
           region={region}
@@ -200,7 +184,13 @@ const Map = () => {
             getPointsAndAreas();
           }}
         />
-        <SyncButton visible={true}/>
+        <SyncButton
+          visible={hasDataToSync}
+          onSync={async () => {
+            await syncCommunityData(user.email);
+            setTriggerHasDataToSync(!triggerHasDataToSync);
+          }}
+        />
       </View>
     );
   }
