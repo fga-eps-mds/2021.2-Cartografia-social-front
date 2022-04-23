@@ -40,8 +40,32 @@ const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
     setModalShowMediaVisible(false);
   };
 
-  const validarArea = () => {
-    // marker.validation = 'rgba(255,255,0,0.5)';
+  const validarArea = async (id) => {
+    let endpoint = '/maps/area/';
+    
+    const userResponse = await api.get(`${endpoint}${id}`);
+    
+    markerValidation = {
+      id: id,
+      validated: true,
+    };
+
+    await api
+        .put(endpoint, markerValidation)
+        .then((response) => {
+          locationId = response.data;
+        })
+        .catch(() => {
+          Alert.alert(
+            'Tente mais tarde',
+            'Não foi possivel validar a marcação.',
+          );
+        });
+
+    if(userResponse.data.validated) {
+      marker.cor = 'rgba(255,0,0,0.5)';
+    }
+    
   };
 
   const eraseMarker = async () => {
@@ -208,7 +232,7 @@ const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
                     </Text>
                     <Text ml={3}>{marker.description}</Text>
                   </View>
-                  {marker.coordinates && user.token === '' && !Validated && (
+                  {marker.coordinates && user.data.type === 'RESEARCHER' && !Validated && (
                     <View
                       style={{
                         marginTop: 50,
@@ -216,11 +240,9 @@ const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
                         justifyContent: 'space-evenly',
                       }}>
                       <Btn
-                        style={{width: 150}}
                         title="Validar Área"
-                        onPress={validarArea}
+                        onPress={validarArea(marker.id)}
                       />
-                      <Btn style={{width: 150}} title="Excluir Área" />
                     </View>
                   )}
                 </View>

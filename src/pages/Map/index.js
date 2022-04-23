@@ -14,7 +14,6 @@ import MarkerDetails from 'components/MarkerDetails';
 import CreateArea from 'components/CreateArea';
 import {Polygon} from 'react-native-maps';
 import api from 'services/api';
-import Tutorial from 'components/Tutorial';
 import {MapView} from './styles';
 
 const Map = () => {
@@ -24,15 +23,20 @@ const Map = () => {
   const [region, setRegion] = useState(null);
   const [selectedMarker, setSelectedMarker] = useState({});
   const [isCreatingArea, setIsCreatingArea] = useState(false);
-  const [tutorialExibido, setTutorialExibido] = useState(0);
   const detailsRef = useRef(null);
   const onPressCreatingArea = useRef(null);
   const newArea = useRef(null);
   const resetArea = useRef(() => {});
-
   const markers = useSelector(selectors.markers);
   const user = useSelector(selectors.auth);
 
+  const poligonoValidado = async (id) => {
+    let endpoint = '/maps/area/';
+    
+    const userResponse = await api.get(`${endpoint}${id}`);
+    
+    return userResponse.data.validated
+  };
   const getPointsAndAreas = async () => {
     try {
       if (user.id) {
@@ -56,10 +60,7 @@ const Map = () => {
   const actions = [
     {
       icon: 'draw-polygon',
-      onPress: () => {
-        setIsCreatingArea(true);
-        setTutorialExibido(tutorialExibido + 1);
-      },
+      onPress: () => setIsCreatingArea(true),
     },
     {
       icon: 'map-marker-alt',
@@ -118,32 +119,30 @@ const Map = () => {
 
     return (
       <View flex={1}>
-        {isCreatingArea === true && tutorialExibido === 1 && <Tutorial />}
         <MapView
           region={region}
           onRegionChangeComplete={(value) => setRegion(value)}
           {...mapOptions}>
           {markers.map((marker, index) => {
-            if (marker.coordinates) {
-              // ↓ Mostrar áreas validadas ↓
-              //console.log(user.type)
-              let leader
-              {user.data && leader ? (
+            if(marker.coordinates) {
+              if(user.data.type === 'ADMIN' || poligonoValidado(marker.id)) {
+                return(
                   <Polygon
                     key={index}
                     coordinates={marker.coordinates}
                     tappable
                     strokeColor="#000"
-                    fillColor="rgba(255,0,0,0.5)"
+                    fillColor={marker.cor}
                     strokeWidth={1}
                     onPress={() => onPressMarker(marker)}
                   />
-              ) : (
-                <Marker key={index} marker={marker} onPress={onPressMarker} />
-              )
-            }
-          }
-        })}
+                )
+              } else {
+                return(
+                  <Marker key={index} marker={marker} onPress={onPressMarker} />
+                )
+              }
+            }})}
           <CreateArea
             reset={(func) => {
               resetArea.current = func;
