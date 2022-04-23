@@ -26,7 +26,7 @@ const SyncButton = ({visible, onSync}) => {
   const onSyncButtonPress = () => {
     Alert.alert(
       'Sincronizar dados offline',
-      'Deseja sincronizar os dados offline?',
+      'Deseja sincronizar os dados offline? Certifique-se que você está conectado à internet.',
       [
         {
           text: 'Não',

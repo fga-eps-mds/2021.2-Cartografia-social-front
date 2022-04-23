@@ -39,27 +39,26 @@ const Map = () => {
   const newArea = useRef(null);
   const resetArea = useRef(() => {});
 
-  useEffect(() => {
-    getIfHasDataToSync().then(setHasDataToSync);
-  }, [triggerHasDataToSync]);
-
   const markers = useSelector(selectors.markers);
   const user = useSelector(selectors.auth);
   const netInfo = NetInfo.useNetInfo();
 
   const getPointsAndAreas = async () => {
-    try {
-      if (user.id) {
-        const {isInternetReachable} = netInfo;
-        const data = await getCommunityData(user.email, !isInternetReachable);
-        if (data && data.points && data.areas) {
-          dispatch(Actions.populateMarkers(data.points, data.areas));
-        }
+    console.log(user)
+    if (user.id) {
+      const {isInternetReachable} = netInfo;
+      const data = await getCommunityData(user.email, !isInternetReachable);
+      console.log('areas', data.areas.length, data.areas);
+      console.log('points', data.points.length, data.points);
+      if (data && data.points && data.areas) {
+        dispatch(Actions.populateMarkers(data.points, data.areas));
       }
-    } catch (error) {
-      Alert.alert(error.title, error.message);
     }
   };
+
+  useEffect(() => {
+    getIfHasDataToSync().then(setHasDataToSync);
+  }, [triggerHasDataToSync, markers.length]);
 
   useEffect(() => {
     getPointsAndAreas();

@@ -178,7 +178,7 @@ const CreatePoint = ({
       return;
     }
 
-    const {isInternetReachable} = netInfo;
+    const {isInternetReachable} = {isInternetReachable:false};
     if (user && user.id) {
       try {
         if (isCreatingArea) {
@@ -204,48 +204,50 @@ const CreatePoint = ({
       }
     }
 
-    medias.map(async (media) => {
-      let mediaId = '';
+    if (isInternetReachable) {
+      medias.map(async (media) => {
+        let mediaId = '';
 
-      const formData = new FormData();
-      formData.append('file', {
-        uri: media.uri,
-        type: media.type,
-        name: media.fileName,
+        const formData = new FormData();
+        formData.append('file', {
+          uri: media.uri,
+          type: media.type,
+          name: media.fileName,
+        });
+
+        await api
+          .post('midia/uploadMidia', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          })
+          .then((response) => {
+            mediaId = response.data;
+          })
+          .catch(() => {
+            Alert.alert(
+              'Tente mais tarde.',
+              `Erro ao salvar arquivo '${media.fileName}'`,
+            );
+          });
+
+        if (mediaId !== '') {
+          const newMediaPoint = {
+            locationId: locationId.id,
+            mediaId: mediaId.public_id,
+          };
+          const endpoint = isCreatingArea
+            ? '/maps/addMediaToArea'
+            : '/maps/addMediaToPoint';
+          await api.post(endpoint, newMediaPoint).catch(() => {
+            Alert.alert(
+              'Tente mais tarde.',
+              `Erro ao adicionar midia à marcação: ${media.fileName}`,
+            );
+          });
+        }
       });
-
-      await api
-        .post('midia/uploadMidia', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-        .then((response) => {
-          mediaId = response.data;
-        })
-        .catch(() => {
-          Alert.alert(
-            'Tente mais tarde.',
-            `Erro ao salvar arquivo '${media.fileName}'`,
-          );
-        });
-
-      if (mediaId !== '') {
-        const newMediaPoint = {
-          locationId: locationId.id,
-          mediaId: mediaId.public_id,
-        };
-        const endpoint = isCreatingArea
-          ? '/maps/addMediaToArea'
-          : '/maps/addMediaToPoint';
-        await api.post(endpoint, newMediaPoint).catch(() => {
-          Alert.alert(
-            'Tente mais tarde.',
-            `Erro ao adicionar midia à marcação: ${media.fileName}`,
-          );
-        });
-      }
-    });
+    }
     dispatch(Actions.createMarker(newMarker));
     sheetRef.current.close();
 

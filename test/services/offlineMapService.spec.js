@@ -34,7 +34,14 @@ const newPoint = {
 
 const mockReturnedMarkers = {
     areas: [newArea],
-    points: []
+    points: [{
+        coordinates: [-48.10268534347415, -15.832325332175454],
+        description: '',
+        id: '6264591d723832003f1acaa5',
+        medias: [],
+        title: 'A',
+        type: 'Point'
+    }]
 }
 
 const userEmail = 'user@email.com';
@@ -67,7 +74,7 @@ describe('Tests with areas', () => {
         expect(mockAxios.post).toHaveBeenCalledTimes(0);
         const communityData = await getCommunityData();
         expect(communityData.areas.length).toStrictEqual(3);
-        expect(communityData.points.length).toStrictEqual(0);
+        expect(communityData.points.length).toStrictEqual(1);
     })
 
     it('Can sync saved area', async() => {
@@ -93,7 +100,7 @@ describe('Tests with areas', () => {
         expect(mockAxios.post).toHaveBeenCalledTimes(1);
         const newCommunityData = await getCommunityData();
         expect(newCommunityData.areas.length).toStrictEqual(3);
-        expect(newCommunityData.points.length).toStrictEqual(0);
+        expect(newCommunityData.points.length).toStrictEqual(1);
     })
 })
 
@@ -112,7 +119,7 @@ describe('Tests with points', () => {
         expect(mockAxios.post).toHaveBeenCalledTimes(0);
         const communityData = await getCommunityData();
         expect(communityData.areas.length).toStrictEqual(1);
-        expect(communityData.points.length).toStrictEqual(2);
+        expect(communityData.points.length).toStrictEqual(3);
     })
 
     it('Can sync saved point', async() => {
@@ -125,7 +132,7 @@ describe('Tests with points', () => {
         mockAxios.get.mockResolvedValue({ data: communityData });
         const newCommunityData = await getCommunityData();
         expect(newCommunityData.areas.length).toStrictEqual(1);
-        expect(newCommunityData.points.length).toStrictEqual(2);
+        expect(newCommunityData.points.length).toStrictEqual(3);
     })
 
     it('Do not delete on error to sync points', async() => {
@@ -134,12 +141,12 @@ describe('Tests with points', () => {
         await savePoint(newPoint, userEmail, true);
         const communityData = await getCommunityData();
         expect(communityData.areas.length).toStrictEqual(1);
-        expect(communityData.points.length).toStrictEqual(2);
+        expect(communityData.points.length).toStrictEqual(3);
         mockAxios.post.mockRejectedValue(new Error("Network Error"));
         await expect(syncCommunityData('some@email.com')).rejects.toThrow("Network Error");
         expect(mockAxios.post).toHaveBeenCalledTimes(1);
         const newCommunityData = await getCommunityData();
         expect(newCommunityData.areas.length).toStrictEqual(1);
-        expect(newCommunityData.points.length).toStrictEqual(2);
+        expect(newCommunityData.points.length).toStrictEqual(3);
     })
 })
