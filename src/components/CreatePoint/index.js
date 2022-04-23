@@ -160,7 +160,7 @@ const CreatePoint = ({
         multimedia: medias,
         id: locationId,
         validated: false,
-        cor: 'rgba(255,255,0,0.5)'
+        cor: 'rgba(255,255,0,0.5)',
       };
       dispatch(Actions.resetNewArea());
     } else if (isNumeric(latitude.value) && isNumeric(longitude.value)) {

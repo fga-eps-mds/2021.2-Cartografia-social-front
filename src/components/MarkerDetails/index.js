@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+/* eslint-disable no-param-reassign */
 import React, {useEffect, useState} from 'react';
 import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {View, Text, Divisor, Btn} from 'components/UI';
@@ -41,31 +42,22 @@ const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
   };
 
   const validarArea = async (id) => {
-    let endpoint = '/maps/area/';
-    
+    const endpoint = '/maps/area/';
+
     const userResponse = await api.get(`${endpoint}${id}`);
-    
-    markerValidation = {
-      id: id,
+
+    const markerValidation = {
+      id,
       validated: true,
     };
 
-    await api
-        .put(endpoint, markerValidation)
-        .then((response) => {
-          locationId = response.data;
-        })
-        .catch(() => {
-          Alert.alert(
-            'Tente mais tarde',
-            'Não foi possivel validar a marcação.',
-          );
-        });
+    await api.put(endpoint, markerValidation).catch(() => {
+      Alert.alert('Tente mais tarde', 'Não foi possivel validar a marcação.');
+    });
 
-    if(userResponse.data.validated) {
+    if (userResponse.data.validated) {
       marker.cor = 'rgba(255,0,0,0.5)';
     }
-    
   };
 
   const eraseMarker = async () => {
@@ -232,19 +224,21 @@ const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
                     </Text>
                     <Text ml={3}>{marker.description}</Text>
                   </View>
-                  {marker.coordinates && user.data.type === 'RESEARCHER' && !Validated && (
-                    <View
-                      style={{
-                        marginTop: 50,
-                        flexDirection: 'row',
-                        justifyContent: 'space-evenly',
-                      }}>
-                      <Btn
-                        title="Validar Área"
-                        onPress={validarArea(marker.id)}
-                      />
-                    </View>
-                  )}
+                  {marker.coordinates &&
+                    user.data.type === 'RESEARCHER' &&
+                    !Validated && (
+                      <View
+                        style={{
+                          marginTop: 50,
+                          flexDirection: 'row',
+                          justifyContent: 'space-evenly',
+                        }}>
+                        <Btn
+                          title="Validar Área"
+                          onPress={validarArea(marker.id)}
+                        />
+                      </View>
+                    )}
                 </View>
               </>
             ) : (

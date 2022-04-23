@@ -31,11 +31,11 @@ const Map = () => {
   const user = useSelector(selectors.auth);
 
   const poligonoValidado = async (id) => {
-    let endpoint = '/maps/area/';
-    
+    const endpoint = '/maps/area/';
+
     const userResponse = await api.get(`${endpoint}${id}`);
-    
-    return userResponse.data.validated
+
+    return userResponse.data.validated;
   };
   const getPointsAndAreas = async () => {
     try {
@@ -124,25 +124,26 @@ const Map = () => {
           onRegionChangeComplete={(value) => setRegion(value)}
           {...mapOptions}>
           {markers.map((marker, index) => {
-            if(marker.coordinates) {
-              if(user.data.type === 'ADMIN' || poligonoValidado(marker.id)) {
-                return(
-                  <Polygon
-                    key={index}
-                    coordinates={marker.coordinates}
-                    tappable
-                    strokeColor="#000"
-                    fillColor={marker.cor}
-                    strokeWidth={1}
-                    onPress={() => onPressMarker(marker)}
-                  />
-                )
-              } else {
-                return(
-                  <Marker key={index} marker={marker} onPress={onPressMarker} />
-                )
-              }
-            }})}
+            if (
+              marker.coordinates &&
+              (user.data.type === 'ADMIN' || poligonoValidado(marker.id))
+            ) {
+              return (
+                <Polygon
+                  key={index}
+                  coordinates={marker.coordinates}
+                  tappable
+                  strokeColor="#000"
+                  fillColor={marker.cor}
+                  strokeWidth={1}
+                  onPress={() => onPressMarker(marker)}
+                />
+              );
+            }
+            return (
+              <Marker key={index} marker={marker} onPress={onPressMarker} />
+            );
+          })}
           <CreateArea
             reset={(func) => {
               resetArea.current = func;
