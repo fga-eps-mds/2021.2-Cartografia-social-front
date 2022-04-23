@@ -21,6 +21,7 @@ import {
 import Tutorial from 'components/Tutorial';
 import NetInfo from '@react-native-community/netinfo';
 import {MapView} from './styles';
+import SyncButton from 'components/SyncButton';
 
 const Map = () => {
   const dispatch = useDispatch();
@@ -144,6 +145,7 @@ const Map = () => {
 
     return (
       <View flex={1}>
+        
         {isCreatingArea === true && tutorialExibido === 1 && <Tutorial />}
         <MapView
           region={region}
@@ -198,6 +200,7 @@ const Map = () => {
             getPointsAndAreas();
           }}
         />
+        <SyncButton visible={true}/>
       </View>
     );
   }
