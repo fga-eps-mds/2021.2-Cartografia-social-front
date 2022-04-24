@@ -14,7 +14,7 @@ import {useSelector} from 'react-redux';
 import {auth} from 'store/selectors';
 import MediasList from '../MediasList';
 
-const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
+const MarkerDetails = ({leader, marker, setSelectedMarker, sheetRef, close}) => {
   const user = useSelector(auth);
 
   const snapPoints = [400, '95%'];
@@ -25,7 +25,6 @@ const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
   const [mediaShowed, setMediaShowed] = useState({});
   const [modalShowMediaVisible, setModalShowMediaVisible] = useState(false);
   const [editing, setEdit] = useState(false);
-  const Validated = false;
 
   const handleShowMedia = (fileType, fileUri, fileDuration) => {
     const media = {
@@ -54,10 +53,10 @@ const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
     await api.put(endpoint, markerValidation).catch(() => {
       Alert.alert('Tente mais tarde', 'Não foi possivel validar a marcação.');
     });
-
-    if (userResponse.data.validated) {
-      marker.cor = 'rgba(255,0,0,0.5)';
-    }
+    marker.validated = userResponse.data.validated
+    
+    Alert.alert("Área validada")
+    close();
   };
 
   const eraseMarker = async () => {
@@ -225,8 +224,8 @@ const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
                     <Text ml={3}>{marker.description}</Text>
                   </View>
                   {marker.coordinates &&
-                    user.data.type === 'RESEARCHER' &&
-                    !Validated && (
+                    leader &&
+                    !marker.validated && (
                       <View
                         style={{
                           marginTop: 50,
@@ -238,7 +237,7 @@ const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
                           onPress={validarArea(marker.id)}
                         />
                       </View>
-                    )}
+                  )}
                 </View>
               </>
             ) : (

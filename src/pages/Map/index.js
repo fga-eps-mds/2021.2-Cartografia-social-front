@@ -29,14 +29,30 @@ const Map = () => {
   const resetArea = useRef(() => {});
   const markers = useSelector(selectors.markers);
   const user = useSelector(selectors.auth);
+  const red = 'rgba(255,0,0,0.5)';
+  const yellow = 'rgba(255,255,0,0.5)';
 
-  const poligonoValidado = async (id) => {
-    const endpoint = '/maps/area/';
+  const isLeader = async () => {
+    const communities = await api.get(
+      `/community/getUserCommunity?userEmail=${user.data.email}`,
+    );
 
-    const userResponse = await api.get(`${endpoint}${id}`);
+    const comId = communities.data.id;
 
-    return userResponse.data.validated;
+    const leaderResp = await api.get(
+      `/community/getAdminUsers?communityId=${comId}`,
+    );
+    const leaders = leaderResp.data;
+
+    const privillege = leaders.some((users) => users.userId === user.data.id);
+    return privillege;
   };
+
+  const [leader, setIsLeader] = useState(false);
+  isLeader().then((response) => {
+    setIsLeader(response);
+  });
+
   const getPointsAndAreas = async () => {
     try {
       if (user.id) {
@@ -100,6 +116,25 @@ const Map = () => {
         longitudeDelta: 0.02,
       });
     }
+    /*if (marker.coordinates) {
+      let latitude = marker.coordinates[0].latitude;
+      let longitude = marker.coordinates[0].longitude;
+      
+      for (let i = 1; i < marker.coordinates.length; i++) {
+        latitude += marker.coordinates[i].latitude;
+        longitude += marker.coordinates[i].longitude;
+      }
+
+      latitude /= marker.coordinates.length;
+      longitude /= marker.coordinates.length;
+
+      setRegion({
+        latitude: latitude,
+        longitude: longitude,
+        latitudeDelta: 0.0122,
+        longitudeDelta: 0.03,
+      })
+    }*/
   };
 
   const onCloseCreation = () => {
@@ -124,25 +159,37 @@ const Map = () => {
           onRegionChangeComplete={(value) => setRegion(value)}
           {...mapOptions}>
           {markers.map((marker, index) => {
-            if (
-              marker.coordinates &&
-              (user.data.type === 'ADMIN' || poligonoValidado(marker.id))
-            ) {
+            if (marker.coordinates) {
+              const polygonValidated = async (id) => {
+                const endpoint = '/maps/area/';
+                const userResponse = await api.get(`${endpoint}${id}`);
+                marker.validated = userResponse.data.validated
+                
+              }
+              polygonValidated(marker.id);
+
+              if ((user.data && leader) || marker.validated) {
+                return (
+                  <Polygon
+                    key={index}
+                    coordinates={marker.coordinates}
+                    tappable
+                    strokeColor="#000"
+                    fillColor={marker.validated === true ? red : yellow}
+                    strokeWidth={1}
+                    onPress={() => onPressMarker(marker)}
+                  />
+                );
+              }
+              else {
+                return null;
+              }
+            }
+            else {
               return (
-                <Polygon
-                  key={index}
-                  coordinates={marker.coordinates}
-                  tappable
-                  strokeColor="#000"
-                  fillColor={marker.cor}
-                  strokeWidth={1}
-                  onPress={() => onPressMarker(marker)}
-                />
+                <Marker key={index} marker={marker} onPress={onPressMarker} />
               );
             }
-            return (
-              <Marker key={index} marker={marker} onPress={onPressMarker} />
-            );
           })}
           <CreateArea
             reset={(func) => {
@@ -168,6 +215,7 @@ const Map = () => {
           setPoint={setRegion}
         />
         <MarkerDetails
+          leader={leader}
           marker={selectedMarker}
           setSelectedMarker={setSelectedMarker}
           sheetRef={(ref) => {
