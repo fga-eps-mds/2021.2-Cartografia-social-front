@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
+/* eslint-disable no-param-reassign */
 import React, {useState, useEffect, useRef} from 'react';
 import {View} from 'components/UI';
 import {Alert} from 'react-native';
@@ -116,7 +117,7 @@ const Map = () => {
         longitudeDelta: 0.02,
       });
     }
-    /*if (marker.coordinates) {
+    /* if (marker.coordinates) {
       let latitude = marker.coordinates[0].latitude;
       let longitude = marker.coordinates[0].longitude;
       
@@ -134,7 +135,7 @@ const Map = () => {
         latitudeDelta: 0.0122,
         longitudeDelta: 0.03,
       })
-    }*/
+    } */
   };
 
   const onCloseCreation = () => {
@@ -163,9 +164,8 @@ const Map = () => {
               const polygonValidated = async (id) => {
                 const endpoint = '/maps/area/';
                 const userResponse = await api.get(`${endpoint}${id}`);
-                marker.validated = userResponse.data.validated
-                
-              }
+                marker.validated = userResponse.data.validated;
+              };
               polygonValidated(marker.id);
 
               if ((user.data && leader) || marker.validated) {
@@ -181,15 +181,13 @@ const Map = () => {
                   />
                 );
               }
-              else {
-                return null;
-              }
+
+              return null;
             }
-            else {
-              return (
-                <Marker key={index} marker={marker} onPress={onPressMarker} />
-              );
-            }
+
+            return (
+              <Marker key={index} marker={marker} onPress={onPressMarker} />
+            );
           })}
           <CreateArea
             reset={(func) => {

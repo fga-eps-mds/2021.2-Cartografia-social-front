@@ -14,7 +14,13 @@ import {useSelector} from 'react-redux';
 import {auth} from 'store/selectors';
 import MediasList from '../MediasList';
 
-const MarkerDetails = ({leader, marker, setSelectedMarker, sheetRef, close}) => {
+const MarkerDetails = ({
+  leader,
+  marker,
+  setSelectedMarker,
+  sheetRef,
+  close,
+}) => {
   const user = useSelector(auth);
 
   const snapPoints = [400, '95%'];
@@ -53,9 +59,9 @@ const MarkerDetails = ({leader, marker, setSelectedMarker, sheetRef, close}) => 
     await api.put(endpoint, markerValidation).catch(() => {
       Alert.alert('Tente mais tarde', 'Não foi possivel validar a marcação.');
     });
-    marker.validated = userResponse.data.validated
-    
-    Alert.alert("Área validada")
+    marker.validated = userResponse.data.validated;
+
+    Alert.alert('Área validada');
     close();
   };
 
@@ -223,20 +229,18 @@ const MarkerDetails = ({leader, marker, setSelectedMarker, sheetRef, close}) => 
                     </Text>
                     <Text ml={3}>{marker.description}</Text>
                   </View>
-                  {marker.coordinates &&
-                    leader &&
-                    !marker.validated && (
-                      <View
-                        style={{
-                          marginTop: 50,
-                          flexDirection: 'row',
-                          justifyContent: 'space-evenly',
-                        }}>
-                        <Btn
-                          title="Validar Área"
-                          onPress={validarArea(marker.id)}
-                        />
-                      </View>
+                  {marker.coordinates && leader && !marker.validated && (
+                    <View
+                      style={{
+                        marginTop: 50,
+                        flexDirection: 'row',
+                        justifyContent: 'space-evenly',
+                      }}>
+                      <Btn
+                        title="Validar Área"
+                        onPress={validarArea(marker.id)}
+                      />
+                    </View>
                   )}
                 </View>
               </>
