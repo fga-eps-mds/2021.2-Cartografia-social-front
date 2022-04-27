@@ -117,31 +117,18 @@ const Map = () => {
         longitudeDelta: 0.02,
       });
     }
-    /* if (marker.coordinates) {
-      let latitude = marker.coordinates[0].latitude;
-      let longitude = marker.coordinates[0].longitude;
-      
-      for (let i = 1; i < marker.coordinates.length; i++) {
-        latitude += marker.coordinates[i].latitude;
-        longitude += marker.coordinates[i].longitude;
-      }
-
-      latitude /= marker.coordinates.length;
-      longitude /= marker.coordinates.length;
-
-      setRegion({
-        latitude: latitude,
-        longitude: longitude,
-        latitudeDelta: 0.0122,
-        longitudeDelta: 0.03,
-      })
-    } */
   };
 
   const onCloseCreation = () => {
     setShowPointCreation(false);
     setIsCreatingArea(false);
     resetArea.current();
+  };
+
+  const polygonValidated = async (id) => {
+    const endpoint = '/maps/area/';
+    const userResponse = await api.get(`${endpoint}${id}`);
+    return userResponse.data
   };
 
   if (region) {
@@ -161,14 +148,12 @@ const Map = () => {
           {...mapOptions}>
           {markers.map((marker, index) => {
             if (marker.coordinates) {
-              const polygonValidated = async (id) => {
-                const endpoint = '/maps/area/';
-                const userResponse = await api.get(`${endpoint}${id}`);
-                marker.validated = userResponse.data.validated;
-              };
-              polygonValidated(marker.id);
+              polygonValidated(marker.id).then(data => {
+                marker.validated = data.validated
+                marker.member = data.member
+              })
 
-              if ((user.data && leader) || marker.validated) {
+              if ((user.data && leader) || marker.validated || (user.data.id === marker.member)) {
                 return (
                   <Polygon
                     key={index}

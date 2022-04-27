@@ -61,7 +61,7 @@ const MarkerDetails = ({
     });
     marker.validated = userResponse.data.validated;
 
-    Alert.alert('Área validada');
+    //Alert.alert('Área validada');
     close();
   };
 
@@ -168,7 +168,7 @@ const MarkerDetails = ({
                     flexDirection: 'row',
                     backgroundColor: '#FFF',
                   }}>
-                  {user.id ? (
+                  {(leader || (marker.member === user.data.id)) ? (
                     <TouchableOpacity
                       style={{
                         width: '25%',
@@ -238,7 +238,9 @@ const MarkerDetails = ({
                       }}>
                       <Btn
                         title="Validar Área"
-                        onPress={validarArea(marker.id)}
+                        onPress={() => {
+                          validarArea(marker.id)
+                        }}
                       />
                     </View>
                   )}

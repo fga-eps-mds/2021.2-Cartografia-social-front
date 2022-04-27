@@ -160,6 +160,7 @@ const CreatePoint = ({
         multimedia: medias,
         id: locationId,
         validated: false,
+        member: user.data.id,
       };
       dispatch(Actions.resetNewArea());
     } else if (isNumeric(latitude.value) && isNumeric(longitude.value)) {
