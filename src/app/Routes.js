@@ -23,6 +23,8 @@ import api from 'services/api';
 import UserRegistrationRequestPage from 'pages/UserRegistrationRequestPage';
 import Tutoriais from 'pages/Tutoriais';
 
+import DataExport from 'components/DataExport';
+
 const Routes = () => {
   const user = useSelector(auth);
   const Stack = createStackNavigator();
@@ -188,6 +190,36 @@ const Routes = () => {
     return privillege;
   };
 
+  /* const DataExport = () => {
+    const onConfirmation = async () => {
+      const continuar = true;
+      Alert.alert(
+        'Atenção',
+        'Gostaria de realizar a exportação de pontos e áreas ao time da nova cartografica social?',
+        [
+          {
+            text: 'Cancelar',
+            continuar: false,
+            onPress: () => Alert.alert('Atenção', 'Exportação cancelada'),
+            style: 'cancel',
+          },
+          {
+            text: 'Ok',
+            onPress: () => Alert.alert('Atenção', 'Exportação concluída'),
+            style: 'cancel',
+          },
+        ],
+      );
+      return continuar;
+    };
+
+    if (onConfirmation()) {
+      console.log('Exportação realizada com sucesso');
+    }
+
+    return null;
+  }; */
+
   const [leader, setIsLeader] = useState(false);
   isLeader().then((response) => {
     setIsLeader(response);
@@ -230,6 +262,19 @@ const Routes = () => {
         options={{
           headerTitle: '',
           title: 'Tutoriais',
+          headerStyle: {
+            backgroundColor: `${theme.colors.primary}`,
+            elevation: 0,
+          },
+          headerTintColor: '#fff',
+        }}
+      />
+      <Drawer.Screen
+        name="Exportar Dados"
+        component={DataExport}
+        options={{
+          headerTitle: '',
+          title: 'Exportar Dados',
           headerStyle: {
             backgroundColor: `${theme.colors.primary}`,
             elevation: 0,
