@@ -49,22 +49,16 @@ const MarkerDetails = ({
   const validarArea = async (id) => {
     const endpoint = '/maps/area/';
 
-    const userResponse = await api.get(`${endpoint}${id}`);
     const markerValidation = {
-      id: id,
+      id,
       validated: true,
-      title: userResponse.data.title,
-      color: 'rgba(255,0,0,0.5)',
-      member: user.id,
-      description: userResponse.data.description,
-      
     };
-    
+
     await api.put(endpoint, markerValidation).catch(() => {
       Alert.alert('Tente mais tarde', 'Não foi possivel validar a marcação.');
     });
-    const response = await api.get(`${endpoint}${id}`);
-    marker.validated = response.data.validated;
+    const userResponse = await api.get(`${endpoint}${id}`);
+    marker.validated = userResponse.data.validated;
 
     close();
   };
@@ -172,7 +166,7 @@ const MarkerDetails = ({
                     flexDirection: 'row',
                     backgroundColor: '#FFF',
                   }}>
-                  {(leader || (marker.member === user.data.id)) ? (
+                  {leader || marker.member === user.data.id ? (
                     <TouchableOpacity
                       style={{
                         width: '25%',
@@ -243,7 +237,7 @@ const MarkerDetails = ({
                       <Btn
                         title="Validar Área"
                         onPress={() => {
-                          validarArea(marker.id)
+                          validarArea(marker.id);
                         }}
                       />
                     </View>

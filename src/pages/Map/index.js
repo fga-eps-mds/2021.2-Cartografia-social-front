@@ -128,7 +128,7 @@ const Map = () => {
   const polygonValidated = async (id) => {
     const endpoint = '/maps/area/';
     const userResponse = await api.get(`${endpoint}${id}`);
-    return userResponse.data
+    return userResponse.data;
   };
 
   if (region) {
@@ -148,12 +148,16 @@ const Map = () => {
           {...mapOptions}>
           {markers.map((marker, index) => {
             if (marker.coordinates) {
-              polygonValidated(marker.id).then(data => {
-                marker.validated = data.validated
-                marker.member = data.member
-              })
+              polygonValidated(marker.id).then((data) => {
+                marker.validated = data.validated;
+                marker.member = data.member;
+              });
 
-              if ((user.data && leader) || marker.validated || (user.data.id === marker.member)) {
+              if (
+                (user.data && leader) ||
+                marker.validated ||
+                user.data.id === marker.member
+              ) {
                 return (
                   <Polygon
                     key={index}

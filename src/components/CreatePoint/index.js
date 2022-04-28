@@ -163,15 +163,6 @@ const CreatePoint = ({
         member: user.data.id,
       };
       dispatch(Actions.resetNewArea());
-    } else if (isNumeric(latitude.value) && isNumeric(longitude.value)) {
-      newMarker = {
-        latitude: parseFloat(latitude.value),
-        longitude: parseFloat(longitude.value),
-        title: title.value,
-        description: description.value,
-        multimedia: medias,
-        id: locationId,
-      };
     } else {
       Alert.alert('Atenção!', 'Digite corretamente as coordenadas!');
       return;
@@ -444,65 +435,6 @@ const CreatePoint = ({
                   />
                 </View>
               ) : null}
-              {isCreatingArea && area && area.coordinates.length ? (
-                <View>
-                  <View row>
-                    <Text m={2} flex={0.4}>
-                      Latitude
-                    </Text>
-                    <Text m={2} flex={0.5}>
-                      Longitude
-                    </Text>
-                  </View>
-                  {area.coordinates.map((item) => (
-                    <View row>
-                      <Text m={2} flex={0.4}>
-                        {item.latitude}
-                      </Text>
-                      <Text m={2} flex={0.5}>
-                        {item.longitude}
-                      </Text>
-                    </View>
-                  ))}
-                </View>
-              ) : null}
-              <View row>
-                <View flex={isCreatingArea ? 0.4 : 0.5}>
-                  <Input
-                    characterRestriction={10}
-                    keyboardType="numeric"
-                    maxLength={10}
-                    onBlur={onLocationBlur}
-                    label={latitudePlaceholder}
-                    onChange={(value) => {
-                      setLatitude(value);
-                    }}
-                    value={latitude.value}
-                  />
-                </View>
-                <View flex={isCreatingArea ? 0.4 : 0.5} ml={2}>
-                  <Input
-                    keyboardType="numeric"
-                    characterRestriction={10}
-                    maxLength={10}
-                    onBlur={onLocationBlur}
-                    label={longitudePlaceholder}
-                    onChange={(value) => {
-                      setLongitude(value);
-                    }}
-                    value={longitude.value}
-                  />
-                </View>
-                {isCreatingArea ? (
-                  <View flex={0.2} ml={1} mt={1}>
-                    <Btn
-                      onPress={onSavePoint}
-                      disabled={!pointIsValid()}
-                      title={addPoint}
-                    />
-                  </View>
-                ) : null}
-              </View>
               <View>
                 <Input
                   height={100}
