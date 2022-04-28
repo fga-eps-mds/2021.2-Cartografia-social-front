@@ -50,18 +50,22 @@ const MarkerDetails = ({
     const endpoint = '/maps/area/';
 
     const userResponse = await api.get(`${endpoint}${id}`);
-
     const markerValidation = {
-      id,
+      id: id,
       validated: true,
+      title: userResponse.data.title,
+      color: 'rgba(255,0,0,0.5)',
+      member: user.id,
+      description: userResponse.data.description,
+      
     };
-
+    
     await api.put(endpoint, markerValidation).catch(() => {
       Alert.alert('Tente mais tarde', 'Não foi possivel validar a marcação.');
     });
-    marker.validated = userResponse.data.validated;
+    const response = await api.get(`${endpoint}${id}`);
+    marker.validated = response.data.validated;
 
-    //Alert.alert('Área validada');
     close();
   };
 
