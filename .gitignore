@@ -64,3 +64,6 @@ buck-out/
 
 #Environment
 .env
+
+# api
+/src/services/api/
