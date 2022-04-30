@@ -3,7 +3,7 @@ import api from 'services/api';
 import auth from 'store/selectors/auth';
 import {useSelector} from 'react-redux';
 
-const DataExport = async () => {
+const DataExport = () => {
   const user = useSelector(auth);
   const onConfirmation = () => {
     const continuar = true;
@@ -27,32 +27,27 @@ const DataExport = async () => {
     return continuar;
   };
 
-  const getInfoCommunity = async () => {
-    const communityInfo = await api.get(
+  const exportData = async () => {
+    const communities = await api.get(
       `/community/getUserCommunity?userEmail=${user.data.email}`,
     );
-    return communityInfo;
-  };
 
-  const exportData = async (id) => {
-    const communityArea = await api.get(
-      `/community/exportCommunityAreaToKml/${id}`,
-    );
-    const communityPoint = await api.get(
-      `/community/exportCommunityPointToKml/${id}`,
-    );
+    const comId = communities.data.id;
 
-    return communityArea, communityPoint;
-  };
-
-  if (onConfirmation()) {
     console.log(user.data.email);
-    console.log(getInfoCommunity().id);
-    const Data = await exportData(getInfoCommunity().id);
-    return Data;
-  }
+    console.log(communities.data.id);
 
-  return null;
+    const communityArea = api.get(
+      `/community/getUserCommunity?communityId=${comId}`,
+    );
+    const communityPoint = api.get(
+      `/community/exportCommunityPointToKml/${comId}`,
+    );
+
+    return communityArea;
+  };
+
+  return exportData();
 };
 
 export default DataExport;
