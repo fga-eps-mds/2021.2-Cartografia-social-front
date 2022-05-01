@@ -45,6 +45,7 @@ const CreatePoint = ({
   let namePlaceholder = 'Digite aqui o título do novo ponto';
   let descriptionPlaceholder = 'Digite aqui a descrição do novo ponto';
   let buttonName = 'Salvar ponto';
+  let confirmacao = 'Deseja salvar o ponto?';
   const latitudePlaceholder = 'Latitude';
   const longitudePlaceholder = 'Longitude';
   const addPoint = '+';
@@ -52,6 +53,7 @@ const CreatePoint = ({
     namePlaceholder = 'Digite aqui o título da nova área';
     descriptionPlaceholder = 'Digite aqui a descrição da nova área';
     buttonName = 'Salvar área';
+    confirmacao = 'Deseja salvar a área?';
   }
 
   const DEFAULT_STATE = {
@@ -143,6 +145,24 @@ const CreatePoint = ({
     setMedias([]);
   };
 
+  const onConfirmation = () => {
+    const continuar = true;
+    Alert.alert('Atenção', confirmacao, [
+      {
+        text: 'Cancelar',
+        continuar: false,
+        onPress: () => Alert.alert('Atenção', 'Marcação cancelada'),
+        style: 'cancel',
+      },
+      {
+        text: 'Ok',
+        onPress: () => Alert.alert('Atenção', 'Marcação concluída'),
+        style: 'cancel',
+      },
+    ]);
+    return continuar;
+  };
+
   const onSave = async () => {
     const locationId = null;
     setShowMarker(false);
@@ -156,23 +176,27 @@ const CreatePoint = ({
         Alert.alert('Atenção!', 'É Necessário marcar um polígono no mapa!');
         return;
       }
-      newMarker = {
-        coordinates: area.coordinates,
-        title: title.value,
-        description: description.value,
-        multimedia: medias,
-        id: locationId,
-      };
-      dispatch(Actions.resetNewArea());
+      if (onConfirmation()) {
+        newMarker = {
+          coordinates: area.coordinates,
+          title: title.value,
+          description: description.value,
+          multimedia: medias,
+          id: locationId,
+        };
+        dispatch(Actions.resetNewArea());
+      }
     } else if (isNumeric(latitude.value) && isNumeric(longitude.value)) {
-      newMarker = {
-        latitude: parseFloat(latitude.value),
-        longitude: parseFloat(longitude.value),
-        title: title.value,
-        description: description.value,
-        multimedia: medias,
-        id: locationId,
-      };
+      if (onConfirmation()) {
+        newMarker = {
+          latitude: parseFloat(latitude.value),
+          longitude: parseFloat(longitude.value),
+          title: title.value,
+          description: description.value,
+          multimedia: medias,
+          id: locationId,
+        };
+      }
     } else {
       Alert.alert('Atenção!', 'Digite corretamente as coordenadas!');
       return;
