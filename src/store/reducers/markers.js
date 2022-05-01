@@ -34,7 +34,6 @@ const reducer = (state = INITIAL_STATE, action) => {
         multimedia: [],
         multimediaInitialized: false,
       }));
-
       formattedAreas = action.areas.map((item) => ({
         title: item.title,
         description: item.description,

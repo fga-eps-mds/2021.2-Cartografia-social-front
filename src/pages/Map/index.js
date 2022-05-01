@@ -2,7 +2,6 @@
 /* eslint-disable react/no-array-index-key */
 import React, {useState, useEffect, useRef} from 'react';
 import {View} from 'components/UI';
-import {Alert} from 'react-native';
 import useLocation from 'services/useLocation';
 import Fabs from 'components/Fabs';
 import CreatePoint from 'components/CreatePoint';
@@ -13,8 +12,14 @@ import Marker from 'components/Marker';
 import MarkerDetails from 'components/MarkerDetails';
 import CreateArea from 'components/CreateArea';
 import {Polygon} from 'react-native-maps';
-import api from 'services/api';
+import {
+  getCommunityData,
+  syncCommunityData,
+  hasDataToSync as getIfHasDataToSync,
+} from 'services/offlineMapService';
 import Tutorial from 'components/Tutorial';
+import NetInfo from '@react-native-community/netinfo';
+import SyncButton from 'components/SyncButton';
 import {MapView} from './styles';
 
 const Map = () => {
@@ -25,6 +30,9 @@ const Map = () => {
   const [selectedMarker, setSelectedMarker] = useState({});
   const [isCreatingArea, setIsCreatingArea] = useState(false);
   const [tutorialExibido, setTutorialExibido] = useState(0);
+  const [hasDataToSync, setHasDataToSync] = useState(false);
+  const [triggerHasDataToSync, setTriggerHasDataToSync] = useState(false);
+
   const detailsRef = useRef(null);
   const onPressCreatingArea = useRef(null);
   const newArea = useRef(null);
@@ -32,22 +40,21 @@ const Map = () => {
 
   const markers = useSelector(selectors.markers);
   const user = useSelector(selectors.auth);
+  const netInfo = NetInfo.useNetInfo();
 
   const getPointsAndAreas = async () => {
-    try {
-      if (user.id) {
-        const response = await api.get(
-          `/maps/communityDataByUserEmail/${user.email}`,
-        );
-        const {data} = response;
-        if (data && data.points && data.areas) {
-          dispatch(Actions.populateMarkers(data.points, data.areas));
-        }
+    if (user.id) {
+      const {isInternetReachable} = netInfo;
+      const data = await getCommunityData(user.email, !isInternetReachable);
+      if (data && data.points && data.areas) {
+        dispatch(Actions.populateMarkers(data.points, data.areas));
       }
-    } catch (error) {
-      Alert.alert(error.title, error.message);
     }
   };
+
+  useEffect(() => {
+    getIfHasDataToSync().then(setHasDataToSync);
+  }, [triggerHasDataToSync, markers.length]);
 
   useEffect(() => {
     getPointsAndAreas();
@@ -170,6 +177,13 @@ const Map = () => {
           close={() => {
             detailsRef.current.close();
             getPointsAndAreas();
+          }}
+        />
+        <SyncButton
+          visible={hasDataToSync}
+          onSync={async () => {
+            await syncCommunityData(user.email);
+            setTriggerHasDataToSync(!triggerHasDataToSync);
           }}
         />
       </View>
