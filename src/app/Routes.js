@@ -175,11 +175,9 @@ const Routes = () => {
   );
 
   const isLeader = async () => {
-
     const {isInternetReachable} = netInfo;
 
-    if (!isInternetReachable)
-      return false;
+    if (!isInternetReachable) return false;
 
     const communities = await api.get(
       `/community/getUserCommunity?userEmail=${user.data.email}`,

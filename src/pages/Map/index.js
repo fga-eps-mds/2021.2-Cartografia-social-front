@@ -19,7 +19,6 @@ import {
   syncCommunityData,
   hasDataToSync as getIfHasDataToSync,
 } from 'services/offlineMapService';
-import Tutorial from 'components/Tutorial';
 import NetInfo from '@react-native-community/netinfo';
 import SyncButton from 'components/SyncButton';
 import {MapView} from './styles';
@@ -31,7 +30,6 @@ const Map = () => {
   const [region, setRegion] = useState(null);
   const [selectedMarker, setSelectedMarker] = useState({});
   const [isCreatingArea, setIsCreatingArea] = useState(false);
-  const [tutorialExibido, setTutorialExibido] = useState(0);
   const [hasDataToSync, setHasDataToSync] = useState(false);
   const [triggerHasDataToSync, setTriggerHasDataToSync] = useState(false);
   const detailsRef = useRef(null);
@@ -46,11 +44,9 @@ const Map = () => {
   const netInfo = NetInfo.useNetInfo();
 
   const isLeader = async () => {
-
     const {isInternetReachable} = netInfo;
 
-    if (!isInternetReachable)
-      return false;
+    if (!isInternetReachable) return false;
 
     const communities = await api.get(
       `/community/getUserCommunity?userEmail=${user.data.email}`,

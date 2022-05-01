@@ -28,14 +28,7 @@ import VideoPreview from '../VideoPreview';
 
 import {Container, Icon} from './styles';
 
-const CreatePoint = ({
-  locationSelected,
-  show,
-  onClose,
-  isCreatingArea,
-  addPointToArea,
-  setPoint,
-}) => {
+const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
   UseCamera();
   const dispatch = useDispatch();
   const user = useSelector(auth);
@@ -298,10 +291,6 @@ const CreatePoint = ({
     return title.isValid;
   };
 
-  const pointIsValid = () => {
-    return latitude.isValid && longitude.isValid;
-  };
-
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
@@ -354,46 +343,6 @@ const CreatePoint = ({
       isValid: true,
     });
   }, [locationSelected]);
-
-  const onSavePoint = () => {
-    if (
-      latitude.value &&
-      longitude.value &&
-      isNumeric(latitude.value) &&
-      isNumeric(longitude.value)
-    ) {
-      const event = {
-        nativeEvent: {
-          coordinate: {
-            latitude: parseFloat(latitude.value),
-            longitude: parseFloat(longitude.value),
-          },
-        },
-      };
-
-      addPointToArea(event);
-      setLatitude(DEFAULT_STATE);
-      setLongitude(DEFAULT_STATE);
-    } else {
-      Alert.alert('Atenção!', 'Digite corretamente as coordenadas');
-    }
-  };
-
-  const onLocationBlur = () => {
-    if (
-      latitude.value &&
-      latitude.value.length > 4 &&
-      longitude.value &&
-      longitude.value.length > 4
-    ) {
-      setPoint({
-        latitude: parseFloat(latitude.value),
-        longitude: parseFloat(longitude.value),
-        latitudeDelta: 0.0122,
-        longitudeDelta: 0.02,
-      });
-    }
-  };
 
   const renderItem = ({item}) => {
     if (item.mediaType === 'image') {
@@ -552,8 +501,6 @@ CreatePoint.propTypes = {
   }),
   show: PropTypes.bool,
   onClose: PropTypes.func,
-  addPointToArea: PropTypes.func.isRequired,
-  setPoint: PropTypes.func.isRequired,
   isCreatingArea: PropTypes.bool,
 };
 
