@@ -22,6 +22,9 @@ import AddContributor from 'pages/AddContributor';
 import api from 'services/api';
 import UserRegistrationRequestPage from 'pages/UserRegistrationRequestPage';
 import Tutoriais from 'pages/Tutoriais';
+import NetInfo from '@react-native-community/netinfo';
+
+const netInfo = NetInfo.useNetInfo();
 
 const Routes = () => {
   const user = useSelector(auth);
@@ -172,6 +175,10 @@ const Routes = () => {
   );
 
   const isLeader = async () => {
+    const {isInternetReachable} = netInfo;
+
+    if (!isInternetReachable) return false;
+
     const communities = await api.get(
       `/community/getUserCommunity?userEmail=${user.data.email}`,
     );

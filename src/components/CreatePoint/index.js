@@ -28,14 +28,7 @@ import VideoPreview from '../VideoPreview';
 
 import {Container, Icon} from './styles';
 
-const CreatePoint = ({
-  locationSelected,
-  show,
-  onClose,
-  isCreatingArea,
-  addPointToArea,
-  setPoint,
-}) => {
+const CreatePoint = ({locationSelected, show, onClose, isCreatingArea}) => {
   UseCamera();
   const dispatch = useDispatch();
   const user = useSelector(auth);
@@ -46,9 +39,6 @@ const CreatePoint = ({
   let descriptionPlaceholder = 'Digite aqui a descrição do novo ponto';
   let buttonName = 'Salvar ponto';
   let confirmacao = 'Deseja salvar o ponto?';
-  const latitudePlaceholder = 'Latitude';
-  const longitudePlaceholder = 'Longitude';
-  const addPoint = '+';
   if (isCreatingArea) {
     namePlaceholder = 'Digite aqui o título da nova área';
     descriptionPlaceholder = 'Digite aqui a descrição da nova área';
@@ -183,6 +173,8 @@ const CreatePoint = ({
           description: description.value,
           multimedia: medias,
           id: locationId,
+          validated: false,
+          member: user.data.id,
         };
         dispatch(Actions.resetNewArea());
       }
@@ -195,6 +187,8 @@ const CreatePoint = ({
           description: description.value,
           multimedia: medias,
           id: locationId,
+          validated: false,
+          member: user.data.id,
         };
       }
     } else {
@@ -297,10 +291,6 @@ const CreatePoint = ({
     return title.isValid;
   };
 
-  const pointIsValid = () => {
-    return latitude.isValid && longitude.isValid;
-  };
-
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
@@ -353,46 +343,6 @@ const CreatePoint = ({
       isValid: true,
     });
   }, [locationSelected]);
-
-  const onSavePoint = () => {
-    if (
-      latitude.value &&
-      longitude.value &&
-      isNumeric(latitude.value) &&
-      isNumeric(longitude.value)
-    ) {
-      const event = {
-        nativeEvent: {
-          coordinate: {
-            latitude: parseFloat(latitude.value),
-            longitude: parseFloat(longitude.value),
-          },
-        },
-      };
-
-      addPointToArea(event);
-      setLatitude(DEFAULT_STATE);
-      setLongitude(DEFAULT_STATE);
-    } else {
-      Alert.alert('Atenção!', 'Digite corretamente as coordenadas');
-    }
-  };
-
-  const onLocationBlur = () => {
-    if (
-      latitude.value &&
-      latitude.value.length > 4 &&
-      longitude.value &&
-      longitude.value.length > 4
-    ) {
-      setPoint({
-        latitude: parseFloat(latitude.value),
-        longitude: parseFloat(longitude.value),
-        latitudeDelta: 0.0122,
-        longitudeDelta: 0.02,
-      });
-    }
-  };
 
   const renderItem = ({item}) => {
     if (item.mediaType === 'image') {
@@ -468,65 +418,6 @@ const CreatePoint = ({
                   />
                 </View>
               ) : null}
-              {isCreatingArea && area && area.coordinates.length ? (
-                <View>
-                  <View row>
-                    <Text m={2} flex={0.4}>
-                      Latitude
-                    </Text>
-                    <Text m={2} flex={0.5}>
-                      Longitude
-                    </Text>
-                  </View>
-                  {area.coordinates.map((item) => (
-                    <View row>
-                      <Text m={2} flex={0.4}>
-                        {item.latitude}
-                      </Text>
-                      <Text m={2} flex={0.5}>
-                        {item.longitude}
-                      </Text>
-                    </View>
-                  ))}
-                </View>
-              ) : null}
-              <View row>
-                <View flex={isCreatingArea ? 0.4 : 0.5}>
-                  <Input
-                    characterRestriction={10}
-                    keyboardType="numeric"
-                    maxLength={10}
-                    onBlur={onLocationBlur}
-                    label={latitudePlaceholder}
-                    onChange={(value) => {
-                      setLatitude(value);
-                    }}
-                    value={latitude.value}
-                  />
-                </View>
-                <View flex={isCreatingArea ? 0.4 : 0.5} ml={2}>
-                  <Input
-                    keyboardType="numeric"
-                    characterRestriction={10}
-                    maxLength={10}
-                    onBlur={onLocationBlur}
-                    label={longitudePlaceholder}
-                    onChange={(value) => {
-                      setLongitude(value);
-                    }}
-                    value={longitude.value}
-                  />
-                </View>
-                {isCreatingArea ? (
-                  <View flex={0.2} ml={1} mt={1}>
-                    <Btn
-                      onPress={onSavePoint}
-                      disabled={!pointIsValid()}
-                      title={addPoint}
-                    />
-                  </View>
-                ) : null}
-              </View>
               <View>
                 <Input
                   height={100}
@@ -610,8 +501,6 @@ CreatePoint.propTypes = {
   }),
   show: PropTypes.bool,
   onClose: PropTypes.func,
-  addPointToArea: PropTypes.func.isRequired,
-  setPoint: PropTypes.func.isRequired,
   isCreatingArea: PropTypes.bool,
 };
 

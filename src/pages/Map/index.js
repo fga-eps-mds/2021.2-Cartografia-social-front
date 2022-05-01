@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
+/* eslint-disable no-param-reassign */
 import React, {useState, useEffect, useRef} from 'react';
 import {View} from 'components/UI';
 import useLocation from 'services/useLocation';
@@ -12,12 +13,12 @@ import Marker from 'components/Marker';
 import MarkerDetails from 'components/MarkerDetails';
 import CreateArea from 'components/CreateArea';
 import {Polygon} from 'react-native-maps';
+import api from 'services/api';
 import {
   getCommunityData,
   syncCommunityData,
   hasDataToSync as getIfHasDataToSync,
 } from 'services/offlineMapService';
-import Tutorial from 'components/Tutorial';
 import NetInfo from '@react-native-community/netinfo';
 import SyncButton from 'components/SyncButton';
 import {MapView} from './styles';
@@ -29,18 +30,43 @@ const Map = () => {
   const [region, setRegion] = useState(null);
   const [selectedMarker, setSelectedMarker] = useState({});
   const [isCreatingArea, setIsCreatingArea] = useState(false);
-  const [tutorialExibido, setTutorialExibido] = useState(0);
   const [hasDataToSync, setHasDataToSync] = useState(false);
   const [triggerHasDataToSync, setTriggerHasDataToSync] = useState(false);
-
   const detailsRef = useRef(null);
   const onPressCreatingArea = useRef(null);
   const newArea = useRef(null);
   const resetArea = useRef(() => {});
-
   const markers = useSelector(selectors.markers);
   const user = useSelector(selectors.auth);
+  const red = 'rgba(255,0,0,0.5)';
+  const yellow = 'rgba(255,255,0,0.5)';
+
   const netInfo = NetInfo.useNetInfo();
+
+  const isLeader = async () => {
+    const {isInternetReachable} = netInfo;
+
+    if (!isInternetReachable) return false;
+
+    const communities = await api.get(
+      `/community/getUserCommunity?userEmail=${user.data.email}`,
+    );
+
+    const comId = communities.data.id;
+
+    const leaderResp = await api.get(
+      `/community/getAdminUsers?communityId=${comId}`,
+    );
+    const leaders = leaderResp.data;
+
+    const privillege = leaders.some((users) => users.userId === user.data.id);
+    return privillege;
+  };
+
+  const [leader, setIsLeader] = useState(false);
+  isLeader().then((response) => {
+    setIsLeader(response);
+  });
 
   const getPointsAndAreas = async () => {
     if (user.id) {
@@ -63,10 +89,7 @@ const Map = () => {
   const actions = [
     {
       icon: 'draw-polygon',
-      onPress: () => {
-        setIsCreatingArea(true);
-        setTutorialExibido(tutorialExibido + 1);
-      },
+      onPress: () => setIsCreatingArea(true),
     },
     {
       icon: 'map-marker-alt',
@@ -125,26 +148,37 @@ const Map = () => {
 
     return (
       <View flex={1}>
-        {isCreatingArea === true && tutorialExibido === 1 && <Tutorial />}
         <MapView
           region={region}
           onRegionChangeComplete={(value) => setRegion(value)}
           {...mapOptions}>
-          {markers.map((marker, index) =>
-            marker && marker.coordinates ? (
-              <Polygon
-                key={index}
-                coordinates={marker.coordinates}
-                tappable
-                strokeColor="#000"
-                fillColor="rgba(255,0,0,0.5)"
-                strokeWidth={1}
-                onPress={() => onPressMarker(marker)}
-              />
-            ) : (
+          {markers.map((marker, index) => {
+            if (marker && marker.coordinates) {
+              if (
+                (user.data && leader) ||
+                marker.validated ||
+                user.data.id === marker.member
+              ) {
+                return (
+                  <Polygon
+                    key={index}
+                    coordinates={marker.coordinates}
+                    tappable
+                    strokeColor="#000"
+                    fillColor={marker.validated === true ? red : yellow}
+                    strokeWidth={1}
+                    onPress={() => onPressMarker(marker)}
+                  />
+                );
+              }
+
+              return null;
+            }
+
+            return (
               <Marker key={index} marker={marker} onPress={onPressMarker} />
-            ),
-          )}
+            );
+          })}
           <CreateArea
             reset={(func) => {
               resetArea.current = func;
@@ -169,6 +203,7 @@ const Map = () => {
           setPoint={setRegion}
         />
         <MarkerDetails
+          leader={leader}
           marker={selectedMarker}
           setSelectedMarker={setSelectedMarker}
           sheetRef={(ref) => {

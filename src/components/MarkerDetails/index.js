@@ -1,7 +1,8 @@
 /* eslint-disable react/prop-types */
+/* eslint-disable no-param-reassign */
 import React, {useEffect, useState} from 'react';
 import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
-import {View, Text, Divisor} from 'components/UI';
+import {View, Text, Divisor, Btn} from 'components/UI';
 import theme from 'theme/theme';
 import ImageView from 'react-native-image-viewing';
 import Modal from 'react-native-modal';
@@ -13,7 +14,13 @@ import {useSelector} from 'react-redux';
 import {auth} from 'store/selectors';
 import MediasList from '../MediasList';
 
-const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
+const MarkerDetails = ({
+  leader,
+  marker,
+  setSelectedMarker,
+  sheetRef,
+  close,
+}) => {
   const user = useSelector(auth);
 
   const snapPoints = [400, '95%'];
@@ -37,6 +44,23 @@ const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
   const closeShowMediaModal = () => {
     setMediaShowed({});
     setModalShowMediaVisible(false);
+  };
+
+  const validarArea = async (id) => {
+    const endpoint = '/maps/area/';
+
+    const markerValidation = {
+      id,
+      validated: true,
+    };
+
+    await api.put(endpoint, markerValidation).catch(() => {
+      Alert.alert('Tente mais tarde', 'Não foi possivel validar a marcação.');
+    });
+    const userResponse = await api.get(`${endpoint}${id}`);
+    marker.validated = userResponse.data.validated;
+
+    close();
   };
 
   const eraseMarker = async () => {
@@ -142,7 +166,7 @@ const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
                     flexDirection: 'row',
                     backgroundColor: '#FFF',
                   }}>
-                  {user.id ? (
+                  {leader || marker.member === user.data.id ? (
                     <TouchableOpacity
                       style={{
                         width: '25%',
@@ -203,6 +227,21 @@ const MarkerDetails = ({marker, setSelectedMarker, sheetRef, close}) => {
                     </Text>
                     <Text ml={3}>{marker.description}</Text>
                   </View>
+                  {marker.coordinates && leader && !marker.validated && (
+                    <View
+                      style={{
+                        marginTop: 50,
+                        flexDirection: 'row',
+                        justifyContent: 'space-evenly',
+                      }}>
+                      <Btn
+                        title="Validar Área"
+                        onPress={() => {
+                          validarArea(marker.id);
+                        }}
+                      />
+                    </View>
+                  )}
                 </View>
               </>
             ) : (

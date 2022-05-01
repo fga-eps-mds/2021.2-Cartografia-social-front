@@ -59,7 +59,7 @@ const CreateArea = ({show, onPressCreatingArea, reset, index}) => {
         coordinates={newArea.coordinates}
         holes={newArea.holes}
         strokeColor="#000"
-        fillColor="rgba(255,0,0,0.5)"
+        fillColor="rgba(255,255,0,0.5)"
         strokeWidth={1}
       />
     );

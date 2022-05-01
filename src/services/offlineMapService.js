@@ -40,6 +40,8 @@ const convertPoint = (point) => ({
   coordinates: [point.longitude, point.latitude],
   description: point.description,
   id: point.id,
+  validated: point.validated,
+  member: point.member,
   medias: point.multimedia,
   title: point.title,
   type: 'Point',
@@ -50,6 +52,8 @@ const convertArea = (area) => ({
   id: area.id,
   title: area.title,
   description: area.description,
+  validated: area.validated,
+  member: area.member,
   coordinates: [
     area.coordinates.map((coordinate) => [
       coordinate.longitude,
