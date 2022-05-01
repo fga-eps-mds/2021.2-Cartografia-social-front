@@ -18,7 +18,9 @@ const newArea = {
     "description": "",
     "id": null,
     "multimedia": [],
-    "title": "A"
+    "title": "A",
+    "validated": true,
+    "member": "memberid",
 }
 
 const newPoint = {
@@ -29,7 +31,9 @@ const newPoint = {
     "description": "",
     "id": null,
     "multimedia": [],
-    "title": "A"
+    "title": "A",
+    "validated": true,
+    "member": "memberid",
 }
 
 const mockReturnedMarkers = {

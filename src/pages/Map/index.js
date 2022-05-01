@@ -43,7 +43,15 @@ const Map = () => {
   const red = 'rgba(255,0,0,0.5)';
   const yellow = 'rgba(255,255,0,0.5)';
 
+  const netInfo = NetInfo.useNetInfo();
+
   const isLeader = async () => {
+
+    const {isInternetReachable} = netInfo;
+
+    if (!isInternetReachable)
+      return false;
+
     const communities = await api.get(
       `/community/getUserCommunity?userEmail=${user.data.email}`,
     );
@@ -63,7 +71,6 @@ const Map = () => {
   isLeader().then((response) => {
     setIsLeader(response);
   });
-  const netInfo = NetInfo.useNetInfo();
 
   const getPointsAndAreas = async () => {
     if (user.id) {
@@ -134,12 +141,6 @@ const Map = () => {
     resetArea.current();
   };
 
-  const polygonValidated = async (id) => {
-    const endpoint = '/maps/area/';
-    const userResponse = await api.get(`${endpoint}${id}`);
-    return userResponse.data;
-  };
-
   if (region) {
     const mapOptions = {
       scrollEnabled: true,
@@ -157,11 +158,6 @@ const Map = () => {
           {...mapOptions}>
           {markers.map((marker, index) => {
             if (marker && marker.coordinates) {
-              polygonValidated(marker.id).then((data) => {
-                marker.validated = data.validated;
-                marker.member = data.member;
-              });
-
               if (
                 (user.data && leader) ||
                 marker.validated ||
