@@ -1,4 +1,5 @@
 import React, {useRef, useMemo, useState, useEffect} from 'react';
+import NetInfo from '@react-native-community/netinfo';
 import {Alert} from 'react-native';
 import Modal from 'react-native-modal';
 import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
@@ -9,6 +10,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {auth, newArea} from 'store/selectors';
 import * as Actions from 'store/actions';
 import api from 'services/api';
+import {saveArea, savePoint} from 'services/offlineMapService';
 import Fabs from 'components/Fabs';
 import theme from 'theme/theme';
 import useDocumentPicker from 'services/useDocumentPicker';
@@ -43,13 +45,12 @@ const CreatePoint = ({
   let namePlaceholder = 'Digite aqui o título do novo ponto';
   let descriptionPlaceholder = 'Digite aqui a descrição do novo ponto';
   let buttonName = 'Salvar ponto';
-  const latitudePlaceholder = 'Latitude';
-  const longitudePlaceholder = 'Longitude';
-  const addPoint = '+';
+  let confirmacao = 'Deseja salvar o ponto?';
   if (isCreatingArea) {
     namePlaceholder = 'Digite aqui o título da nova área';
     descriptionPlaceholder = 'Digite aqui a descrição da nova área';
     buttonName = 'Salvar área';
+    confirmacao = 'Deseja salvar a área?';
   }
 
   const DEFAULT_STATE = {
@@ -79,6 +80,7 @@ const CreatePoint = ({
   const [mediaShowed, setMediaShowed] = useState({});
   const [visibleImageModal, setIsVisibleImageModal] = useState(false);
   const [openedImage, setOpenedImage] = useState({});
+  const netInfo = NetInfo.useNetInfo();
 
   const selectPdf = async () => {
     let results = await useDocumentPicker();
@@ -140,8 +142,26 @@ const CreatePoint = ({
     setMedias([]);
   };
 
+  const onConfirmation = () => {
+    const continuar = true;
+    Alert.alert('Atenção', confirmacao, [
+      {
+        text: 'Cancelar',
+        continuar: false,
+        onPress: () => Alert.alert('Atenção', 'Marcação cancelada'),
+        style: 'cancel',
+      },
+      {
+        text: 'Ok',
+        onPress: () => Alert.alert('Atenção', 'Marcação concluída'),
+        style: 'cancel',
+      },
+    ]);
+    return continuar;
+  };
+
   const onSave = async () => {
-    let locationId = null;
+    const locationId = null;
     setShowMarker(false);
     setTimeout(() => {
       setShowMarker(true);
@@ -153,49 +173,63 @@ const CreatePoint = ({
         Alert.alert('Atenção!', 'É Necessário marcar um polígono no mapa!');
         return;
       }
-      newMarker = {
-        coordinates: area.coordinates,
-        title: title.value,
-        description: description.value,
-        multimedia: medias,
-        id: locationId,
-        validated: false,
-        member: user.data.id,
-      };
-      dispatch(Actions.resetNewArea());
+      if (onConfirmation()) {
+        newMarker = {
+          coordinates: area.coordinates,
+          title: title.value,
+          description: description.value,
+          multimedia: medias,
+          id: locationId,
+          validated: false,
+          member: user.data.id,
+        };
+        dispatch(Actions.resetNewArea());
+      }
+    } else if (isNumeric(latitude.value) && isNumeric(longitude.value)) {
+      if (onConfirmation()) {
+        newMarker = {
+          latitude: parseFloat(latitude.value),
+          longitude: parseFloat(longitude.value),
+          title: title.value,
+          description: description.value,
+          multimedia: medias,
+          id: locationId,
+          validated: false,
+          member: user.data.id,
+        };
+      }
     } else {
       Alert.alert('Atenção!', 'Digite corretamente as coordenadas!');
       return;
     }
 
+    const {isInternetReachable} = netInfo;
     if (user && user.id) {
-      let endpoint = isCreatingArea ? '/maps/area' : '/maps/point';
-      await api
-        .post(endpoint, newMarker)
-        .then((response) => {
-          locationId = response.data;
-        })
-        .catch(() => {
-          Alert.alert(
-            'Tente mais tarde',
-            'Não foi possível salvar a marcação.',
+      try {
+        if (isCreatingArea) {
+          const response = await saveArea(
+            newMarker,
+            user.email,
+            !isInternetReachable,
           );
-        });
-      if (locationId.id !== '' && user.data.email) {
-        const CommunityMarking = {
-          locationId: locationId.id,
-          userEmail: user.data.email,
-        };
-        await api.post('/maps/addToCommunity', CommunityMarking).catch(() => {
-          Alert.alert(
-            'Tente mais tarde.',
-            `Erro ao adicionar ponto à comunidade`,
+          newMarker.id = response.id;
+        } else {
+          const response = await savePoint(
+            newMarker,
+            user.email,
+            !isInternetReachable,
           );
-        });
+          newMarker.id = response.id;
+        }
+      } catch (error) {
+        Alert.alert(
+          `Erro ao salvar ${isCreatingArea ? 'a area' : 'o ponto'}`,
+          error.Message,
+        );
       }
+    }
 
-      newMarker.id = locationId.id;
-
+    if (isInternetReachable) {
       medias.map(async (media) => {
         let mediaId = '';
 
@@ -227,7 +261,7 @@ const CreatePoint = ({
             locationId: locationId.id,
             mediaId: mediaId.public_id,
           };
-          endpoint = isCreatingArea
+          const endpoint = isCreatingArea
             ? '/maps/addMediaToArea'
             : '/maps/addMediaToPoint';
           await api.post(endpoint, newMediaPoint).catch(() => {

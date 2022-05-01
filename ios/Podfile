@@ -16,6 +16,10 @@ target 'cartografiasocial' do
   pod 'Permission-LocationAccuracy', :path => "#{permissions_path}/LocationAccuracy"
   pod 'react-native-google-maps', :path => rn_maps_path
 
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-async-storage/async-storage'
+
+  pod 'react-native-netinfo', :path => '../node_modules/@react-native-community/netinfo'
+
   target 'cartografiasocialTests' do
     inherit! :complete
     # Pods for testing
