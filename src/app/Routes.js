@@ -19,11 +19,11 @@ import InitialPage from 'pages/InitialPage';
 
 import ForgotPasswordPage from 'pages/ForgotPasswordPage';
 import AddContributor from 'pages/AddContributor';
+import ExportKML from 'pages/ExportKML';
 import api from 'services/api';
 import UserRegistrationRequestPage from 'pages/UserRegistrationRequestPage';
 import Tutoriais from 'pages/Tutoriais';
 import NetInfo from '@react-native-community/netinfo';
-
 
 const Routes = () => {
   const user = useSelector(auth);
@@ -174,30 +174,29 @@ const Routes = () => {
   );
 
   const SignedIn = () => {
-
     const netInfo = NetInfo.useNetInfo();
 
     const isLeader = async () => {
       const {isInternetReachable} = netInfo;
-  
+
       if (!isInternetReachable) return false;
-  
+
       const communities = await api.get(
         `/community/getUserCommunity?userEmail=${user.data.email}`,
       );
-  
+
       const comId = communities.data.id;
-  
+
       const leaderResp = await api.get(
         `/community/getAdminUsers?communityId=${comId}`,
       );
       const leaders = leaderResp.data;
-  
+
       const privillege = leaders.some((users) => users.userId === user.data.id);
-  
+
       return privillege;
     };
-  
+
     const [leader, setIsLeader] = useState(false);
     isLeader().then((response) => {
       setIsLeader(response);
@@ -205,8 +204,8 @@ const Routes = () => {
 
     return (
       <Drawer.Navigator drawerContent={(props) => <Profile {...props} />}>
-      <Drawer.Screen name="Map" component={Map} options={{title: 'Mapa'}} />
-      {/* <Drawer.Screen
+        <Drawer.Screen name="Map" component={Map} options={{title: 'Mapa'}} />
+        {/* <Drawer.Screen
         name="DynamicForm"
         component={DynamicForm}
         options={{
@@ -214,7 +213,7 @@ const Routes = () => {
           headerTitleAlign: 'center',
         }}
       /> */}
-      {/* {user.data && user.data.type === 'RESEARCHER' ? (
+        {/* {user.data && user.data.type === 'RESEARCHER' ? (
         <Stack.Screen
           name="CreateCommunity"
           component={CreateCommunity}
@@ -224,32 +223,35 @@ const Routes = () => {
           }}
         />
       ) : null} */}
-      {user.data && leader ? (
-        <Stack.Screen
-          name="AddContributor"
-          component={AddContributor}
+        <Stack.Screen name="Modal">
+          {(props) => <ExportKML {...props} userEmail={user.data.email} />}
+        </Stack.Screen>
+        {user.data && leader ? (
+          <Stack.Screen
+            name="AddContributor"
+            component={AddContributor}
+            options={{
+              title: 'Adicionar Contribuidor',
+              headerTitleAlign: 'center',
+            }}
+          />
+        ) : null}
+        <Drawer.Screen
+          name="Tutoriais"
+          component={Tutoriais}
           options={{
-            title: 'Adicionar Contribuidor',
-            headerTitleAlign: 'center',
+            headerTitle: '',
+            title: 'Tutoriais',
+            headerStyle: {
+              backgroundColor: `${theme.colors.primary}`,
+              elevation: 0,
+            },
+            headerTintColor: '#fff',
           }}
         />
-      ) : null}
-      <Drawer.Screen
-        name="Tutoriais"
-        component={Tutoriais}
-        options={{
-          headerTitle: '',
-          title: 'Tutoriais',
-          headerStyle: {
-            backgroundColor: `${theme.colors.primary}`,
-            elevation: 0,
-          },
-          headerTintColor: '#fff',
-        }}
-      />
-    </Drawer.Navigator>
+      </Drawer.Navigator>
     );
-  }
+  };
 
   const AppRoutes = () => {
     if (user.id) return <SignedIn />;
