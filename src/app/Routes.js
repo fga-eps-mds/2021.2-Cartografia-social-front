@@ -22,6 +22,7 @@ import AddContributor from 'pages/AddContributor';
 import ExportKML from 'pages/ExportKML';
 import api from 'services/api';
 import UserRegistrationRequestPage from 'pages/UserRegistrationRequestPage';
+import CreateCommunity from 'pages/CreateCommunity';
 import Tutoriais from 'pages/Tutoriais';
 import NetInfo from '@react-native-community/netinfo';
 
@@ -51,6 +52,18 @@ const Routes = () => {
         }}
       />
 
+      <Stack.Screen
+        name="CreateCommunity"
+        component={CreateCommunity}
+        options={{
+          title: '',
+          headerStyle: {
+            backgroundColor: `${theme.colors.primary}`,
+            elevation: 0,
+          },
+          headerTintColor: '#fff',
+        }}
+      />
       <Stack.Screen
         name="UserRegistrationRequestPage"
         component={UserRegistrationRequestPage}
