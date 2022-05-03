@@ -1,201 +1,72 @@
 import React, {useState} from 'react';
-import {Alert, Keyboard} from 'react-native';
-import Input from 'components/UI/Input';
+import {Alert} from 'react-native';
+import api from 'services/api';
+import NetInfo from '@react-native-community/netinfo';
 import required from 'validators/required';
 import ScrollView from 'components/UI/ScrollView';
-import normalize from 'react-native-normalize';
-import api from 'services/api';
-import {useSelector, useDispatch} from 'react-redux';
-import * as Actions from 'store/actions';
-import {auth} from 'store/selectors';
-import Picker from '../../components/Picker';
-import Btn from '../../components/UI/Btn';
-import {
-  Main,
-  Container,
-  InputText,
-  PickerContainer,
-  PickerText,
-  Icon,
-} from './styles';
+import Input from 'components/UI/Input';
+import {Container, Header, HeaderText, About, ConfirmButton} from './styles';
 
-const CreateCommunity = ({navigation}) => {
-  const [communityName, setCommunityName] = useState('');
-  const [communityDescription, setCommunityDescription] = useState('');
-  const [isModalPickerVisible, setIsModalPickerVisible] = useState(false);
-  const [getFromApi, setGetFromApi] = useState(false);
-  const [userSelected, setUserSelected] = useState('Selecione um usuário');
-  const user = useSelector(auth);
-  const toggleModalPicker = () =>
-    setIsModalPickerVisible(!isModalPickerVisible);
-  const toggleGetFromApi = () => setGetFromApi(!getFromApi);
-  const dispatch = useDispatch();
-  let works = true;
+export default function CreateCommunity() {
+  const netInfo = NetInfo.useNetInfo();
 
-  // Valida formulário
-  const formIsValid = (questions) => {
-    if (!userSelected.email) {
-      return false;
+  const [email, setEmail] = useState({
+    isValid: false,
+    value: '',
+  });
+
+  const formIsValid = () => {
+    const emailRegex =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return emailRegex.test(email.value.trim());
+  };
+
+  const onSave = () => {
+    const {isInternetReachable} = netInfo;
+    if (!isInternetReachable) {
+      Alert.alert('Erro', 'É necessário acesso a internet.');
+      return;
     }
-    let isValid = true;
-    questions.some((item) => {
-      if (!item.isValid) {
-        isValid = false;
-        return true;
-      }
-      return false;
-    });
-    return isValid;
-  };
 
-  const onError = () => {
-    works = false;
-  };
-
-  const getSelectedUserInfo = async () => {
-    return api
-      .get(
-        'users/userByEmail',
-        {
-          params: {
-            email: userSelected.email ? userSelected.email : '',
-          },
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        },
-      )
-      .catch((error) => {
-        onError();
-        if (error.response.status === 401) {
-          Alert.alert(
-            'Atenção!',
-            'Seu token expirou! É necesário realizar novamente o login',
-          );
-          dispatch(Actions.logout());
-        }
-      });
-  };
-
-  const postCommunity = async () => {
-    const communityDto = {
-      name: communityName.value,
-      description: communityDescription.value,
-    };
-    return api
-      .post('community', communityDto, {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
+    const endpoint = 'community/sendCreationEmail';
+    api
+      .get(`${endpoint}/${email.value}`)
+      .then(() => {
+        Alert.alert('Sucesso', 'Confira as próximas instruções no seu email');
       })
-      .catch(onError);
-  };
-
-  const addUserToCommunity = async (userDto) => {
-    await api
-      .post('community/addUser', userDto, {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      })
-      .catch(onError);
-  };
-
-  const addAdminUserToCommunity = async (adminUserDto) => {
-    await api
-      .post('community/addAdminUser', adminUserDto, {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      })
-      .catch(onError);
-  };
-
-  const onOpenModal = () => {
-    toggleGetFromApi();
-    setIsModalPickerVisible(true);
-  };
-
-  const onSave = async () => {
-    Keyboard.dismiss();
-    const userResponse = await getSelectedUserInfo();
-    let userId;
-    let communityResponse;
-    if (userResponse) {
-      userId = userResponse.data.id;
-      communityResponse = await postCommunity();
-    }
-    if (communityResponse && userResponse) {
-      const communityId = communityResponse.data.id;
-      const userDto = {
-        userId,
-        communityId,
-      };
-      await addUserToCommunity(userDto);
-      await addAdminUserToCommunity(userDto);
-    }
-
-    if (works) {
-      Alert.alert('Sucesso', 'Comunidade criada!');
-      navigation.navigate('Map');
-    } else {
-      Alert.alert(
-        'Atenção',
-        'Erro ao criar comunidade. Tente novamente mais tarde!',
-      );
-    }
-
-    setUserSelected('Selecione um usuário');
-    setCommunityName('');
-    setCommunityDescription('');
+      .catch(() => {});
   };
 
   return (
-    <Main>
-      <Picker
-        visible={isModalPickerVisible}
-        toggle={toggleModalPicker}
-        setUser={setUserSelected}
-        update={getFromApi}
-      />
+    <>
+      <Header>
+        <HeaderText>Solicitar Cadastro</HeaderText>
+      </Header>
       <ScrollView>
         <Container>
-          <InputText>Nome da comunidade</InputText>
+          <About>
+            Você pode preencher um formulário para solicitar o cadastro de uma
+            comunidade.
+          </About>
+          <About>
+            Uma vez enviado, a equipe do Nortear Cartografias irá análisar a sua
+            solicitação. Se ela for aprovada, você receberá um email com o
+            aviso.
+          </About>
           <Input
-            label="Insira o nome da comunidade"
-            onChange={(value) => setCommunityName(value)}
-            autoCapitalize="words"
+            label="Digite seu email"
+            onChange={setEmail}
+            value={email.value}
             rules={[required]}
-            value={communityName.value ? communityName.value : ''}
           />
 
-          <InputText>Descrição da comunidade</InputText>
-          <Input
-            label="Insira uma breve descrição da comunidade"
-            onChange={(value) => setCommunityDescription(value)}
-            autoCapitalize="words"
-            rules={[required]}
-            value={communityDescription.value ? communityDescription.value : ''}
-          />
-          <InputText>Selecione o administrador da comunidade</InputText>
-          <PickerContainer onPress={onOpenModal}>
-            <PickerText selected>
-              {userSelected.email ? userSelected.email : userSelected}
-            </PickerText>
-            <Icon size={normalize(20)} name="angle-down" color="#a3a3a3" />
-          </PickerContainer>
-          <Btn
-            title="Salvar"
-            color="#fff"
+          <ConfirmButton
+            title="Enviar solicitação"
             onPress={onSave}
-            disabled={!formIsValid([communityName, communityDescription])}
+            disabled={!formIsValid()}
           />
         </Container>
       </ScrollView>
-    </Main>
+    </>
   );
-};
-
-export default CreateCommunity;
+}
