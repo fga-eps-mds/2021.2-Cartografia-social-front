@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import logo from 'assets/logo.png';
+import logo from 'assets/nortear_cartografias.jpg';
 
 export const Container = styled.View`
   padding: 20px;
@@ -9,10 +9,8 @@ export const Container = styled.View`
 
 export const Logo = styled.Image.attrs({
   source: logo,
-  resizeMode: 'contain',
 })`
-  width: 200px;
-  height: 200px;
+  width: 100%;
+  max-height: 40%;
   align-self: center;
-  margin-bottom: 40px;
 `;

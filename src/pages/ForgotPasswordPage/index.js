@@ -50,7 +50,6 @@ const ForgotPasswordPage = ({navigation}) => {
                 label="Digite o email cadastrado"
                 onChange={setEmail}
                 value={email.value}
-                autoCapitalize="words"
                 rules={[required]}
               />
               <Btn
