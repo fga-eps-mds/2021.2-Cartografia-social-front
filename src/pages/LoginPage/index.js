@@ -71,7 +71,6 @@ const LoginPage = ({navigation}) => {
             label="Digite o email"
             onChange={(value) => setEmail(value)}
             value={email.value}
-            autoCapitalize="words"
             rules={[required]}
           />
           <InputText>Senha</InputText>

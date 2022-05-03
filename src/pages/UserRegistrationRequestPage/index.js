@@ -176,7 +176,6 @@ const UserRegistrationRequestPage = ({navigation}) => {
             label="Digite seu principal email"
             onChange={setEmail}
             value={email.value}
-            autoCapitalize="words"
             rules={[required]}
           />
           <InputText>Telefone</InputText>
@@ -184,7 +183,6 @@ const UserRegistrationRequestPage = ({navigation}) => {
             label="Ex: +5561998877665"
             onChange={setCellPhone}
             value={cellPhone.value}
-            autoCapitalize="words"
             rules={[required]}
           />
           <InputText>Senha</InputText>
@@ -192,7 +190,6 @@ const UserRegistrationRequestPage = ({navigation}) => {
             label="Digite uma senha"
             onChange={setPassword}
             value={password.value}
-            autoCapitalize="words"
             rules={[required]}
           />
           <InputText>Confirme sua Senha</InputText>
@@ -200,7 +197,6 @@ const UserRegistrationRequestPage = ({navigation}) => {
             label="Digite sua senha novamente"
             onChange={setIspassword}
             value={ispassword.value}
-            autoCapitalize="words"
             rules={[required]}
           />
           <InputText>Posição</InputText>

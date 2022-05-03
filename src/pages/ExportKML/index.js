@@ -28,9 +28,7 @@ export default function ExportKML({userEmail}) {
           'Os arquivos foram enviados para o email da equipe Nortear Cartografias.',
         );
       })
-      .catch((error) => {
-        Alert.alert('Erro', error);
-      });
+      .catch(() => {});
   };
 
   return (

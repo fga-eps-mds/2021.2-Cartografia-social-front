@@ -187,7 +187,6 @@ const Routes = () => {
 
   const SignedIn = () => {
     const netInfo = NetInfo.useNetInfo();
-
     const isLeader = async () => {
       const {isInternetReachable} = netInfo;
 
@@ -235,7 +234,7 @@ const Routes = () => {
           }}
         />
       ) : null} */}
-        {user.data && user.data.type === 'RESEARCHER' ? (
+        {user.data && user.data.type === 0 ? (
           <Stack.Screen name="Exportar marcações">
             {(props) => <ExportKML {...props} userEmail={user.data.email} />}
           </Stack.Screen>
