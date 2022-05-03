@@ -18,11 +18,10 @@ export default function ExportKML({userEmail}) {
       return;
     }
 
-    const endpoint = 'community/exportKML';
-    const params = {email: userEmail};
+    const endpoint = 'community/exportCommunityKML';
 
     api
-      .get(endpoint, {params})
+      .get(`${endpoint}/${userEmail}`)
       .then(() => {
         Alert.alert(
           'Sucesso',

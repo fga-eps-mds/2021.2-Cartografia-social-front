@@ -63,7 +63,6 @@ const Routes = () => {
           headerTintColor: '#fff',
         }}
       />
-
       <Stack.Screen
         name="ForgotPasswordPage"
         component={ForgotPasswordPage}
@@ -223,9 +222,11 @@ const Routes = () => {
           }}
         />
       ) : null} */}
-        <Stack.Screen name="Modal">
-          {(props) => <ExportKML {...props} userEmail={user.data.email} />}
-        </Stack.Screen>
+        {user.data && user.data.type === 'RESEARCHER' ? (
+          <Stack.Screen name="Exportar marcações">
+            {(props) => <ExportKML {...props} userEmail={user.data.email} />}
+          </Stack.Screen>
+        ) : null}
         {user.data && leader ? (
           <Stack.Screen
             name="AddContributor"
