@@ -32,6 +32,7 @@ const Input = ({
   onFocus,
   height,
   characterRestriction,
+  onBlur,
   ...props
 }) => {
   const inputEl = useRef(null);
@@ -44,9 +45,8 @@ const Input = ({
 
     if (rules.length) {
       rules.forEach((rule) => {
-        const currentRule = rule(inputValue, errorMessage);
-        if (!currentRule.isValid && errorText === '') {
-          errorText = currentRule.errorText;
+        if (!inputValue.match(rule)) {
+          errorText = errorMessage;
         }
       });
     }
@@ -54,12 +54,14 @@ const Input = ({
   };
 
   const inputChanged = (inputValue) => {
-    const error = validateInput(inputValue);
-    if (blurredOnce) {
-      setValidationError(error);
-    }
+    if (inputValue !== undefined) {
+      const error = validateInput(inputValue);
+      if (blurredOnce) {
+        setValidationError(error);
+      }
 
-    onChange({value: inputValue, isValid: !error});
+      onChange({value: inputValue, isValid: !error});
+    }
   };
 
   // Validate component when it is mounted with value
@@ -90,7 +92,7 @@ const Input = ({
       autoCapitalize={autoCapitalize}
       baseColor={baseColor}
       tintColor={tintColor}
-      errorColor={errorColor}
+      errorColor={tintColor}
       textColor={textColor}
       fontSize={PixelRatio.get() <= 1.5 ? 12 : 16}
       value={value}
@@ -101,6 +103,7 @@ const Input = ({
       minLength={minLength}
       onChangeText={inputChanged}
       onBlur={() => {
+        onBlur();
         setBlurredOnce(true);
       }}
       onFocus={onFocus}
@@ -145,6 +148,7 @@ Input.propTypes = {
   onFocus: PropTypes.func,
   height: PropTypes.number,
   characterRestriction: PropTypes.number,
+  onBlur: PropTypes.func,
 };
 
 Input.defaultProps = {
@@ -171,6 +175,7 @@ Input.defaultProps = {
   onFocus: () => {},
   height: 45,
   characterRestriction: null,
+  onBlur: () => {},
 };
 
 export default Input;

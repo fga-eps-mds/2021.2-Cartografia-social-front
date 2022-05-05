@@ -1,19 +1,22 @@
-import React, {useState} from 'react';
-import ScrollView from 'components/UI/ScrollView';
-import Input from 'components/UI/Input';
-import required from 'validators/required';
+import NetInfo from '@react-native-community/netinfo';
+import {useFocusEffect} from '@react-navigation/native';
 import Btn from 'components/UI/Btn';
-import auth from '@react-native-firebase/auth';
+import Input from 'components/UI/Input';
+import ScrollView from 'components/UI/ScrollView';
+import React, {useState} from 'react';
+import {Alert} from 'react-native';
+import {useDispatch} from 'react-redux';
+import {login} from 'services/loginService';
+import * as Actions from 'store/actions';
+import required from 'validators/required';
+
 import {Container, Header, HeaderText, InputText, TextBtn} from './styles';
 
-// import {Alert} from 'react-native';
-// import api from 'services/api';
-// import {useDispatch} from 'react-redux';
-// import * as Actions from 'store/actions';
-
 const LoginPage = ({navigation}) => {
-  // const dispatch = useDispatch();
-
+  const dispatch = useDispatch();
+  const navigateToScreen = async (screen) => {
+    navigation.navigate(screen);
+  };
   const [password, setPassword] = useState({
     isValid: false,
     value: '',
@@ -28,16 +31,32 @@ const LoginPage = ({navigation}) => {
     return password.isValid && email.isValid;
   };
 
+  useFocusEffect(
+    React.useCallback(() => {
+      if (navigation.getParent()) {
+        navigation.getParent().setOptions({headerShown: true});
+      }
+    }, []),
+  );
+
+  const netInfo = NetInfo.useNetInfo();
+
   const onPress = async () => {
-    auth()
-      .signInWithEmailAndPassword(email.value, password.value)
-      .then(() => {
-        navigation.navigate('Map');
-      })
-      .catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error(error);
-      });
+    try {
+      const {isInternetReachable} = netInfo;
+      const userResponse = await login(
+        email.value,
+        password.value,
+        !isInternetReachable,
+      );
+      if (userResponse) {
+        dispatch(Actions.login({...userResponse, demonstrationMode: false}));
+      }
+    } catch (error) {
+      Alert.alert('Atenção!', 'Erro na etapa de autenticação!');
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
   };
 
   return (
@@ -52,7 +71,6 @@ const LoginPage = ({navigation}) => {
             label="Digite o email"
             onChange={(value) => setEmail(value)}
             value={email.value}
-            autoCapitalize="words"
             rules={[required]}
           />
           <InputText>Senha</InputText>
@@ -63,7 +81,14 @@ const LoginPage = ({navigation}) => {
             value={password.value}
             rules={[required]}
           />
-          <TextBtn onPress={() => null}>Esqueci a senha</TextBtn>
+          <TextBtn onPress={() => navigateToScreen('ForgotPasswordPage')}>
+            Esqueci a senha
+          </TextBtn>
+
+          <TextBtn
+            onPress={() => navigateToScreen('UserRegistrationRequestPage')}>
+            Solicitar cadastro
+          </TextBtn>
           <Btn
             disabled={!formIsValid()}
             style={{marginVertical: 50}}
@@ -75,5 +100,4 @@ const LoginPage = ({navigation}) => {
     </>
   );
 };
-
 export default LoginPage;

@@ -30,8 +30,10 @@
 	<string>Usar Loc</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Usar Loc</string>
-  <key>NSPhotoLibraryUsageDescription</key>
+	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Usar fotos</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Permite que o app utilize o microfone</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

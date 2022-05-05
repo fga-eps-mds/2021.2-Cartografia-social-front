@@ -11,6 +11,7 @@ module.exports = {
     'no-underscore-dangle': 'off',
     'class-methods-use-this': 'off',
     'import/prefer-default-export': 'off',
+    'no-plusplus': 'off'
   },
   settings: {
     'import/resolver': {

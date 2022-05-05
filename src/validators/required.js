@@ -8,8 +8,9 @@ import lodashIsEmpty from 'lodash/isEmpty';
  * @property {Boolean} isValid `true` if value is a valid value
  * @property {String} errorText message of an invalid rule
  * */
-const required = (value, errorMessage) => {
-  const errorText = errorMessage || 'Este campo é obrigatório';
+const required = (questionsFormList, value) => {
+  const errorText =
+    questionsFormList.errorMessage || 'Este campo é obrigatório';
   const errorObject = {
     isValid: false,
     errorText,
@@ -18,10 +19,13 @@ const required = (value, errorMessage) => {
   if (lodashIsEmpty(value)) {
     return errorObject;
   }
-
-  return {
-    isValid: true,
-  };
+  if (value.match(questionsFormList.validationRegex)) {
+    return {
+      isValid: true,
+      errorText: '',
+    };
+  }
+  return errorObject;
 };
 
 export default required;

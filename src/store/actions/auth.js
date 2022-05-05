@@ -12,3 +12,9 @@ export const logout = () => {
     type: actionTypes.LOGOUT,
   };
 };
+
+export const useDemonstrationMode = () => {
+  return {
+    type: actionTypes.DEMONSTRATION_MODE,
+  };
+};
